@@ -1,3 +1,6 @@
+app:
+  base_url: http://localhost:8080
+
 spring:
   security:
     oauth2:
@@ -35,6 +38,9 @@ spring:
             user-info-uri: https://git.66bit.ru/oauth/userinfo
             jwk-set-uri: https://git.66bit.ru/oauth/discovery/keys
             user-name-attribute: nickname
+
+      default_success_url: "${app.base_url}/user"
+
 logging:
   level:
     org:
