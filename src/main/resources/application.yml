@@ -1,0 +1,42 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            clientId: ${github_client_id}
+            clientSecret: ${github_client_secret}
+            redirect-uri: http://localhost:8080/login/oauth2/code/github
+            authorization-grant-type: authorization_code
+            scope:
+              - read:user
+              - user:email
+            client-name: GitHub
+          gitlab:
+            clientId: ${gitlab_client_id}
+            clientSecret: ${gitlab_client_secret}
+            redirect-uri: http://localhost:8080/login/oauth2/code/gitlab
+            authorization-grant-type: authorization_code
+            scope:
+              - read_user
+              - openid
+              - profile
+              - email
+            client-name: GitLab
+        provider:
+          github:
+            authorization-uri: https://github.com/login/oauth/authorize
+            token-uri: https://github.com/login/oauth/access_token
+            user-info-uri: https://api.github.com/user
+            user-name-attribute: id
+          gitlab:
+            authorization-uri: https://git.66bit.ru/oauth/authorize
+            token-uri: https://git.66bit.ru/oauth/token
+            user-info-uri: https://git.66bit.ru/oauth/userinfo
+            jwk-set-uri: https://git.66bit.ru/oauth/discovery/keys
+            user-name-attribute: nickname
+logging:
+  level:
+    org:
+      springframework:
+        security: debug
