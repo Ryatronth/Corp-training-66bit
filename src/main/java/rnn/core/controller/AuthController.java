@@ -1,16 +1,22 @@
 package rnn.core.controller;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import rnn.core.model.User;
+import rnn.core.security.authentication.UserInfo;
+import rnn.core.security.authentication.mapper.OAuth2UserMapper;
+import rnn.core.service.UserService;
 
-import java.util.Map;
-
+@RequiredArgsConstructor
 @RestController
 public class AuthController {
-    @GetMapping("/user")
-    public Map<String, Object> getUser(@AuthenticationPrincipal OAuth2User principal) {
-        return principal.getAttributes();
+    private final UserService userService;
+
+    @GetMapping("/user/info")
+    public User getUser(OAuth2AuthenticationToken token) {
+        UserInfo info = OAuth2UserMapper.getUserInfo(token.getAuthorizedClientRegistrationId(), token.getPrincipal());
+        return userService.getUser(info.username());
     }
 }

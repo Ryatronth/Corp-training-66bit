@@ -1,6 +1,6 @@
 package rnn.core.security.conf;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -11,28 +11,33 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import rnn.core.model.Role;
+import rnn.core.security.authentication.CustomOAuth2SuccessHandler;
 
 import java.util.Arrays;
 import java.util.List;
 
+
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
-
-    @Value("${spring.security.oauth2.default_success_url}")
-    public String defaultSuccessUrl;
+public class SecurityConfig extends WebMvcConfigurationSupport {
+    private final CustomOAuth2SuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(req -> req
-                        .requestMatchers("/", "/login", "/error", "/test").permitAll()
+                        .requestMatchers("/login", "/error").permitAll()
+                        .requestMatchers("/admin/**").hasAuthority(Role.Name.ADMIN.name())
+                        .requestMatchers("/user/**").hasAnyAuthority(Role.Name.ADMIN.name(), Role.Name.USER.name())
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(l -> l
-                        .defaultSuccessUrl(defaultSuccessUrl)
+                        .successHandler(successHandler)
                 )
                 .logout(l -> l
-                        .logoutSuccessUrl("/").permitAll()
+                        .logoutSuccessUrl("/login").permitAll()
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
