@@ -1,9 +1,12 @@
-package rnn.core.model;
+package rnn.core.security.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+import rnn.core.base.model.Course;
 
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -23,6 +26,11 @@ public class User {
 
     @ManyToOne
     private Role role;
+
+    @JsonIgnore
+    @OneToMany
+    @JoinColumn(name = "author_username")
+    private List<Course> courses;
 
     @JsonProperty(value = "role")
     private String roleJson() {

@@ -1,11 +1,11 @@
-package rnn.core.service;
+package rnn.core.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rnn.core.model.Role;
-import rnn.core.model.User;
-import rnn.core.model.repository.UserRepository;
+import rnn.core.security.model.Role;
+import rnn.core.security.model.User;
+import rnn.core.security.model.repository.UserRepository;
 import rnn.core.security.authentication.UserInfo;
 
 import java.util.Optional;
@@ -38,6 +38,6 @@ public class UserService {
     }
 
     public User getUser(String username) {
-        return userRepository.findById(username).orElse(null);
+        return userRepository.findById(username).orElseThrow(() -> new IllegalStateException("Пользователь с именем \"%s\" не существует.".formatted(username)));
     }
 }

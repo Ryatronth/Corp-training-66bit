@@ -1,9 +1,9 @@
-package rnn.core.service;
+package rnn.core.security.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rnn.core.model.Role;
-import rnn.core.model.repository.RoleRepository;
+import rnn.core.security.model.Role;
+import rnn.core.security.model.repository.RoleRepository;
 
 @RequiredArgsConstructor
 @Service

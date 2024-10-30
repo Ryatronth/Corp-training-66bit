@@ -1,6 +1,11 @@
 app:
   base_url: http://localhost:8080
 
+file_server:
+  url: http://localhost:8090
+  api_header: FILE-API-KEY
+  api_key: test
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/learn_pr
@@ -48,8 +53,8 @@ spring:
             user-info-uri: https://git.66bit.ru/oauth/userinfo
             jwk-set-uri: https://git.66bit.ru/oauth/discovery/keys
             user-name-attribute: nickname
-
       default_success_url: "${app.base_url}/user/info"
+
 
 logging:
   level:

@@ -1,11 +1,11 @@
-package rnn.core.initializer;
+package rnn.core.security.initializer;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import rnn.core.model.Role;
-import rnn.core.model.repository.RoleRepository;
+import rnn.core.security.model.Role;
+import rnn.core.security.model.repository.RoleRepository;
 
 @RequiredArgsConstructor
 @Service

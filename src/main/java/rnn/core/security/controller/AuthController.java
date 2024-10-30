@@ -1,13 +1,13 @@
-package rnn.core.controller;
+package rnn.core.security.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import rnn.core.model.User;
+import rnn.core.security.model.User;
 import rnn.core.security.authentication.UserInfo;
 import rnn.core.security.authentication.mapper.OAuth2UserMapper;
-import rnn.core.service.UserService;
+import rnn.core.security.service.UserService;
 
 @RequiredArgsConstructor
 @RestController

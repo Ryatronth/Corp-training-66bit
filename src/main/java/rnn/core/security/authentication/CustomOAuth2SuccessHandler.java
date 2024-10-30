@@ -1,6 +1,5 @@
 package rnn.core.security.authentication;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,9 +10,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import rnn.core.model.User;
 import rnn.core.security.authentication.mapper.OAuth2UserMapper;
-import rnn.core.service.UserService;
+import rnn.core.security.model.User;
+import rnn.core.security.service.UserService;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -28,7 +27,7 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     public String defaultSuccessUrl;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
         OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
 
         UserInfo info = OAuth2UserMapper.getUserInfo(oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getPrincipal());

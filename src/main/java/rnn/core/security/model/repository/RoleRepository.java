@@ -1,8 +1,8 @@
-package rnn.core.model.repository;
+package rnn.core.security.model.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import rnn.core.model.Role;
+import rnn.core.security.model.Role;
 
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Role.Name> {
