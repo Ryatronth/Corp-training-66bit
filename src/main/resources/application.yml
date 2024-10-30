@@ -1,0 +1,17 @@
+path:
+  courses: courses
+
+server:
+  port: 8090
+  api_v1: "http://localhost:${server.port}/api/v1"
+
+spring:
+  web:
+    resources:
+      static-locations: C:/66bit/files
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 15MB
+  security:
+    apiKey: test
