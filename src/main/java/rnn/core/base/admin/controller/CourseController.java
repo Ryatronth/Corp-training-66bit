@@ -10,7 +10,8 @@ import rnn.core.base.admin.service.CourseService;
 import rnn.core.base.model.Course;
 
 @RequiredArgsConstructor
-@RestController("/admin")
+@RestController
+@RequestMapping("/admin")
 public class CourseController {
     private final CourseService courseService;
 
@@ -24,7 +25,7 @@ public class CourseController {
 
     @PostMapping("/courses")
     public ResponseEntity<Course> createCourse(@RequestBody CourseCreationDTO courseDTO, @RequestParam("file") MultipartFile file) {
-        Course course = courseService.createAndSaveCourse(courseDTO, file);
+        Course course = courseService.createAndSave(courseDTO, file);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(course);

@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rnn.core.base.admin.dto.CourseCreationDTO;
 import rnn.core.base.admin.dto.mapper.CourseMapper;
-import rnn.core.base.admin.exception.CourseAlreadyExistException;
+import rnn.core.base.exception.AlreadyExistException;
 import rnn.core.base.model.Course;
 import rnn.core.base.model.repository.CourseRepository;
 import rnn.core.filestorage.FileStorage;
@@ -21,7 +21,7 @@ public class CourseService {
     private final FileStorage fileStorage;
 
     @Transactional
-    public Course createAndSaveCourse(CourseCreationDTO courseCreationDTO, MultipartFile file) {
+    public Course createAndSave(CourseCreationDTO courseCreationDTO, MultipartFile file) {
         Course generetedCourse = create(courseCreationDTO);
         generetedCourse.setPictureUrl(createCourseImage(file));
         return courseRepository.save(generetedCourse);
@@ -33,16 +33,16 @@ public class CourseService {
     }
 
     protected Course create(CourseCreationDTO courseDTO) {
-        boolean isNameExisted = courseRepository.existsByName(courseDTO.name());
+        boolean isNameExisted = courseRepository.existsByTitle(courseDTO.title());
 
         if (isNameExisted) {
-            throw new CourseAlreadyExistException("Курс с названием \"%s\" уже существует.".formatted(courseDTO.name()));
+            throw new AlreadyExistException("Курс с названием \"%s\" уже существует.".formatted(courseDTO.title()));
         }
 
         return courseMapper.fromCreationDto(courseDTO);
     }
 
     public Course get(Long id) {
-        return courseRepository.findById(id).orElseThrow(() -> new IllegalStateException("Курс с id = %s не существует.".formatted(id)));
+        return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Курс с id = %s не существует.".formatted(id)));
     }
 }

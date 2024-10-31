@@ -1,9 +1,9 @@
 package rnn.core.security.conf;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,12 +23,17 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebMvcConfigurationSupport {
+    @Value("${frontend.url}")
+    private String frontendUr;
+
+    @Value("${frontend.auth_url}")
+    private String frontendAuthUrl;
+
     private final CustomOAuth2SuccessHandler successHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(req -> req
-                        .requestMatchers("/login", "/error").permitAll()
                         .requestMatchers("/admin/**").hasAuthority(Role.Name.ADMIN.name())
                         .requestMatchers("/user/**").hasAnyAuthority(Role.Name.ADMIN.name(), Role.Name.USER.name())
                         .anyRequest().authenticated()
@@ -37,17 +42,17 @@ public class SecurityConfig extends WebMvcConfigurationSupport {
                         .successHandler(successHandler)
                 )
                 .logout(l -> l
-                        .logoutSuccessUrl("/login").permitAll()
+                        .logoutSuccessUrl(frontendAuthUrl)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(c -> c.configurationSource(this.corsConfigurationSource()))
                 .build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(frontendUr));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);

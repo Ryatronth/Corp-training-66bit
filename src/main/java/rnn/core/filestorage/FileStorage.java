@@ -29,7 +29,7 @@ public class FileStorage {
                     if (response.statusCode().is2xxSuccessful()) {
                         return response.bodyToMono(String.class);
                     }
-                    throw new ServiceException("Ошибка при отправке файла: status code %s".formatted(response.statusCode()));
+                    throw new ServiceException("Ошибка при отправке файла, status: {%s}, message: {%s}".formatted(response.statusCode(), response.bodyToMono(String.class)));
                 }).block();
     }
 }

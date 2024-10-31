@@ -1,5 +1,6 @@
-app:
-  base_url: http://localhost:8080
+frontend:
+  url: http://localhost:5143
+  auth_url: "${frontend.url}/login"
 
 file_server:
   url: http://localhost:8090
@@ -53,7 +54,7 @@ spring:
             user-info-uri: https://git.66bit.ru/oauth/userinfo
             jwk-set-uri: https://git.66bit.ru/oauth/discovery/keys
             user-name-attribute: nickname
-      default_success_url: "${app.base_url}/user/info"
+      default_success_url: "${frontend.url}/courses"
 
 
 logging:

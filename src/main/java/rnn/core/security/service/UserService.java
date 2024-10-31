@@ -3,12 +3,10 @@ package rnn.core.security.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rnn.core.security.authentication.UserInfo;
 import rnn.core.security.model.Role;
 import rnn.core.security.model.User;
 import rnn.core.security.model.repository.UserRepository;
-import rnn.core.security.authentication.UserInfo;
-
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -18,12 +16,14 @@ public class UserService {
 
     @Transactional
     public User checkUserExisted(UserInfo info) {
-        Optional<User> user = userRepository.findById(info.username());
-
-        if (user.isPresent()) {
-            return user.get();
+        try {
+            return getUser(info.username());
+        } catch (IllegalArgumentException ignored) {
+            return createNewUser(info);
         }
+    }
 
+    public User createNewUser(UserInfo info) {
         Role userRole = roleService.getUserRole();
         User newUser = User
                 .builder()
@@ -38,6 +38,6 @@ public class UserService {
     }
 
     public User getUser(String username) {
-        return userRepository.findById(username).orElseThrow(() -> new IllegalStateException("Пользователь с именем \"%s\" не существует.".formatted(username)));
+        return userRepository.findById(username).orElseThrow(() -> new IllegalArgumentException("Пользователь с именем \"%s\" не существует.".formatted(username)));
     }
 }

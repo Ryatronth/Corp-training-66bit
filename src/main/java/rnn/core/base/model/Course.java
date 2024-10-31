@@ -5,6 +5,7 @@ import lombok.*;
 import rnn.core.security.model.User;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,7 +20,7 @@ public class Course {
     private Long id;
 
     @Column(unique = true)
-    private String name;
+    private String title;
 
     private String description;
 
@@ -33,4 +34,31 @@ public class Course {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "course_tags",
+            joinColumns = {@JoinColumn(name = "course_id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_name")}
+    )
+    private List<Tag> tags;
+
+    @OneToMany
+    @JoinColumn(name = "course_id")
+    private List<Module> modules;
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", pictureUrl='" + pictureUrl + '\'' +
+                ", author=" + author +
+                ", score=" + score +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", tags=" + tags +
+                '}';
+    }
 }
