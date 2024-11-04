@@ -11,7 +11,6 @@ import rnn.filestorage.service.FileService;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
@@ -19,18 +18,18 @@ import java.util.UUID;
 public class BaseController {
     private final FileService fileService;
 
-    @GetMapping("/courses/{uuid}")
-    public ResponseEntity<Resource> getCourseFile(@PathVariable UUID uuid) throws IOException {
-        Resource resource = fileService.getCourseFile(uuid);
+    @GetMapping("/files")
+    public ResponseEntity<Resource> getFile(@RequestParam(name = "path") String path, @RequestParam(name = "name") String name) throws IOException {
+        Resource resource = fileService.getFile(path, name);
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(resource.getFile().toPath()))
                 .body(resource);
     }
 
-    @PostMapping("/courses/{uuid}")
-    public ResponseEntity<String> uploadCourseFile(@PathVariable UUID uuid, @RequestParam("file") MultipartFile file) throws IOException {
-        String resource = fileService.uploadCourseFile(uuid, file);
+    @PostMapping("/files")
+    public ResponseEntity<String> uploadFile(@RequestParam(name = "path") String path, @RequestParam(name = "name") String name, @RequestParam("file") MultipartFile file) throws IOException {
+        String resource = fileService.uploadFile(path, name, file);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(resource);
