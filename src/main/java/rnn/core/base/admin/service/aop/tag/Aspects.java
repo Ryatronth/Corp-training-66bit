@@ -13,27 +13,27 @@ import rnn.core.base.model.Tag;
 @Component("tagAspect")
 @Aspect
 public class Aspects {
-    @AfterReturning(pointcut = "rnn.core.base.admin.service.aop.tag.Pointcuts.createPointcut(dto)", argNames = "dto,tag", returning = "tag")
-    public void afterCreatePointcut(TagDTO dto, Tag tag) {
-        log.info("Тэг создан. DTO: {} | Tag: {}", dto, tag);
+    @AfterReturning(pointcut = "execution(* rnn.core.base.admin.service.TagService.create(..))", returning = "tag")
+    public void afterCreatePointcut(Tag tag) {
+        log.info("Тэг создан. Tag: {}", tag);
     }
 
-    @AfterThrowing(pointcut = "rnn.core.base.admin.service.aop.tag.Pointcuts.createPointcut(dto)", argNames = "dto,ex", throwing = "ex")
+    @AfterThrowing(pointcut = "execution(* rnn.core.base.admin.service.TagService.create(..)) && args(dto)", throwing = "ex")
     public void afterCreatePointcut(TagDTO dto, Exception ex) {
         log.error("Ошибка при создании тэга: {}. DTO: {}", ex.getMessage(), dto);
     }
 
-    @AfterReturning(pointcut = "rnn.core.base.admin.service.aop.tag.Pointcuts.updatePointcut(tag, dto)", argNames = "tag,dto,newtag", returning = "newtag")
+    @AfterReturning(pointcut = "execution(* rnn.core.base.admin.service.TagService.create(..)) && args(tag, dto)", returning = "newtag")
     public void afterUpdatePointcut(String tag, TagDTO dto, Tag newtag) {
-        log.info("Тэг изменен. Name: {} | DTO: {} | NewTag: {}", dto, tag, newtag);
+        log.info("Тэг изменен. Name: {} | DTO: {} | NewTag: {}", tag, dto, newtag);
     }
 
-    @AfterThrowing(pointcut = "rnn.core.base.admin.service.aop.tag.Pointcuts.updatePointcut(tag, dto)", argNames = "tag,dto,ex", throwing = "ex")
-    public void afterUpdatePointcut(String tag, TagDTO dto, Exception ex) {
+    @AfterThrowing(pointcut = "execution(* rnn.core.base.admin.service.TagService.create(..)) && args(dto)",  throwing = "ex")
+    public void afterUpdatePointcut(TagDTO dto, Exception ex) {
         log.error("Ошибка при обновлении тэга: {}. DTO: {}", ex.getMessage(), dto);
     }
 
-    @After(value = "rnn.core.base.admin.service.aop.tag.Pointcuts.deletePointcut(tag)", argNames = "tag")
+    @After(value = "execution(* rnn.core.base.admin.service.TagService.delete()) && args(tag)")
     public void afterDeletePointcut(String tag) {
         log.info("Тэг удален. Tag: {}", tag);
     }

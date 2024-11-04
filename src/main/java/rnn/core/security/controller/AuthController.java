@@ -19,6 +19,6 @@ public class AuthController {
     @GetMapping("/userinfo")
     public ResponseEntity<User> getUser(OAuth2AuthenticationToken token) {
         UserInfo info = OAuth2UserMapper.getUserInfo(token.getAuthorizedClientRegistrationId(), token.getPrincipal());
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(userService.getUser(info.username()));
+        return ResponseEntity.ok().body(userService.findOne(info.username()));
     }
 }

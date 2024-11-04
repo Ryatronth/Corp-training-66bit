@@ -54,11 +54,4 @@ spring:
             user-info-uri: https://git.66bit.ru/oauth/userinfo
             jwk-set-uri: https://git.66bit.ru/oauth/discovery/keys
             user-name-attribute: nickname
-      default_success_url: "${frontend.url}/courses"
-
-
-logging:
-  level:
-    org:
-      springframework:
-        security: debug
+      default_success_url: "${frontend.url}/redirect"

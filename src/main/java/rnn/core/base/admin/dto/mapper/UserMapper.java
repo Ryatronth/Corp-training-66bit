@@ -13,6 +13,6 @@ public class UserMapper {
 
     @Named("authorNameToUser")
     public User authorNameToUser(String authorName) {
-        return userService.getUser(authorName);
+        return userService.findOne(authorName);
     }
 }

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import rnn.core.base.admin.dto.CourseCreationDTO;
 import rnn.core.base.admin.service.CourseService;
 import rnn.core.base.model.Course;
@@ -24,8 +23,8 @@ public class CourseController {
     }
 
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@RequestBody CourseCreationDTO courseDTO, @RequestParam("file") MultipartFile file) {
-        Course course = courseService.createAndSave(courseDTO, file);
+    public ResponseEntity<Course> createCourse(@ModelAttribute CourseCreationDTO courseDTO) {
+        Course course = courseService.createAndSave(courseDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(course);

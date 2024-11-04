@@ -16,11 +16,4 @@ public interface CourseMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "pictureUrl", ignore = true)
     Course fromCreationDto(CourseCreationDTO courseDTO);
-//
-//    @Mapping(source = "authorName", target = "author", qualifiedByName = "authorNameToUser")
-//    Course fromDto(CourseDTO courseDTO);
-//
-//    @Mapping(source = "authorName", target = "author", qualifiedByName = "authorNameToUser")
-//    @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
-//    Course updateFromDto(CourseDTO dto, @MappingTarget Course course);
 }

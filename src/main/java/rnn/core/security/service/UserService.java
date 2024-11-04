@@ -17,7 +17,7 @@ public class UserService {
     @Transactional
     public User checkUserExisted(UserInfo info) {
         try {
-            return getUser(info.username());
+            return findOne(info.username());
         } catch (IllegalArgumentException ignored) {
             return createNewUser(info);
         }
@@ -37,7 +37,7 @@ public class UserService {
         return newUser;
     }
 
-    public User getUser(String username) {
+    public User findOne(String username) {
         return userRepository.findById(username).orElseThrow(() -> new IllegalArgumentException("Пользователь с именем \"%s\" не существует.".formatted(username)));
     }
 }

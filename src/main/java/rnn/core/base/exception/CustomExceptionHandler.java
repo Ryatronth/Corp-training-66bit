@@ -8,12 +8,26 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CustomExceptionHandler {
     @ExceptionHandler(AlreadyExistException.class)
-    public ResponseEntity<String> handleAlreadyExistException(AlreadyExistException e) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    public ResponseEntity<ExceptionDTO> handleAlreadyExistException(AlreadyExistException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ExceptionDTO
+                        .builder()
+                        .message(e.getMessage())
+                        .error(e.getStackTrace()[0])
+                        .build()
+                );
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    public ResponseEntity<ExceptionDTO> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionDTO
+                        .builder()
+                        .message(e.getMessage())
+                        .error(e.getStackTrace()[0])
+                        .build()
+                );
     }
 }

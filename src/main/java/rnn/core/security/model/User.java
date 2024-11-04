@@ -7,7 +7,6 @@ import lombok.*;
 import rnn.core.base.model.Course;
 
 import java.util.List;
-import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor

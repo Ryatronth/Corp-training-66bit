@@ -21,13 +21,17 @@ public class CourseService {
     private final FileStorage fileStorage;
 
     @Transactional
-    public Course createAndSave(CourseCreationDTO courseCreationDTO, MultipartFile file) {
+    public Course createAndSave(CourseCreationDTO courseCreationDTO) {
         Course generetedCourse = create(courseCreationDTO);
-        generetedCourse.setPictureUrl(createCourseImage(file));
+        generetedCourse.setPictureUrl(createCourseImage(courseCreationDTO.image()));
         return courseRepository.save(generetedCourse);
     }
 
     protected String createCourseImage(MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Изображение не может быть пустым.");
+        }
+
         UUID uuid = UUID.randomUUID();
         return fileStorage.uploadCourseImage(uuid, file);
     }
