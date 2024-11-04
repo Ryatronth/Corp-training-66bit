@@ -13,6 +13,7 @@ public interface CourseMapper {
     @Mapping(target = "createdAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
     @Mapping(target = "tags", source = "tags", qualifiedByName = "tagNameToTag")
+    @Mapping(target = "score", ignore = true)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "pictureUrl", ignore = true)
     Course fromCreationDto(CourseCreationDTO courseDTO);

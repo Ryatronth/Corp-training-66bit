@@ -1,5 +1,6 @@
 package rnn.core.base.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class Tag {
 
     private String color;
 
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "course_tags",

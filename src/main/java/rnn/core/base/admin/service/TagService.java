@@ -8,6 +8,7 @@ import rnn.core.base.model.Tag;
 import rnn.core.base.model.repository.TagRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -24,8 +25,17 @@ public class TagService {
 
     public Tag update(String tag, TagDTO tagDTO) {
         Tag existTag = tagRepository.findById(tag).orElseThrow(() -> new IllegalArgumentException("Тэг с названием \"%s\" не существует".formatted(tag)));
+
+        Optional<Tag> optionalTag = tagRepository.findById(tagDTO.name());
+
+        if (optionalTag.isPresent() && !tag.equals(tagDTO.name())) {
+            throw new AlreadyExistException("Невозможно обновить тэг. Тэг с данным именем уже существует.");
+        }
+
         existTag.setName(tagDTO.name());
         existTag.setColor(tagDTO.color());
+
+        tagRepository.deleteById(tag);
         return tagRepository.save(existTag);
     }
 

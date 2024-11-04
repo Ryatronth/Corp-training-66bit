@@ -1,5 +1,5 @@
 frontend:
-  url: http://localhost:5143
+  url: http://localhost:5173
   auth_url: "${frontend.url}/login"
 
 file_server:
