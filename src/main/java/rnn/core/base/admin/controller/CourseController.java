@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rnn.core.base.admin.dto.CourseCreationDTO;
+import rnn.core.base.admin.dto.CourseDTO;
 import rnn.core.base.admin.service.CourseService;
 import rnn.core.base.model.Course;
 
@@ -25,17 +25,8 @@ public class CourseController {
                 .body(courseService.findAll());
     }
 
-    @GetMapping("/courses/{id}")
-    public ResponseEntity<Course> getCourse(@PathVariable Long id) {
-        Course course = courseService.find(id);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(course);
-    }
-
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@ModelAttribute CourseCreationDTO courseDTO) {
+    public ResponseEntity<Course> createCourse(@ModelAttribute CourseDTO courseDTO) {
         Course course = courseService.create(courseDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -44,7 +35,7 @@ public class CourseController {
     }
 
     @PutMapping("/courses/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @ModelAttribute CourseCreationDTO courseDTO) {
+    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @ModelAttribute CourseDTO courseDTO) {
         Course course = courseService.update(id, courseDTO);
         return ResponseEntity
                 .status(HttpStatus.OK)

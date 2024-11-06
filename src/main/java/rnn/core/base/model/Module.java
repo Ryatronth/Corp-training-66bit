@@ -1,5 +1,6 @@
 package rnn.core.base.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "module_t")
+@Table(name = "module_t",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"title", "course_id"})
+)
 @Entity
 public class Module {
     @Id
@@ -21,10 +24,12 @@ public class Module {
 
     private String title;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "module_id")
     private List<Topic> topics;
 

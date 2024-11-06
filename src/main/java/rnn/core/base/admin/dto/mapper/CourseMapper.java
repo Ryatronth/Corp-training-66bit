@@ -4,7 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.stereotype.Component;
-import rnn.core.base.admin.dto.CourseCreationDTO;
+import rnn.core.base.admin.dto.CourseDTO;
 import rnn.core.base.model.Course;
 import rnn.core.base.model.converter.TagConverter;
 
@@ -19,7 +19,7 @@ public interface CourseMapper {
     @Mapping(target = "score", ignore = true)
     @Mapping(target = "modules", ignore = true)
     @Mapping(target = "id", ignore = true)
-    Course fromCreationDto(CourseCreationDTO courseDTO);
+    Course fromDto(CourseDTO courseDTO);
 
     @Mapping(target = "tags", source = "tags", qualifiedByName = "stringToTags")
     @Mapping(target = "updatedAt", expression = "java(java.time.LocalDateTime.now())")
@@ -29,5 +29,5 @@ public interface CourseMapper {
     @Mapping(target = "score", ignore = true)
     @Mapping(target = "modules", ignore = true)
     @Mapping(target = "id", ignore = true)
-    Course updateFromCreationDto(@MappingTarget Course course, CourseCreationDTO courseDTO);
+    Course updateFromDto(@MappingTarget Course course, CourseDTO courseDTO);
 }
