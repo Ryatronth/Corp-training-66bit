@@ -16,7 +16,7 @@ import java.util.List;
 public class Topic {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     private int position;
 
@@ -30,10 +30,10 @@ public class Topic {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Module module;
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "topic_id")
     private List<Content> contents;
 }

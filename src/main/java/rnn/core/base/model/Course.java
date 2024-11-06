@@ -1,7 +1,9 @@
 package rnn.core.base.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import rnn.core.base.model.converter.TagConverter;
 import rnn.core.security.model.User;
 
 import java.time.LocalDateTime;
@@ -17,7 +19,7 @@ import java.util.List;
 public class Course {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Column(unique = true)
     private String title;
@@ -35,15 +37,12 @@ public class Course {
 
     private LocalDateTime updatedAt;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "course_tags",
-            joinColumns = {@JoinColumn(name = "course_id")},
-            inverseJoinColumns = {@JoinColumn(name = "tag_name")}
-    )
+    @Convert(converter = TagConverter.class)
+    @Column(columnDefinition = "TEXT")
     private List<Tag> tags;
 
-    @OneToMany
+    @JsonIgnore
+    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "course_id")
     private List<Module> modules;
 

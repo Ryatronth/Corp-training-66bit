@@ -15,18 +15,16 @@ import java.util.List;
 public class Module {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     private int position;
 
     private String title;
 
-    private boolean isDone;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "module_id")
     private List<Topic> topics;
 
@@ -36,7 +34,6 @@ public class Module {
                 "id=" + id +
                 ", position=" + position +
                 ", title='" + title + '\'' +
-                ", isDone=" + isDone +
                 ", courseId=" + course.getId() +
                 '}';
     }

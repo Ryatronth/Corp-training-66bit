@@ -15,7 +15,7 @@ import java.util.List;
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     private int position;
 

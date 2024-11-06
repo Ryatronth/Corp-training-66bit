@@ -39,4 +39,13 @@ public class FileStorage {
                 .bodyToMono(String.class)
                 .block();
     }
+
+    public void deleteCourseImage(UUID courseImageUUID) {
+        webClient
+                .delete()
+                .uri("/api/v1/files?path={COURSE_PATH}&name={courseImageUUID}", COURSE_PATH, courseImageUUID.toString())
+                .retrieve()
+                .bodyToMono(Void.class)
+                .block();
+    }
 }
