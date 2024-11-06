@@ -71,4 +71,15 @@ public class FileService {
     protected File[] findFiles(Path path, String filename) {
         return path.toFile().listFiles((dir, name) -> name.startsWith("%s".formatted(filename)));
     }
+
+    public void deleteFile(String path, String name) {
+        Path pathToDir = Path.of(staticLocation, path).normalize();
+        File[] files = findFiles(pathToDir, name);
+
+        if (files != null) {
+            for (File file : files) {
+                file.delete();
+            }
+        }
+    }
 }

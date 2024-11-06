@@ -35,4 +35,10 @@ public class BaseController {
                 .body(resource);
 
     }
+
+    @DeleteMapping("/files")
+    public ResponseEntity<String> deleteFile(@RequestParam(name = "path") String path, @RequestParam(name = "name") String name) {
+        fileService.deleteFile(path, name);
+        return ResponseEntity.ok().build();
+    }
 }

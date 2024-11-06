@@ -4,7 +4,6 @@ import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
 
@@ -31,5 +30,10 @@ public class Aspects {
     @AfterThrowing(pointcut = "execution(* rnn.filestorage.service.FileService.uploadFile(..))", throwing = "exception")
     public void uploadFileAfterThrowing(Exception exception) {
         log.error("Ошибка при создании файла: {}", exception.getMessage());
+    }
+
+    @AfterReturning(pointcut = "execution(* rnn.filestorage.service.FileService.deleteFile(..)) && args(path,name)")
+    public void deleteFileAfterReturning(String path, String name) {
+        log.info("Файл удален. Path: {} | Name: {}", path, name);
     }
 }
