@@ -14,7 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "course_t")
+@Table(
+        name = "course_t",
+        uniqueConstraints = {@UniqueConstraint(name = "unique_course", columnNames = "title")}
+)
 @Entity
 public class Course {
     @Id
@@ -24,11 +27,12 @@ public class Course {
     @Column(unique = true)
     private String title;
 
+    @Column(length = 360)
     private String description;
 
     private String pictureUrl;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private User author;
 
     private int score;
@@ -42,8 +46,7 @@ public class Course {
     private List<Tag> tags;
 
     @JsonIgnore
-    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    @JoinColumn(name = "course_id")
+    @OneToMany(mappedBy = "course", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Module> modules;
 
     @Override

@@ -1,17 +1,23 @@
 package rnn.core.base.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "topic_t")
+@Table(
+        name = "topic_t",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_title_module", columnNames = {"title", "module_id"}),
+                @UniqueConstraint(name = "unique_position_module", columnNames = {"position", "module_id"})
+        }
+)
 @Entity
 public class Topic {
     @Id
@@ -22,18 +28,18 @@ public class Topic {
 
     private String title;
 
-    private String description;
-
     private int score;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Module module;
 
-    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    @JoinColumn(name = "topic_id")
-    private List<Content> contents;
+//    @JsonIgnore
+//    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+//    @JoinColumn(name = "topic_id")
+//    private List<Content> contents;
 }

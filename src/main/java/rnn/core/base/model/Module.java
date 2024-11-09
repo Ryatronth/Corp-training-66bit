@@ -3,6 +3,7 @@ package rnn.core.base.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
@@ -11,9 +12,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "module_t",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"title", "course_id"})
+@Table(
+        name = "module_t",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_title_course", columnNames = {"title", "course_id"}),
+                @UniqueConstraint(name = "unique_position_course", columnNames = {"position", "course_id"})
+        }
 )
+@DynamicUpdate
 @Entity
 public class Module {
     @Id
@@ -24,13 +30,14 @@ public class Module {
 
     private String title;
 
+    private int score;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Course course;
 
     @JsonIgnore
-    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-    @JoinColumn(name = "module_id")
+    @OneToMany(mappedBy = "module", cascade = {CascadeType.ALL}, orphanRemoval = true)
     private List<Topic> topics;
 
     @Override

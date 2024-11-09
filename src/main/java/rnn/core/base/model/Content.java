@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table(name = "content_t")
-@Entity
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

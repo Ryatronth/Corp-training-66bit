@@ -1,6 +1,7 @@
 package rnn.core.base.admin.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -9,8 +10,6 @@ import rnn.core.base.admin.dto.CourseDTO;
 import rnn.core.base.admin.service.CourseService;
 import rnn.core.base.model.Course;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
@@ -18,11 +17,11 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping("/courses")
-    public ResponseEntity<List<Course>> getCourses() {
+    public ResponseEntity<Page<Course>> getCourses(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "limit", defaultValue = "20") int limit) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(courseService.findAll());
+                .body(courseService.findAll(page, limit));
     }
 
     @PostMapping("/courses")
@@ -35,7 +34,7 @@ public class CourseController {
     }
 
     @PutMapping("/courses/{id}")
-    public ResponseEntity<Course> updateCourse(@PathVariable Long id, @ModelAttribute CourseDTO courseDTO) {
+    public ResponseEntity<Course> updateCourse(@PathVariable long id, @ModelAttribute CourseDTO courseDTO) {
         Course course = courseService.update(id, courseDTO);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -44,7 +43,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/courses/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteCourse(@PathVariable long id) {
         courseService.delete(id);
         return ResponseEntity.ok().build();
     }
