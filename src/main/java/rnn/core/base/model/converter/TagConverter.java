@@ -3,7 +3,6 @@ package rnn.core.base.model.converter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
-import org.mapstruct.Named;
 import org.springframework.stereotype.Component;
 import rnn.core.base.model.Tag;
 
@@ -24,7 +23,6 @@ public class TagConverter implements AttributeConverter<List<Tag>, String> {
         }
     }
 
-    @Named("stringToTags")
     @Override
     public List<Tag> convertToEntityAttribute(String s) {
         try {

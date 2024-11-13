@@ -16,7 +16,9 @@ import java.util.List;
         name = "module_t",
         uniqueConstraints = {
                 @UniqueConstraint(name = "unique_title_course", columnNames = {"title", "course_id"}),
-                @UniqueConstraint(name = "unique_position_course", columnNames = {"position", "course_id"})
+        },
+        indexes = {
+                @Index(name = "idx_module_course_id", columnList = "course_id")
         }
 )
 @DynamicUpdate
@@ -37,7 +39,7 @@ public class Module {
     private Course course;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "module", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Topic> topics;
 
     @Override

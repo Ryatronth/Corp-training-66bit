@@ -1,51 +1,47 @@
 package rnn.core.base.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.List;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Table(name = "content_t")
+@SuperBuilder
+@Table(
+        name = "content_t",
+        indexes = {
+                @Index(name = "idx_content_topic_id", columnList = "topic_id")
+        }
+)
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    protected long id;
 
-    private int position;
+    protected int position;
 
-    private Type type;
+    @Enumerated(EnumType.STRING)
+    protected Type type;
 
-    private String title;
+    protected int score;
 
-    private String description;
+    protected String title;
 
-    private int countAttempts;
-
-    private String videoUrl;
-
-    private int score;
-
-    @ManyToOne
-    private Topic topic;
-
-    @OneToMany
-    @JoinColumn(name = "content_id")
-    private List<Question> questions;
-
-    @OneToMany
-    @JoinColumn(name = "content_id")
-    private List<Answer> answers;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    protected Topic topic;
 
     public enum Type {
         SINGLE_ANSWER,
         MULTI_ANSWER,
         DETAILED_ANSWER,
         VIDEO,
+        PICTURE,
         TEXT
     }
 }

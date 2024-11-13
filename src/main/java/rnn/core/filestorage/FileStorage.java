@@ -40,12 +40,20 @@ public class FileStorage {
                 .block();
     }
 
-    public void deleteCourseImage(UUID courseImageUUID) {
-        webClient
-                .delete()
-                .uri("/api/v1/files?path={COURSE_PATH}&name={courseImageUUID}", COURSE_PATH, courseImageUUID.toString())
+    public String uploadContentImage(String path, UUID contentImageUUID, MultipartFile file) {
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("path", path);
+        builder.part("name", contentImageUUID.toString());
+        builder.part("file", file.getResource());
+        MultiValueMap<String, HttpEntity<?>> multipartData = builder.build();
+
+        return webClient
+                .post()
+                .uri("/api/v1/files")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(multipartData))
                 .retrieve()
-                .bodyToMono(Void.class)
+                .bodyToMono(String.class)
                 .block();
     }
 }

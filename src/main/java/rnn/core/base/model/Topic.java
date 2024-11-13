@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
         name = "topic_t",
         uniqueConstraints = {
                 @UniqueConstraint(name = "unique_title_module", columnNames = {"title", "module_id"}),
-                @UniqueConstraint(name = "unique_position_module", columnNames = {"position", "module_id"})
+        },
+        indexes = {
+                @Index(name = "idx_topic_module_id", columnList = "module_id")
         }
 )
 @Entity
@@ -30,16 +32,11 @@ public class Topic {
 
     private int score;
 
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Module module;
 
-//    @JsonIgnore
-//    @OneToMany(cascade = {CascadeType.REMOVE}, orphanRemoval = true)
-//    @JoinColumn(name = "topic_id")
-//    private List<Content> contents;
+    @JsonIgnore
+    @OneToMany(mappedBy = "topic", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Content> contents;
 }

@@ -6,10 +6,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rnn.core.base.admin.dto.CourseDTO;
-import rnn.core.base.admin.dto.mapper.CourseMapper;
 import rnn.core.base.model.Course;
+import rnn.core.base.model.converter.TagConverter;
 import rnn.core.base.model.repository.CourseRepository;
 import rnn.core.filestorage.FileService;
+import rnn.core.security.service.UserService;
 
 import java.util.UUID;
 
@@ -17,32 +18,36 @@ import java.util.UUID;
 @Service
 public class CourseService {
     private final CourseRepository courseRepository;
-    private final CourseMapper courseMapper;
+    private final UserService userService;
+    private final TagConverter tagConverter;
     private final FileService fileService;
 
-    // TODO Добавить onrollback удаление картинки
-    @Transactional
+    @Transactional()
     public Course create(CourseDTO courseDTO) {
-        Course course = courseMapper.fromDto(courseDTO);
-        course.setPictureUrl(fileService.createCourseImage(UUID.randomUUID(), courseDTO.image()));
-        return courseRepository.saveAndFlush(course);
+        Course course = Course
+                .builder()
+                .author(userService.findOne(courseDTO.authorName()))
+                .tags(tagConverter.convertToEntityAttribute(courseDTO.tags()))
+                .title(courseDTO.title())
+                .description(courseDTO.description())
+                .pictureUrl(fileService.createCourseImage(UUID.randomUUID(), courseDTO.image()))
+                .build();
+        return courseRepository.save(course);
     }
 
-    // TODO Добавить onrollback удаление картинки
     @Transactional
     public Course update(long id, CourseDTO courseDTO) {
         Course course = find(id);
-        course = courseMapper.updateFromDto(course, courseDTO);
+        course.setTags(tagConverter.convertToEntityAttribute(courseDTO.tags()));
+        course.setTitle(courseDTO.title());
+        course.setDescription(courseDTO.description());
         course.setPictureUrl(fileService.updateCourseImage(course, courseDTO.image()));
-        return courseRepository.saveAndFlush(course);
+        return courseRepository.save(course);
     }
 
     @Transactional
     public void delete(long id) {
-        courseRepository.findById(id).ifPresent(course -> {
-            fileService.deleteCourseImage(course);
-            courseRepository.deleteById(id);
-        });
+        courseRepository.findById(id).ifPresent(_ -> courseRepository.deleteById(id));
     }
 
     public Course find(long id) {

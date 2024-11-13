@@ -31,12 +31,6 @@ public class FileService {
         return null;
     }
 
-    public void deleteCourseImage(Course course) {
-        if (course.getPictureUrl() != null) {
-            fileStorage.deleteCourseImage(extractUUID(course.getPictureUrl()));
-        }
-    }
-
     protected UUID extractUUID(String imageUrl) {
         return UUID.fromString(imageUrl.substring(imageUrl.length() - 36));
     }

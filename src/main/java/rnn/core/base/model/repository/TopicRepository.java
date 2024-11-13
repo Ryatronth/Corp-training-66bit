@@ -9,12 +9,11 @@ import java.util.List;
 
 @Repository
 public interface TopicRepository extends JpaRepository<Topic, Long> {
-    @Query("FROM Topic t WHERE t.module.id = :moduleId ORDER BY t.position ASC")
-    List<Topic> findByModuleId(Long moduleId);
+    List<Topic> findByModuleIdOrderByPositionAsc(long moduleId);
 
     @Query("FROM Topic t WHERE t.module.id = :moduleId AND t.position > :position ORDER BY t.position DESC")
-    List<Topic> findAllWhichPositionIsHigher(Long moduleId, int position);
+    List<Topic> findAllWhichPositionIsHigher(long moduleId, int position);
 
     @Query("FROM Topic t WHERE t.module.id = :moduleId AND t.position >= :position ORDER BY t.position DESC")
-    List<Topic> findAllWhichPositionIsHigherOrEqual(Long moduleId, int position);
+    List<Topic> findAllWhichPositionIsHigherOrEqual(long moduleId, int position);
 }

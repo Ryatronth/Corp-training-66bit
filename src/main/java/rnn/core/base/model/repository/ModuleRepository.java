@@ -15,6 +15,6 @@ public interface ModuleRepository extends JpaRepository<Module, Long> {
     @Query("FROM Module m WHERE m.course.id = :courseId AND m.position >= :position ORDER BY m.position DESC")
     List<Module> findAllWhichPositionIsHigherOrEqual(Long courseId, int position);
 
-    @Query("FROM Module m JOIN FETCH m.topics WHERE m.course.id = :courseId ORDER BY m.position ASC")
+    @Query(value = "FROM Module m LEFT JOIN FETCH m.topics WHERE m.course.id = :courseId ORDER BY m.position ASC")
     List<Module> findAllByCourseIdFetchTopic(Long courseId);
 }

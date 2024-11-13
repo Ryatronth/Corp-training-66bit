@@ -1,88 +1,78 @@
 package rnn.core.base.admin.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rnn.core.base.admin.dto.TopicDTO;
-import rnn.core.base.admin.dto.mapper.TopicMapper;
 import rnn.core.base.model.Module;
 import rnn.core.base.model.Topic;
 import rnn.core.base.model.repository.TopicRepository;
 
 import java.util.List;
 
-@RequiredArgsConstructor
 @Service
-public class TopicService {
+public class TopicService extends PositionableService<Topic, Long> {
     private final TopicRepository topicRepository;
-    private final TopicMapper topicMapper;
     private final ModuleService moduleService;
+
+    public TopicService(TopicRepository repository, ModuleService moduleService) {
+        super(repository);
+        this.topicRepository = repository;
+        this.moduleService = moduleService;
+    }
+
+    @Override
+    protected int getPosition(Topic entity) {
+        return entity.getPosition();
+    }
+
+    @Override
+    protected void setPosition(Topic entity, int position) {
+        entity.setPosition(position);
+    }
+
+    @Override
+    protected List<Topic> findAllHigherOrEqualPosition(long parentId, int position) {
+        return topicRepository.findAllWhichPositionIsHigherOrEqual(parentId, position);
+    }
+
+    @Override
+    protected List<Topic> findAllHigherPosition(long parentId, int position) {
+        return topicRepository.findAllWhichPositionIsHigher(parentId, position);
+    }
+
+    @Override
+    protected List<Topic> findAllByParentId(long parentId) {
+        return topicRepository.findByModuleIdOrderByPositionAsc(parentId);
+    }
 
     @Transactional
     public Topic create(long moduleID, TopicDTO topicDTO) {
         Module module = moduleService.find(moduleID);
-        Topic topic = topicMapper.fromDTO(topicDTO);
-        topic.setModule(module);
 
-        List<Topic> topics = topicRepository.findAllWhichPositionIsHigherOrEqual(topic.getModule().getId(), topic.getPosition());
-        for (Topic t : topics) {
-            t.setPosition(t.getPosition() + 1);
-        }
+        Topic topic = Topic
+                .builder()
+                .title(topicDTO.title())
+                .module(module)
+                .build();
 
-        topicRepository.saveAllAndFlush(topics);
-
-        return topicRepository.saveAndFlush(topic);
+        return super.create(topic, moduleID, topicDTO.position());
     }
 
     @Transactional
     public Topic update(long id, TopicDTO topicDTO) {
         Topic topic = find(id);
 
-        int delta = topic.getPosition() - topicDTO.position();
-
-        if (delta != 0) {
-            List<Topic> topics = findByModuleId(topic.getModule().getId());
-
-            for (Topic t : topics) {
-                if (t.getId() == topic.getId()) {
-                    continue;
-                }
-
-                if (delta < 0 && t.getPosition() > topic.getPosition() && t.getPosition() <= topicDTO.position()) {
-                    t.setPosition(t.getPosition() - 1);
-                }
-
-                if (delta > 0 && t.getPosition() > topicDTO.position() && t.getPosition() <= topic.getPosition()) {
-                    t.setPosition(t.getPosition() + 1);
-                }
-            }
-
-            topicRepository.saveAllAndFlush(topics);
-
-            topic.setPosition(topic.getPosition());
-        }
-
-        topic = topicMapper.updateFromDTO(topic, topicDTO);
-        return topicRepository.saveAndFlush(topic);
+        topic.setTitle(topicDTO.title());
+        return super.update(topic, topicDTO.position(), topic.getModule().getId());
     }
 
     @Transactional
     public void delete(long id) {
-        topicRepository.findById(id).ifPresent(existingTopic -> {
-            List<Topic> topics = topicRepository.findAllWhichPositionIsHigher(existingTopic.getModule().getId(), existingTopic.getPosition());
-
-            for (Topic t : topics) {
-                t.setPosition(t.getPosition() - 1);
-            }
-
-            topicRepository.delete(existingTopic);
-
-            topicRepository.saveAllAndFlush(topics);
-        });
+        topicRepository.findById(id).ifPresent(existingTopic -> super.delete(existingTopic, existingTopic.getModule().getId()));
     }
 
     public List<Topic> findByModuleId(long moduleId) {
-        return topicRepository.findByModuleId(moduleId);
+        return findAllByParentId(moduleId);
     }
 
     public Topic find(long id) {

@@ -6,7 +6,6 @@ import lombok.*;
 import rnn.core.base.model.converter.TagConverter;
 import rnn.core.security.model.User;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,7 +15,9 @@ import java.util.List;
 @Builder
 @Table(
         name = "course_t",
-        uniqueConstraints = {@UniqueConstraint(name = "unique_course", columnNames = "title")}
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_course", columnNames = "title")
+        }
 )
 @Entity
 public class Course {
@@ -32,21 +33,17 @@ public class Course {
 
     private String pictureUrl;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private User author;
 
     private int score;
-
-    private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 
     @Convert(converter = TagConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Tag> tags;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "course", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "course", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Module> modules;
 
     @Override
@@ -58,8 +55,6 @@ public class Course {
                 ", pictureUrl='" + pictureUrl + '\'' +
                 ", author=" + author +
                 ", score=" + score +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
                 ", tags=" + tags +
                 '}';
     }
