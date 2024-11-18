@@ -1,0 +1,30 @@
+package rnn.core.model.admin.content;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.SuperBuilder;
+import rnn.core.model.admin.Answer;
+import rnn.core.model.admin.Content;
+
+import java.util.List;
+
+@Getter
+@Setter
+@SuperBuilder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class DetailedContent extends Content {
+    private int score;
+
+    private int countAttempts;
+
+    @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    private List<Answer> answers;
+}
