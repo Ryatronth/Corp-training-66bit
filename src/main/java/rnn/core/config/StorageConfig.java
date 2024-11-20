@@ -14,7 +14,8 @@ import java.util.UUID;
 
 @Service
 public class StorageConfig {
-    private static final String COURSE_PATH = "courses/new";
+    private static final String COURSE_PATH = "courses";
+    private static final String CONTENT_PATH = "content";
 
     @Qualifier("fileStorageWebClient")
     private final WebClient webClient;
@@ -40,9 +41,9 @@ public class StorageConfig {
                 .block();
     }
 
-    public String uploadContentImage(String path, UUID contentImageUUID, MultipartFile file) {
+    public String uploadContentFile(String path, UUID contentImageUUID, MultipartFile file) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("path", path);
+        builder.part("path", "%s/%s".formatted(CONTENT_PATH, path));
         builder.part("name", contentImageUUID.toString());
         builder.part("file", file.getResource());
         MultiValueMap<String, HttpEntity<?>> multipartData = builder.build();

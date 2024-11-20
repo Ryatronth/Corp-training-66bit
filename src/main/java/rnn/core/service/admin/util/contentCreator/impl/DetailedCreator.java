@@ -2,6 +2,7 @@ package rnn.core.service.admin.util.contentCreator.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import rnn.core.model.admin.Answer;
 import rnn.core.model.admin.dto.ContentDTO;
 import rnn.core.model.admin.dto.contentImpl.DetailedContentDTO;
 import rnn.core.service.admin.AnswerService;
@@ -15,22 +16,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @Component
 public class DetailedCreator implements ContentCreator {
-    private final AnswerService answerService;
+    protected final AnswerService answerService;
 
     @Override
     public Content create(Topic topic, ContentDTO contentDTO) {
         DetailedContentDTO detailedContentDTO = (DetailedContentDTO) contentDTO;
 
-        return DetailedContent
+        DetailedContent content =  DetailedContent
                 .builder()
                 .title(detailedContentDTO.getTitle())
                 .position(detailedContentDTO.getPosition())
                 .score(detailedContentDTO.getScore())
                 .type(detailedContentDTO.getType())
                 .countAttempts(detailedContentDTO.getCountAttempts())
-                .answers(answerService.buildAll(detailedContentDTO.getAnswers()))
                 .topic(topic)
                 .build();
+
+        List<Answer> answers = answerService.buildAll(content, detailedContentDTO.getAnswers());
+        content.setAnswers(answers);
+
+        return content;
     }
 
     @Override

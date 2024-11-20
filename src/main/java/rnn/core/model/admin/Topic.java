@@ -17,7 +17,8 @@ import java.util.List;
                 @UniqueConstraint(name = "unique_title_module", columnNames = {"title", "module_id"}),
         },
         indexes = {
-                @Index(name = "idx_topic_module_id", columnList = "module_id")
+                @Index(name = "idx_topic_module_id", columnList = "module_id"),
+                @Index(name = "idx_topic_module_id_position", columnList = "module_id, position")
         }
 )
 @Entity

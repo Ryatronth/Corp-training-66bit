@@ -35,4 +35,12 @@ public class FileService {
     protected UUID extractUUID(String imageUrl) {
         return UUID.fromString(imageUrl.substring(imageUrl.length() - 36));
     }
+
+    public String createContentFile(String path, UUID fileName, MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("Файл не может быть пустым.");
+        }
+
+        return storageConfig.uploadContentFile(path, fileName, file);
+    }
 }

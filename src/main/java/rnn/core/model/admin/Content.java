@@ -17,7 +17,8 @@ import lombok.experimental.SuperBuilder;
 @Table(
         name = "content_t",
         indexes = {
-                @Index(name = "idx_content_topic_id", columnList = "topic_id")
+                @Index(name = "idx_content_topic_id", columnList = "topic_id"),
+                @Index(name = "idx_content_topic_id_position", columnList = "topic_id, position")
         }
 )
 @Entity

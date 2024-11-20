@@ -3,6 +3,7 @@ package rnn.core.model.admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import rnn.core.model.admin.content.AnswerContent;
 
 @Getter
 @Setter
@@ -25,5 +26,6 @@ public class Question {
 
     @JsonIgnore
     @ManyToOne
-    private Content content;
+    @JoinColumn(name = "content_id", nullable = false)
+    private AnswerContent content;
 }

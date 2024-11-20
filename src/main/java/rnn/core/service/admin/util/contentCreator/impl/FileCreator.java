@@ -11,21 +11,34 @@ import rnn.core.service.admin.util.contentCreator.ContentCreator;
 import rnn.core.service.filestorage.FileService;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Component
 public class FileCreator implements ContentCreator {
     private final FileService fileService;
 
+    private static final String PATH_TO_PICTURE = "picture";
+    private static final String PATH_TO_VIDEO = "video";
+
     @Override
     public Content create(Topic topic, ContentDTO contentDTO) {
-        // TODO Добавить создание файла
         FileContentDTO fileContentDTO = (FileContentDTO) contentDTO;
+
+        String pathToFile;
+        if (fileContentDTO.getType() == Content.Type.PICTURE) {
+            pathToFile = PATH_TO_PICTURE;
+        } else {
+            pathToFile = PATH_TO_VIDEO;
+        }
+
+        pathToFile = "%s/%s".formatted(pathToFile, topic.getId());
         return FileContent
                 .builder()
                 .topic(topic)
                 .type(fileContentDTO.getType())
-                .fileUrl(fileContentDTO.getFileUrl())
+                .title(fileContentDTO.getTitle())
+                .fileUrl(fileService.createContentFile(pathToFile, UUID.randomUUID(), fileContentDTO.getFile()))
                 .position(fileContentDTO.getPosition())
                 .type(fileContentDTO.getType())
                 .build();

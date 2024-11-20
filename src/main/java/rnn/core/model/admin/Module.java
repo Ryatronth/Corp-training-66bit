@@ -18,7 +18,8 @@ import java.util.List;
                 @UniqueConstraint(name = "unique_title_course", columnNames = {"title", "course_id"}),
         },
         indexes = {
-                @Index(name = "idx_module_course_id", columnList = "course_id")
+                @Index(name = "idx_module_course_id", columnList = "course_id"),
+                @Index(name = "idx_module_course_id_position", columnList = "course_id, position")
         }
 )
 @DynamicUpdate
@@ -41,14 +42,4 @@ public class Module {
     @JsonIgnore
     @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Topic> topics;
-
-    @Override
-    public String toString() {
-        return "Module{" +
-                "id=" + id +
-                ", position=" + position +
-                ", title='" + title + '\'' +
-                ", courseId=" + course.getId() +
-                '}';
-    }
 }

@@ -2,10 +2,7 @@ package rnn.core.model.admin.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 import rnn.core.model.admin.Content;
 import rnn.core.model.admin.dto.contentImpl.*;
