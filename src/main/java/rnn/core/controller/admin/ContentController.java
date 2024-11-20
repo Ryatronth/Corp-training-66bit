@@ -22,7 +22,7 @@ public class ContentController {
     private final ObjectMapper objectMapper;
 
     @GetMapping("/contents/{topicId}")
-    public ResponseEntity<List<Content>> getAll(@PathVariable long topicId) {
+    public ResponseEntity<List<Content>> findAll(@PathVariable long topicId) {
         List<Content> contents = contentService.findByTopicId(topicId);
         return ResponseEntity
                 .status(200)
@@ -46,5 +46,29 @@ public class ContentController {
                 .status(201)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(contentService.create(topicId, contentDTO));
+    }
+
+    @PutMapping(value = "/contents/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Content> update(
+            @PathVariable long id,
+            @RequestPart(value = "content") String json,
+            @RequestPart(value = "file", required = false) MultipartFile file
+    ) throws JsonProcessingException {
+        ContentDTO contentDTO = objectMapper.readValue(json, ContentDTO.class);
+
+        if (contentDTO instanceof FileContentDTO) {
+            ((FileContentDTO) contentDTO).setFile(file);
+        }
+
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(contentService.update(id, contentDTO));
+    }
+
+    @DeleteMapping("/contents/{id}")
+    public ResponseEntity<Void> delete(@PathVariable long id) {
+        contentService.delete(id);
+        return ResponseEntity.ok().build();
     }
 }

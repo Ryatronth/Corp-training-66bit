@@ -54,7 +54,7 @@ public abstract class PositionableService<T, ID> {
             repository.saveAll(relatedEntities);
         }
 
-        return entity;
+        return repository.save(entity);
     }
 
     public void delete(T entity, long parentId) {

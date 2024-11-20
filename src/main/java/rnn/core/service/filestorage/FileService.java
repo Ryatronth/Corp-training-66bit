@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import rnn.core.model.admin.Course;
 import rnn.core.config.StorageConfig;
+import rnn.core.model.admin.content.FileContent;
 
 import java.util.UUID;
 
@@ -36,11 +37,22 @@ public class FileService {
         return UUID.fromString(imageUrl.substring(imageUrl.length() - 36));
     }
 
-    public String createContentFile(String path, UUID fileName, MultipartFile file) {
+    public String createContentFile(long topicId, UUID fileName, MultipartFile file) {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("Файл не может быть пустым.");
         }
 
-        return storageConfig.uploadContentFile(path, fileName, file);
+        return storageConfig.uploadContentFile(topicId, fileName, file);
+    }
+
+    public String updateContentFile(FileContent fileContent, MultipartFile file) {
+        String fileUrl = fileContent.getFileUrl();
+
+        if (fileUrl != null) {
+            UUID uuid = extractUUID(fileUrl);
+            return createContentFile(fileContent.getTopic().getId(), uuid, file);
+        }
+
+        return null;
     }
 }

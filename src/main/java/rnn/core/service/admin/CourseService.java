@@ -47,7 +47,7 @@ public class CourseService {
 
     @Transactional
     public void delete(long id) {
-        courseRepository.findById(id).ifPresent(_ -> courseRepository.deleteById(id));
+        courseRepository.deleteById(id);
     }
 
     public Course find(long id) {

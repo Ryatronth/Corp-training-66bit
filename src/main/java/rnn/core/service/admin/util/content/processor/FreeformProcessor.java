@@ -1,28 +1,39 @@
-package rnn.core.service.admin.util.contentCreator.impl;
+package rnn.core.service.admin.util.content.processor;
 
 import org.springframework.stereotype.Component;
-import rnn.core.model.admin.dto.ContentDTO;
-import rnn.core.model.admin.dto.contentImpl.FreeformContentDTO;
 import rnn.core.model.admin.Content;
 import rnn.core.model.admin.Topic;
 import rnn.core.model.admin.content.FreeformContent;
-import rnn.core.service.admin.util.contentCreator.ContentCreator;
+import rnn.core.model.admin.dto.ContentDTO;
+import rnn.core.model.admin.dto.contentImpl.FreeformContentDTO;
 
 import java.util.List;
 
 @Component
-public class FreeformCreator implements ContentCreator {
+public class FreeformProcessor<T> implements ContentProcessor<T> {
     @Override
-    public Content create(Topic topic, ContentDTO contentDTO) {
+
+    public Content process(T entity, ContentDTO contentDTO) {
         FreeformContentDTO freeformContentDTO = (FreeformContentDTO) contentDTO;
-        return FreeformContent
+
+        FreeformContent content = FreeformContent
                 .builder()
-                .topic(topic)
                 .type(freeformContentDTO.getType())
                 .score(freeformContentDTO.getScore())
                 .position(freeformContentDTO.getPosition())
                 .title(freeformContentDTO.getTitle())
                 .build();
+
+        if (entity instanceof Topic topic) {
+            content.setTopic(topic);
+        }
+
+        if (entity instanceof FreeformContent freeformContent) {
+            content.setId(freeformContent.getId());
+            content.setTopic(freeformContent.getTopic());
+        }
+
+        return content;
     }
 
     @Override
