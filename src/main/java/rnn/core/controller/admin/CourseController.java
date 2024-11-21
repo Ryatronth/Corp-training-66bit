@@ -24,6 +24,14 @@ public class CourseController {
                 .body(courseService.findAll(page, limit));
     }
 
+    @GetMapping("/courses/{id}")
+    public ResponseEntity<Course> getCourse(@PathVariable long id) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courseService.find(id));
+    }
+
     @PostMapping("/courses")
     public ResponseEntity<Course> createCourse(@ModelAttribute CourseDTO courseDTO) {
         Course course = courseService.create(courseDTO);
