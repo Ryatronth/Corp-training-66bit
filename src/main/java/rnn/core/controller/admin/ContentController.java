@@ -21,8 +21,8 @@ public class ContentController {
     private final ContentService contentService;
     private final ObjectMapper objectMapper;
 
-    @GetMapping("/contents/{topicId}")
-    public ResponseEntity<List<Content>> findAll(@PathVariable long topicId) {
+    @GetMapping("/contents")
+    public ResponseEntity<List<Content>> findAll(@RequestParam long topicId) {
         List<Content> contents = contentService.findByTopicId(topicId);
         return ResponseEntity
                 .status(200)
@@ -30,9 +30,9 @@ public class ContentController {
                 .body(contents);
     }
 
-    @PostMapping(value = "/contents/{topicId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/contents", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Content> create(
-            @PathVariable long topicId,
+            @RequestParam long topicId,
             @RequestPart(value = "content") String json,
             @RequestPart(value = "file", required = false) MultipartFile file
     ) throws JsonProcessingException {

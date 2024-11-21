@@ -34,7 +34,7 @@ public class Topic {
     private int score;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Module module;
 
     @JsonIgnore

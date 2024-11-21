@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import rnn.core.model.admin.Answer;
-import rnn.core.model.admin.Content;
 
 import java.util.List;
 
@@ -20,9 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class DetailedContent extends Content {
-    private int score;
-
+public class DetailedContent extends FreeformContent {
     private int countAttempts;
 
     @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)

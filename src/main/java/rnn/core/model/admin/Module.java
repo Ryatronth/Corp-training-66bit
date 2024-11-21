@@ -36,7 +36,7 @@ public class Module {
     private int score;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Course course;
 
     @JsonIgnore

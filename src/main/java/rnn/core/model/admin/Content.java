@@ -36,7 +36,7 @@ public class Content {
     protected String title;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     protected Topic topic;
 
     public enum Type {
