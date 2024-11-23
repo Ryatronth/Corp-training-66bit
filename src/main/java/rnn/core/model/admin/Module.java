@@ -37,9 +37,14 @@ public class Module {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @JsonIgnore
     @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Topic> topics;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<GroupDeadline> deadlines;
 }

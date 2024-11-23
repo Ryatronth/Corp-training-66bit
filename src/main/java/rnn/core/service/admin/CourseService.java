@@ -12,6 +12,7 @@ import rnn.core.model.admin.repository.CourseRepository;
 import rnn.core.service.filestorage.FileService;
 import rnn.core.service.security.UserService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -56,5 +57,9 @@ public class CourseService {
 
     public Page<Course> findAll(int page, int limit) {
         return courseRepository.findAll(PageRequest.of(page, limit));
+    }
+
+    public List<Course> findAllNotEnrolledByUser(String username) {
+        return courseRepository.findCoursesNotEnrolledByUser(username);
     }
 }
