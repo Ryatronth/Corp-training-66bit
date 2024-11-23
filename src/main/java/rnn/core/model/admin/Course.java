@@ -46,6 +46,10 @@ public class Course {
     @OneToMany(mappedBy = "course", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Module> modules;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Group> groups;
+
     @Override
     public String toString() {
         return "Course{" +

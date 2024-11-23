@@ -3,6 +3,7 @@ package rnn.core.model.admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import rnn.core.model.user.UserTopic;
 
 import java.util.List;
 
@@ -35,9 +36,14 @@ public class Topic {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "module_id", nullable = false)
     private Module module;
 
     @JsonIgnore
     @OneToMany(mappedBy = "topic", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Content> contents;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "topic", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<UserTopic> userTopics;
 }

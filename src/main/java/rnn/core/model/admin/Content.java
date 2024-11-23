@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import rnn.core.model.user.UserContent;
+
+import java.util.List;
 
 
 @Getter
@@ -37,7 +40,12 @@ public class Content {
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "topic_id", nullable = false)
     protected Topic topic;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "content", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    protected List<UserContent> userContents;
 
     public enum Type {
         SINGLE_ANSWER,

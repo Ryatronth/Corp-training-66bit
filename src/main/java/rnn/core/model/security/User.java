@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import rnn.core.model.admin.Course;
+import rnn.core.model.user.UserCourse;
 
 import java.util.List;
 
@@ -27,9 +28,12 @@ public class User {
     private Role role;
 
     @JsonIgnore
-    @OneToMany
-    @JoinColumn(name = "author_username")
+    @OneToMany(mappedBy = "author")
     private List<Course> courses;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<UserCourse> userCourses;
 
     @JsonProperty(value = "role")
     private String roleJson() {
