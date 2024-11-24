@@ -5,5 +5,5 @@ import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Group;
 
 @Builder
-public record UserCourseWithCourseDTO(Course course, Group group, int currentScore) {
+public record UserCourseDTO(long id, int currentScore, Course course, Group group) {
 }

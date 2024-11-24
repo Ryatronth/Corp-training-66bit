@@ -1,6 +1,9 @@
 package rnn.core.model.admin.dto;
 
+import lombok.Builder;
+
 import java.time.LocalDateTime;
 
-public record DeadlineDTO(long moduleId, LocalDateTime startTime, LocalDateTime endTime) {
+@Builder
+public record DeadlineDTO(Long moduleId, LocalDateTime startTime, LocalDateTime endTime) {
 }

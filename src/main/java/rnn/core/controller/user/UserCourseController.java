@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rnn.core.model.admin.Course;
-import rnn.core.model.user.dto.UserCourseWithCourseDTO;
+import rnn.core.model.user.dto.UserCourseDTO;
 import rnn.core.service.user.UserCourseService;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class UserCourseController {
     private final UserCourseService userCourseService;
 
     @GetMapping("/courses")
-    public ResponseEntity<List<UserCourseWithCourseDTO>> getUserCourses(@RequestParam String username) {
+    public ResponseEntity<List<UserCourseDTO>> getUserCourses(@RequestParam String username) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)

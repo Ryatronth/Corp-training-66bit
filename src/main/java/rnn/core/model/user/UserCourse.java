@@ -1,6 +1,5 @@
 package rnn.core.model.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import rnn.core.model.admin.Group;
@@ -16,7 +15,7 @@ import java.util.List;
 @Table(
         name = "user_course_t",
         uniqueConstraints = {
-                @UniqueConstraint(name = "unique_username_course_id", columnNames = {"username", "course_id"})
+                @UniqueConstraint(name = "unique_username_group_id", columnNames = {"username", "group_id"})
         },
         indexes = {
                 @Index(name = "idx_username", columnList = "username")
@@ -34,12 +33,10 @@ public class UserCourse {
     @JoinColumn(name = "username")
     private User user;
 
-    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserModule> userModules;
 }

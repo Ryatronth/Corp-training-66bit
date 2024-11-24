@@ -39,7 +39,7 @@ public class Content {
     protected String title;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     protected Topic topic;
 

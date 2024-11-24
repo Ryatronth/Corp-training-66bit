@@ -2,12 +2,15 @@ package rnn.core.service.admin;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rnn.core.model.admin.Course;
+import rnn.core.model.admin.GroupDeadline;
+import rnn.core.model.admin.Module;
 import rnn.core.model.admin.dto.ModuleDTO;
 import rnn.core.model.admin.dto.ModuleWithTopicsDTO;
-import rnn.core.model.admin.Course;
-import rnn.core.model.admin.Module;
 import rnn.core.model.admin.repository.ModuleRepository;
+import rnn.core.model.user.dto.UserModuleDTO;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,7 +75,6 @@ public class ModuleService extends PositionableService<Module, Long> {
     @Transactional
     public Module update(long id, ModuleDTO moduleDTO) {
         Module module = find(id);
-
         module.setTitle(moduleDTO.title());
         return super.update(module, moduleDTO.position(), module.getCourse().getId());
     }
@@ -102,5 +104,31 @@ public class ModuleService extends PositionableService<Module, Long> {
 
     public Module find(long id) {
         return moduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Модуль с id = %s не найден.".formatted(id)));
+    }
+
+    public List<UserModuleDTO> findAllByCourseIdWithDeadlinesAndUserModules(long courseId, long groupId, long userCourseId) {
+        return moduleRepository.findModulesWithDeadlinesAndUserModules(courseId, groupId, userCourseId)
+                .stream()
+                .map(o -> UserModuleDTO
+                        .builder()
+                        .id(o[7] == null ? -1 : (long) o[7])
+                        .currentScore(o[8] == null ? -1 : (int) o[8])
+                        .deadline(GroupDeadline
+                                .builder()
+                                .id(o[4] == null ? -1 : (long) o[4])
+                                .startTime(o[5] == null ? null : ((Timestamp) o[5]).toLocalDateTime())
+                                .endTime(o[6] == null ? null : ((Timestamp) o[6]).toLocalDateTime())
+                                .build()
+                        )
+                        .module(Module
+                                .builder()
+                                .id((long) o[0])
+                                .position((int) o[1])
+                                .title((String) o[2])
+                                .score((int) o[3])
+                                .build()
+                        )
+                        .build())
+                .toList();
     }
 }

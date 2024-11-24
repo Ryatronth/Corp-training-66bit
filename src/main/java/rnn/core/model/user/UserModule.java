@@ -26,12 +26,12 @@ public class UserModule {
 
     private int currentScore;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "deadline_id")
     private GroupDeadline deadline;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private UserCourse course;
 

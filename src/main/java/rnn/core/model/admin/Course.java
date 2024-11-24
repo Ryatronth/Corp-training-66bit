@@ -34,6 +34,7 @@ public class Course {
     private String pictureUrl;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "author_username")
     private User author;
 
     private int score;

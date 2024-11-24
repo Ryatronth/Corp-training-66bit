@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Group;
 import rnn.core.model.user.UserCourse;
-import rnn.core.model.user.dto.UserCourseWithCourseDTO;
+import rnn.core.model.user.dto.UserCourseDTO;
 import rnn.core.model.user.repository.UserCourseRepository;
 import rnn.core.service.admin.CourseService;
 import rnn.core.service.security.UserService;
@@ -27,18 +27,23 @@ public class UserCourseService {
                 .build();
     }
 
-    public List<UserCourseWithCourseDTO> findAllForUser(String username) {
+    public List<UserCourseDTO> findAllForUser(String username) {
         return userCourseRepository.findByUserUsername(username).stream().map(uc ->
-                UserCourseWithCourseDTO
+                UserCourseDTO
                         .builder()
+                        .id(uc.getId())
+                        .currentScore(uc.getCurrentScore())
                         .course(uc.getGroup().getCourse())
                         .group(uc.getGroup())
-                        .currentScore(uc.getCurrentScore())
                         .build()
         ).toList();
     }
 
     public List<Course> findAllNotEnrolledByUser(String username) {
         return courseService.findAllNotEnrolledByUser(username);
+    }
+
+    public UserCourse find(long id) {
+        return userCourseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("У пользователя не найден курс с id = %s".formatted(id)));
     }
 }

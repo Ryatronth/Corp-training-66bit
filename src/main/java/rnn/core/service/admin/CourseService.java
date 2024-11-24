@@ -56,7 +56,7 @@ public class CourseService {
     }
 
     public Page<Course> findAll(int page, int limit) {
-        return courseRepository.findAll(PageRequest.of(page, limit));
+        return courseRepository.findCoursesWithAuthor(PageRequest.of(page, limit));
     }
 
     public List<Course> findAllNotEnrolledByUser(String username) {
