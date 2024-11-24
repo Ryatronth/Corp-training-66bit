@@ -5,9 +5,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rnn.core.model.admin.dto.CourseDTO;
+import org.springframework.web.multipart.MultipartFile;
+import rnn.core.model.admin.dto.CourseWithImageDTO;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.converter.TagConverter;
+import rnn.core.model.admin.dto.CourseWithoutImageDTO;
 import rnn.core.model.admin.repository.CourseRepository;
 import rnn.core.service.filestorage.FileService;
 import rnn.core.service.security.UserService;
@@ -24,7 +26,7 @@ public class CourseService {
     private final FileService fileService;
 
     @Transactional()
-    public Course create(CourseDTO courseDTO) {
+    public Course create(CourseWithImageDTO courseDTO) {
         Course course = Course
                 .builder()
                 .author(userService.findOne(courseDTO.authorName()))
@@ -37,12 +39,18 @@ public class CourseService {
     }
 
     @Transactional
-    public Course update(long id, CourseDTO courseDTO) {
+    public Course updateFields(long id, CourseWithoutImageDTO courseDTO) {
         Course course = find(id);
         course.setTags(tagConverter.convertToEntityAttribute(courseDTO.tags()));
         course.setTitle(courseDTO.title());
         course.setDescription(courseDTO.description());
-        course.setPictureUrl(fileService.updateCourseImage(course, courseDTO.image()));
+        return courseRepository.save(course);
+    }
+
+    @Transactional
+    public Course updateImage(long id, MultipartFile image) {
+        Course course = find(id);
+        course.setPictureUrl(fileService.updateCourseImage(course, image));
         return courseRepository.save(course);
     }
 

@@ -5,7 +5,7 @@ import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
-import rnn.core.model.admin.dto.CourseDTO;
+import rnn.core.model.admin.dto.CourseWithImageDTO;
 import rnn.core.model.admin.Course;
 
 @Log4j2
@@ -18,7 +18,7 @@ public class Aspects {
     }
 
     @AfterThrowing(pointcut = "execution(* rnn.core.service.admin.CourseService.create(..)) && args(courseDTO)", throwing = "ex")
-    public void afterSaveCoursePointcut(CourseDTO courseDTO, Exception ex) {
+    public void afterSaveCoursePointcut(CourseWithImageDTO courseDTO, Exception ex) {
         log.error("Ошибка при создании курса: {}. DTO: {}", ex.getMessage(), courseDTO);
     }
 }
