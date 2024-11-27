@@ -30,4 +30,6 @@ public class ContentDTO {
     protected Content.Type type;
 
     protected String title;
+
+    protected String description;
 }

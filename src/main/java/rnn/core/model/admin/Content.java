@@ -38,6 +38,8 @@ public class Content {
 
     protected String title;
 
+    protected String description;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "topic_id", nullable = false)

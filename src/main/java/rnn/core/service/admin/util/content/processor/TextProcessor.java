@@ -20,6 +20,7 @@ public class TextProcessor<T> implements ContentProcessor<T> {
                 .builder()
                 .title(textContentDTO.getTitle())
                 .description(textContentDTO.getDescription())
+                .description(textContentDTO.getDescription())
                 .type(contentDTO.getType())
                 .position(contentDTO.getPosition())
                 .build();

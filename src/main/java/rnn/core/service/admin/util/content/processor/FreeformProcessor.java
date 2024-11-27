@@ -19,6 +19,7 @@ public class FreeformProcessor<T> implements ContentProcessor<T> {
         FreeformContent content = FreeformContent
                 .builder()
                 .type(freeformContentDTO.getType())
+                .description(freeformContentDTO.getDescription())
                 .score(freeformContentDTO.getScore())
                 .position(freeformContentDTO.getPosition())
                 .title(freeformContentDTO.getTitle())

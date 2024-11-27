@@ -27,6 +27,7 @@ public class AnswerProcessor<T> implements ContentProcessor<T> {
         AnswerContent content = AnswerContent
                 .builder()
                 .title(answerContentDTO.getTitle())
+                .description(answerContentDTO.getDescription())
                 .position(answerContentDTO.getPosition())
                 .score(answerContentDTO.getScore())
                 .type(answerContentDTO.getType())
