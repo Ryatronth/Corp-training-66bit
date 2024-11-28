@@ -8,10 +8,9 @@ import rnn.core.model.admin.Content;
 @Getter
 @Setter
 @SuperBuilder
-@NoArgsConstructor
 @AllArgsConstructor
 @Entity
 @ToString
 public class TextContent extends Content {
-    private String description;
+
 }
