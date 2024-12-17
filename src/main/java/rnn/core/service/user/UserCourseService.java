@@ -3,42 +3,37 @@ package rnn.core.service.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import rnn.core.model.admin.Course;
-import rnn.core.model.admin.Group;
+import rnn.core.model.security.User;
 import rnn.core.model.user.UserCourse;
-import rnn.core.model.user.dto.UserCourseWithCourseDTO;
 import rnn.core.model.user.repository.UserCourseRepository;
-import rnn.core.service.admin.CourseService;
-import rnn.core.service.security.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class UserCourseService {
-    private final UserService userService;
-    private final CourseService courseService;
     private final UserCourseRepository userCourseRepository;
 
-    public UserCourse create(String username, Group group) {
-        return UserCourse
+    public UserCourse create(Course course, User user) {
+        UserCourse userCourse = UserCourse
                 .builder()
-                .user(userService.findOne(username))
-                .group(group)
+                .course(course)
+                .user(user)
                 .build();
+        return userCourseRepository.save(userCourse);
     }
 
-    public List<UserCourseWithCourseDTO> findAllForUser(String username) {
-        return userCourseRepository.findByUserUsername(username).stream().map(uc ->
-                UserCourseWithCourseDTO
-                        .builder()
-                        .course(uc.getGroup().getCourse())
-                        .group(uc.getGroup())
-                        .currentScore(uc.getCurrentScore())
-                        .build()
-        ).toList();
-    }
-
-    public List<Course> findAllNotEnrolledByUser(String username) {
-        return courseService.findAllNotEnrolledByUser(username);
+    public List<UserCourse> createAll(Course course, List<User> users) {
+        List<UserCourse> userCourses = new ArrayList<>();
+        for (User user : users) {
+            UserCourse userCourse = UserCourse
+                    .builder()
+                    .course(course)
+                    .user(user)
+                    .build();
+            userCourses.add(userCourse);
+        }
+        return userCourseRepository.saveAll(userCourses);
     }
 }

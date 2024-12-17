@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import rnn.core.model.admin.converter.TagConverter;
 import rnn.core.model.security.User;
+import rnn.core.model.user.UserCourse;
 
 import java.util.List;
 
@@ -49,6 +50,10 @@ public class Course {
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Group> groups;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<UserCourse> userCourses;
 
     @Override
     public String toString() {

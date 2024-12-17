@@ -12,6 +12,9 @@ import rnn.core.model.admin.content.AnswerContent;
 @Builder
 @Table(
         name = "question_t",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_question_content_id", columnNames = {"question", "content_id"}),
+        },
         indexes = {
                 @Index(name = "idx_question_content_id", columnList = "content_id")
         }
@@ -25,7 +28,7 @@ public class Question {
     private String question;
 
     @JsonIgnore
-    @ManyToOne
-    @JoinColumn(name = "content_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id")
     private AnswerContent content;
 }

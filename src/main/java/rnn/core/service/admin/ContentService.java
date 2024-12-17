@@ -58,7 +58,7 @@ public class ContentService extends PositionableService<Content, Long> {
     public Content create(long topicId, ContentDTO contentDTO) {
         Topic topic = topicService.find(topicId);
         Content content = contentManager.getCreator(contentDTO.getType()).process(topic, contentDTO);
-        content =  super.create(content, topic.getId(), content.getPosition());
+        content = super.create(content, topic.getId(), content.getPosition());
 
         if (content instanceof FreeformContent contentWithScore) {
             topic.setScore(contentWithScore.getScore() + topic.getScore());
@@ -84,7 +84,10 @@ public class ContentService extends PositionableService<Content, Long> {
         Content updatedContent = contentManager.getUpdater(content.getType()).process(content, contentDTO);
         updatedContent = super.update(updatedContent, updatedContent.getPosition(), updatedContent.getTopic().getId());
 
-        if (updatedContent instanceof FreeformContent contentWithScore && content instanceof FreeformContent oldContent) {
+        if (updatedContent instanceof FreeformContent contentWithScore
+                && content instanceof FreeformContent oldContent
+                && contentWithScore.getScore() != oldContent.getScore()
+        ) {
             Topic topic = updatedContent.getTopic();
             topic.setScore(contentWithScore.getScore() + topic.getScore() - oldContent.getScore());
 
@@ -110,6 +113,7 @@ public class ContentService extends PositionableService<Content, Long> {
     }
 
     public Content find(long id) {
-        return contentRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
+        Content content = contentRepository.findByIdOrderByPositionAscWithAnswers(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
+        return contentRepository.findByIdOrderByPositionAscWithQuestions(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
     }
 }

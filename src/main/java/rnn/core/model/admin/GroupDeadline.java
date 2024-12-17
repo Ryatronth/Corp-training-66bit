@@ -4,14 +4,11 @@ package rnn.core.model.admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import rnn.core.model.user.UserModule;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
-@Setter
-@NoArgsConstructor
+@Setter@NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Table(
@@ -30,16 +27,12 @@ public class GroupDeadline {
 
     private LocalDateTime endTime;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
     private Group group;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "deadline")
-    private List<UserModule> userModules;
 }

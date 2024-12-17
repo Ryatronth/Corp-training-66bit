@@ -36,7 +36,7 @@ public class SecurityConfig extends WebMvcConfigurationSupport {
         return http.authorizeHttpRequests(req -> req
                         .requestMatchers("/admin/**").hasAuthority(Role.Name.ADMIN.name())
                         .requestMatchers("/user/**").hasAnyAuthority(Role.Name.ADMIN.name(), Role.Name.USER.name())
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .oauth2Login(l -> l
                         .successHandler(successHandler)

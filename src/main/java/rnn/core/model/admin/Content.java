@@ -38,15 +38,16 @@ public class Content {
 
     protected String title;
 
+    @Column(length = 3000)
     protected String description;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id", nullable = false)
     protected Topic topic;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "content", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @OneToMany(mappedBy = "content", cascade = CascadeType.REMOVE)
     protected List<UserContent> userContents;
 
     public enum Type {

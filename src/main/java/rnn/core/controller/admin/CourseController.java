@@ -53,8 +53,8 @@ public class CourseController {
     }
 
     @PutMapping("/courses/{id}/image")
-    public ResponseEntity<Course> updateCourseImage(@PathVariable long id, @RequestPart(value = "file") MultipartFile file) {
-        Course course = courseService.updateImage(id, file);
+    public ResponseEntity<Course> updateCourseImage(@PathVariable long id, @RequestPart(value = "image") MultipartFile image) {
+        Course course = courseService.updateImage(id, image);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

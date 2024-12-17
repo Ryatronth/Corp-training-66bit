@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import rnn.core.model.admin.Course;
+import rnn.core.model.admin.Group;
 import rnn.core.model.user.UserCourse;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class User {
     private String avatarUrl;
 
     @ManyToOne
+    @JoinColumn(name = "role_name")
     private Role role;
 
     @JsonIgnore
@@ -34,6 +36,16 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserCourse> userCourses;
+
+    @JsonIgnore
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "user_group_t",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "group_id"),
+            uniqueConstraints = @UniqueConstraint(name = "unique_user_group_t", columnNames = {"username", "group_id"})
+    )
+    private List<Group> groups;
 
     @JsonProperty(value = "role")
     private String roleJson() {

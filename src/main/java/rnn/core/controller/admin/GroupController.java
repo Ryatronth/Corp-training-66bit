@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rnn.core.model.admin.Group;
 import rnn.core.model.admin.dto.GroupDTO;
+import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
 import rnn.core.model.admin.dto.GroupWithUsersDTO;
 import rnn.core.service.admin.GroupService;
 
@@ -30,7 +31,15 @@ public class GroupController {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.findByIdWithUsers(groupId));
+                .body(groupService.findWithUsers(groupId));
+    }
+
+    @GetMapping("/groups/{groupId}/deadlines")
+    public ResponseEntity<GroupWithDeadlinesDTO> getGroupWithDeadlines(@PathVariable long groupId) {
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(groupService.findWithDeadline(groupId));
     }
 
     @PostMapping("/groups")
@@ -41,17 +50,17 @@ public class GroupController {
                 .body(groupService.create(courseId, dto));
     }
 
-    @PutMapping("/groups/{groupId}/users")
-    public ResponseEntity<Group> addUsers(@PathVariable long groupId, @RequestBody List<String> usernames) {
-        return ResponseEntity
-                .status(200)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.addUsers(groupId, usernames));
-    }
-
-    @DeleteMapping("/groups/{groupId}")
-    public ResponseEntity<Void> deleteGroup(@PathVariable long groupId) {
-        groupService.delete(groupId);
-        return ResponseEntity.ok().build();
-    }
+//    @PutMapping("/groups/{groupId}/users")
+//    public ResponseEntity<Group> addUsers(@PathVariable long groupId, @RequestBody List<String> usernames) {
+//        return ResponseEntity
+//                .status(200)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .body(groupService.addUsers(groupId, usernames));
+//    }
+//
+//    @DeleteMapping("/groups/{groupId}")
+//    public ResponseEntity<Void> deleteGroup(@PathVariable long groupId) {
+//        groupService.delete(groupId);
+//        return ResponseEntity.ok().build();
+//    }
 }

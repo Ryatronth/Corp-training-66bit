@@ -12,12 +12,24 @@ import java.util.Optional;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("FROM Group g WHERE g.course.id = :courseId ORDER BY g.name ASC")
-    List<Group> findByCourseId(long courseId);
+    List<Group> findAllByCourseId(long courseId);
 
-    @EntityGraph(attributePaths = {"userCourses.user.role"})
+    @EntityGraph(attributePaths = {"users.role"})
     @Query("""
         FROM Group g
         WHERE g.id = :groupId
     """)
     Optional<Group> findByIdWithUsers(long groupId);
+
+    @EntityGraph(attributePaths = {"deadlines.module"})
+    @Query("""
+        FROM Group g
+        WHERE g.id = :groupId
+    """)
+    Optional<Group> findByIdWithDeadlines(long groupId);
+
+    @Query("""
+        FROM Group g WHERE g.course.id = :courseId AND g.name = 'Группа по умолчанию'
+    """)
+    Optional<Group> findDefaultGroup(long courseId);
 }

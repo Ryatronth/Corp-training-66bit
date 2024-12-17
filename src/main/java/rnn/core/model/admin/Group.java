@@ -3,9 +3,8 @@ package rnn.core.model.admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import rnn.core.model.user.UserCourse;
+import rnn.core.model.security.User;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -30,9 +29,7 @@ public class Group {
 
     private String name;
 
-    private LocalDateTime startTime;
-
-    private LocalDateTime endTime;
+    private boolean isDefault;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -40,10 +37,16 @@ public class Group {
     private Course course;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "group", cascade = {CascadeType.PERSIST})
-    private List<UserCourse> userCourses;
+    @OneToMany(mappedBy = "group", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<GroupDeadline> deadlines;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "group", cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
-    private List<GroupDeadline> deadlines;
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "user_group_t",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "username"),
+            uniqueConstraints = @UniqueConstraint(name = "unique_user_group_t", columnNames = {"username", "group_id"})
+    )
+    private List<User> users;
 }

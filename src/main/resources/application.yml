@@ -13,6 +13,11 @@ spring:
     username: ryatronth
     password: ryatronth
 
+  servlet:
+    multipart:
+      max-request-size: 500MB
+      max-file-size: 500MB
+
   jpa:
     hibernate:
       ddl-auto: update

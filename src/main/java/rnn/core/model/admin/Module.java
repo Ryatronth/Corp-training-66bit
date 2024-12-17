@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import rnn.core.model.user.UserModule;
 
 import java.util.List;
 
@@ -36,13 +37,17 @@ public class Module {
     private int score;
 
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)
     private Course course;
 
     @JsonIgnore
     @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Topic> topics;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<UserModule> userModules;
 
     @JsonIgnore
     @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)

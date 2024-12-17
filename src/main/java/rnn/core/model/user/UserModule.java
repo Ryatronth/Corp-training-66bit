@@ -3,7 +3,7 @@ package rnn.core.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import rnn.core.model.admin.GroupDeadline;
+import rnn.core.model.admin.Module;
 
 import java.util.List;
 
@@ -26,16 +26,16 @@ public class UserModule {
 
     private int currentScore;
 
-    @ManyToOne
-    @JoinColumn(name = "deadline_id")
-    private GroupDeadline deadline;
-
     @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id")
     private UserCourse course;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "module")
     private List<UserTopic> topics;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "module_id")
+    private Module module;
 }

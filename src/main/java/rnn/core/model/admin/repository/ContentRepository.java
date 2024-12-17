@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import rnn.core.model.admin.Content;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ContentRepository extends JpaRepository<Content, Long> {
@@ -28,4 +29,16 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
 
     @Query("FROM Content c WHERE c.topic.id = :topicId AND c.position >= :position ORDER BY c.position DESC")
     List<Content> findAllWhichPositionIsHigherOrEqual(long topicId, int position);
+
+    @Query("FROM Content c " +
+            "LEFT JOIN FETCH c.answers a " +
+            "WHERE c.id = :id " +
+            "ORDER BY c.position ASC")
+    Optional<Content> findByIdOrderByPositionAscWithAnswers(long id);
+
+    @Query("FROM Content c " +
+            "LEFT JOIN FETCH c.questions q " +
+            "WHERE c.id = :id " +
+            "ORDER BY c.position ASC")
+    Optional<Content> findByIdOrderByPositionAscWithQuestions(long id);
 }

@@ -22,6 +22,6 @@ import java.util.List;
 public class DetailedContent extends FreeformContent {
     private int countAttempts;
 
-    @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST}, orphanRemoval = true)
+    @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Answer> answers;
 }

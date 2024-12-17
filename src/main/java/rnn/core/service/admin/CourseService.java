@@ -1,31 +1,34 @@
 package rnn.core.service.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import rnn.core.model.admin.dto.CourseWithImageDTO;
+import rnn.core.event.event.CreateCourseEvent;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.converter.TagConverter;
+import rnn.core.model.admin.dto.CourseWithImageDTO;
 import rnn.core.model.admin.dto.CourseWithoutImageDTO;
 import rnn.core.model.admin.repository.CourseRepository;
 import rnn.core.service.filestorage.FileService;
 import rnn.core.service.security.UserService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
 public class CourseService {
+    private final ApplicationEventPublisher eventPublisher;
+
     private final CourseRepository courseRepository;
     private final UserService userService;
     private final TagConverter tagConverter;
     private final FileService fileService;
 
-    @Transactional()
+    @Transactional
     public Course create(CourseWithImageDTO courseDTO) {
         Course course = Course
                 .builder()
@@ -35,7 +38,10 @@ public class CourseService {
                 .description(courseDTO.description())
                 .pictureUrl(fileService.createCourseImage(UUID.randomUUID(), courseDTO.image()))
                 .build();
-        return courseRepository.save(course);
+
+        course = courseRepository.save(course);
+        eventPublisher.publishEvent(new CreateCourseEvent(this, course));
+        return course;
     }
 
     @Transactional
@@ -67,7 +73,7 @@ public class CourseService {
         return courseRepository.findAll(PageRequest.of(page, limit));
     }
 
-    public List<Course> findAllNotEnrolledByUser(String username) {
-        return courseRepository.findCoursesNotEnrolledByUser(username);
-    }
+//    public List<Course> findAllNotEnrolledByUser(String username) {
+//        return courseRepository.findCoursesNotEnrolledByUser(username);
+//    }
 }

@@ -3,7 +3,7 @@ package rnn.core.model.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import rnn.core.model.admin.Group;
+import rnn.core.model.admin.Course;
 import rnn.core.model.security.User;
 
 import java.util.List;
@@ -35,11 +35,11 @@ public class UserCourse {
     private User user;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private Group group;
-
-    @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<UserModule> userModules;
+
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "course_id")
+    private Course course;
 }

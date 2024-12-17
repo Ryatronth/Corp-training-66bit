@@ -49,7 +49,6 @@ public class AnswerProcessor<T> implements ContentProcessor<T> {
         List<Answer> answers = answerService.buildAll(content, answerContentDTO.getAnswers());
         content.setAnswers(answers);
 
-
         return content;
     }
 
