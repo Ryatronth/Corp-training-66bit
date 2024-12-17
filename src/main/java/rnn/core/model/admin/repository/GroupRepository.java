@@ -29,7 +29,7 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     Optional<Group> findByIdWithDeadlines(long groupId);
 
     @Query("""
-        FROM Group g WHERE g.course.id = :courseId AND g.name = 'Группа по умолчанию'
+        FROM Group g LEFT JOIN FETCH g.users u WHERE g.course.id = :courseId AND g.name = 'Группа по умолчанию'
     """)
     Optional<Group> findDefaultGroup(long courseId);
 }

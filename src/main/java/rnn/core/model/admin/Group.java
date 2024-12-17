@@ -31,6 +31,8 @@ public class Group {
 
     private boolean isDefault;
 
+    private int countMembers;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)

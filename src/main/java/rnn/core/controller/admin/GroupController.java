@@ -5,6 +5,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rnn.core.model.admin.Group;
+import rnn.core.model.admin.dto.DeadlineDTO;
 import rnn.core.model.admin.dto.GroupDTO;
 import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
 import rnn.core.model.admin.dto.GroupWithUsersDTO;
@@ -50,17 +51,50 @@ public class GroupController {
                 .body(groupService.create(courseId, dto));
     }
 
-//    @PutMapping("/groups/{groupId}/users")
-//    public ResponseEntity<Group> addUsers(@PathVariable long groupId, @RequestBody List<String> usernames) {
-//        return ResponseEntity
-//                .status(200)
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .body(groupService.addUsers(groupId, usernames));
-//    }
-//
-//    @DeleteMapping("/groups/{groupId}")
-//    public ResponseEntity<Void> deleteGroup(@PathVariable long groupId) {
-//        groupService.delete(groupId);
-//        return ResponseEntity.ok().build();
-//    }
+    @PutMapping("/groups/users")
+    public ResponseEntity<Group> addUsersGroup(
+            @RequestParam(name = "courseId") long courseId,
+            @RequestParam(name = "groupId", required = false) long groupId,
+            @RequestParam(name = "default", required = false) boolean def,
+            @RequestBody List<String> usernames
+    ) {
+        if (def) {
+            return ResponseEntity
+                    .status(200)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(groupService.addUsersInDefaultGroup(courseId, usernames));
+        }
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(groupService.addUsersInGroup(groupId, usernames));
+    }
+
+    @PutMapping("/groups/{groupId}/deadlines")
+    public ResponseEntity<Group> addDeadlines(
+            @PathVariable long groupId,
+            @RequestBody List<DeadlineDTO> deadlines
+    ) {
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(groupService.changeDeadlines(groupId, deadlines));
+    }
+
+    @DeleteMapping("/groups/{groupId}")
+    public ResponseEntity<Void> deleteAndMove(
+            @RequestParam(name = "courseId") long courseId,
+            @PathVariable(name = "groupId") long groupId,
+            @RequestParam(name = "exclude") boolean exclude
+    ) {
+        if (exclude) {
+            groupService.deleteAndExclude(groupId);
+        } else {
+            groupService.deleteAndMove(courseId, groupId);
+        }
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
 }

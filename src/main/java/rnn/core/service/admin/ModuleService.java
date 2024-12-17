@@ -44,7 +44,7 @@ public class ModuleService extends PositionableService<Module, Long> {
 
     @Override
     protected List<Module> findAllByParentId(long parentId) {
-        return moduleRepository.findAllByCourseIdFetchTopic(parentId);
+        return moduleRepository.findAllByCourseId(parentId);
     }
 
     @Transactional
@@ -82,22 +82,18 @@ public class ModuleService extends PositionableService<Module, Long> {
         moduleRepository.findById(id).ifPresent(existingModule -> super.delete(existingModule, existingModule.getCourse().getId()));
     }
 
-    public List<Module> findByCourseId(long courseId) {
-        return moduleRepository.findAllByCourseIdFetchTopic(courseId);
-    }
-
     public List<ModuleWithTopicsDTO> findByCourseIdWithTopics(long courseId) {
-        return findByCourseId(courseId)
-                .stream()
-                .map(module -> ModuleWithTopicsDTO
-                        .builder()
-                        .id(module.getId())
-                        .position(module.getPosition())
-                        .score(module.getScore())
-                        .title(module.getTitle())
-                        .topics(module.getTopics())
-                        .build()
-                ).toList();
+        return moduleRepository.findAllByCourseIdFetchTopic(courseId).stream()
+                .map(o ->
+                        ModuleWithTopicsDTO
+                                .builder()
+                                .id(o.getId())
+                                .title(o.getTitle())
+                                .score(o.getScore())
+                                .topics(o.getTopics())
+                                .build()
+                )
+                .toList();
     }
 
     public Module find(long id) {
