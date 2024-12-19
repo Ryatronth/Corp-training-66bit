@@ -41,7 +41,7 @@ public class MemberController {
                 .body(memberService.findAllWithoutCourse(courseId));
     }
 
-    @GetMapping("/members")
+    @GetMapping("/members/groups/all")
     public ResponseEntity<List<UserCourseGroupDTO>> findAllWithUserCourseAndGroup(@RequestParam long courseId) {
         return ResponseEntity
                 .status(200)

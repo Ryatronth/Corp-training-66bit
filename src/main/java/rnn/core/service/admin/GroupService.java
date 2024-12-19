@@ -14,7 +14,6 @@ import rnn.core.model.admin.GroupDeadline;
 import rnn.core.model.admin.dto.DeadlineDTO;
 import rnn.core.model.admin.dto.GroupDTO;
 import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
-import rnn.core.model.admin.dto.GroupWithUsersDTO;
 import rnn.core.model.admin.repository.GroupRepository;
 import rnn.core.model.security.User;
 import rnn.core.service.security.UserService;
@@ -125,14 +124,14 @@ public class GroupService {
     }
 
     @Transactional
-    public Group createDefaultGroup(Course course) {
+    public void createDefaultGroup(Course course) {
         Group group = Group
                 .builder()
                 .name("Группа по умолчанию")
                 .course(course)
                 .isDefault(true)
                 .build();
-        return groupRepository.save(group);
+        groupRepository.save(group);
     }
 
     public List<Group> findAll(long courseId) {
@@ -141,15 +140,6 @@ public class GroupService {
 
     private Group findGroupWithUsers(long groupId) {
         return groupRepository.findByIdWithUsers(groupId).orElseThrow(() -> new RuntimeException("Группа с указанным id не найдена"));
-    }
-
-    public GroupWithUsersDTO findWithUsers(long groupId) {
-        Group group = findGroupWithUsers(groupId);
-        return GroupWithUsersDTO
-                .builder()
-                .group(group)
-                .users(group.getUsers())
-                .build();
     }
 
     private Group findWithDeadlines(long groupId) {
@@ -184,12 +174,12 @@ public class GroupService {
     }
 
     @Transactional
-    protected Group addUsersInDefaultGroup(Group defaultGroup, List<User> users) {
+    protected void addUsersInDefaultGroup(Group defaultGroup, List<User> users) {
         for (User user : users) {
             defaultGroup.getUsers().add(user);
         }
         defaultGroup.setCountMembers(defaultGroup.getUsers().size());
-        return groupRepository.save(defaultGroup);
+        groupRepository.save(defaultGroup);
     }
 
     @Transactional

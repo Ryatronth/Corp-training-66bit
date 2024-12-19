@@ -36,9 +36,10 @@ public interface UserRepository extends JpaRepository<User, String> {
     """)
     List<UserGroupDTO> findAllWithoutCourseOrInGroup(long courseId, long groupId);
 
+    @EntityGraph(attributePaths = {"role"})
     @Query("""
         SELECT new rnn.core.model.admin.dto.UserCourseGroupDTO(
-            u.username, u.email, r.name, g, uc.currentScore
+            u, g, uc.currentScore
         )
         FROM User u
         JOIN u.role r

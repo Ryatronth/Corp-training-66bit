@@ -8,7 +8,6 @@ import rnn.core.model.admin.Group;
 import rnn.core.model.admin.dto.DeadlineDTO;
 import rnn.core.model.admin.dto.GroupDTO;
 import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
-import rnn.core.model.admin.dto.GroupWithUsersDTO;
 import rnn.core.service.admin.GroupService;
 
 import java.util.List;
@@ -27,14 +26,6 @@ public class GroupController {
                 .body(groupService.findAll(courseId));
     }
 
-    @GetMapping("/groups/{groupId}/users")
-    public ResponseEntity<GroupWithUsersDTO> getGroupWithUsers(@PathVariable long groupId) {
-        return ResponseEntity
-                .status(200)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.findWithUsers(groupId));
-    }
-
     @GetMapping("/groups/{groupId}/deadlines")
     public ResponseEntity<GroupWithDeadlinesDTO> getGroupWithDeadlines(@PathVariable long groupId) {
         return ResponseEntity
@@ -44,7 +35,10 @@ public class GroupController {
     }
 
     @PostMapping("/groups")
-    public ResponseEntity<Group> createGroup(@RequestParam(name = "courseId") long courseId, @RequestBody GroupDTO dto) {
+    public ResponseEntity<Group> createGroup(
+            @RequestParam(name = "courseId") long courseId,
+            @RequestBody GroupDTO dto
+    ) {
         return ResponseEntity
                 .status(201)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -110,10 +104,10 @@ public class GroupController {
                 .build();
     }
 
-    @DeleteMapping("/groups/users")
+    @DeleteMapping("/groups/{groupId}/users")
     public ResponseEntity<Void> deleteUsersFromGroup(
-            @RequestParam(name = "courseId", required = false) Long courseId,
-            @RequestParam(name = "groupId", required = false) Long groupId,
+            @PathVariable(name = "groupId") long groupId,
+            @RequestParam(name = "courseId") long courseId,
             @RequestBody List<String> usernames
     ) {
         groupService.deleteUsersFromGroup(courseId, groupId, usernames);
