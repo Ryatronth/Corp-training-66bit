@@ -14,13 +14,15 @@ import java.time.LocalDateTime;
 @Table(
         name = "deadline_t",
         indexes = {
-                @Index(name = "idx_deadline_module_group_id", columnList = "module_id, group_id")
+                @Index(name = "idx_deadline_module_group_id", columnList = "module_id, group_id"),
+                @Index(name = "idx_deadline_groups_id", columnList = "group_id")
         }
 )
 @Entity
 public class GroupDeadline {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "sequence_id_auto_gen", allocationSize = 15)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_auto_gen")
     private long id;
 
     private LocalDateTime startTime;

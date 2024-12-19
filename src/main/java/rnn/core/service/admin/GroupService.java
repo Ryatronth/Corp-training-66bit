@@ -82,29 +82,32 @@ public class GroupService {
 
         Set<User> moveToTarget = new HashSet<>();
         Set<User> newUsers = new HashSet<>();
+        Set<User> toDelete = new HashSet<>();
 
         Set<User> processUsers = userService.findAllByUsernames(usernames);
-        for (User user : processUsers) {
-            if (defaultGroupUsers.contains(user)) {
-                moveToTarget.add(user);
+        for (User user: users) {
+            if (processUsers.contains(user)) {
                 processUsers.remove(user);
-            }
-            if (!users.contains(user)) {
-                newUsers.add(user);
-                processUsers.remove(user);
-            }
-            if (users.contains(user)) {
-                processUsers.remove(user);
+            } else {
+                toDelete.add(user);
             }
         }
 
-        users.removeAll(processUsers);
+        for (User user : processUsers) {
+            if (defaultGroupUsers.contains(user)) {
+                moveToTarget.add(user);
+            } else {
+                newUsers.add(user);
+            }
+        }
+
+        users.removeAll(toDelete);
         users.addAll(newUsers);
 
         group.setCountMembers(users.size());
 
         eventPublisher.publishEvent(new AddUserEvent(this, group.getCourse(), newUsers));
-        eventPublisher.publishEvent(new DeleteUserEvent(this, group.getCourse().getId(), usernames));
+        eventPublisher.publishEvent(new DeleteUserEvent(this, group.getCourse().getId(), toDelete.stream().map(User::getUsername).toList()));
         return moveUsersBetweenGroups(defaultGroup, group, moveToTarget).target();
     }
 

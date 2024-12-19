@@ -50,6 +50,7 @@ public class Group {
             name = "user_group_t",
             joinColumns = @JoinColumn(name = "group_id"),
             inverseJoinColumns = @JoinColumn(name = "username"),
+            indexes = @Index(name = "idx_user_group_username", columnList = "username"),
             uniqueConstraints = @UniqueConstraint(name = "unique_user_group_t", columnNames = {"username", "group_id"})
     )
     private Set<User> users;

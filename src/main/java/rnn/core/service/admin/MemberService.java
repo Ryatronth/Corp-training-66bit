@@ -9,19 +9,21 @@ import rnn.core.model.admin.dto.UserGroupDTO;
 import rnn.core.model.security.User;
 import rnn.core.model.security.repository.UserRepository;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 public class MemberService {
     private final UserRepository userRepository;
 
-    public List<User> findAllWithoutCourse(long courseId) {
-        return userRepository.findAllWithoutCourse(courseId);
+    public Page<User> findAllWithoutCourse(long courseId, int page, int limit) {
+        return userRepository.findAllWithoutCourse(courseId, PageRequest.of(page, limit));
     }
 
-    public List<UserGroupDTO> findAllWithoutCourseOrInGroup(long courseId, long groupId) {
-        return userRepository.findAllWithoutCourseOrInGroup(courseId, groupId);
+    public Page<User> findAllWithoutCourseOrInDefault(long courseId, int page, int limit) {
+        return userRepository.findAllWithoutCourseOrInDefault(courseId, PageRequest.of(page, limit));
+    }
+
+    public Page<UserGroupDTO> findAllWithoutCourseOrInGroupOrInDefault(long courseId, long groupId, int page, int limit) {
+        return userRepository.findAllWithoutCourseOrInGroupOrInDefault(courseId, groupId, PageRequest.of(page, limit));
     }
 
     public Page<UserCourseGroupDTO> findAllWithCourseAndGroup(long courseId, int page, int limit) {

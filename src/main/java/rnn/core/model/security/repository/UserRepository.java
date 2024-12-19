@@ -26,6 +26,14 @@ public interface UserRepository extends JpaRepository<User, String> {
     @Query("""
         FROM User u
         LEFT JOIN FETCH u.userCourses uc
+        WHERE uc.course.id <> :courseId OR uc.course.id IS NULL
+    """)
+    Page<User> findAllWithoutCourse(long courseId, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"role"})
+    @Query("""
+        FROM User u
+        LEFT JOIN FETCH u.userCourses uc
         WHERE uc.user.username NOT IN (
             SELECT uc.user.username
             FROM UserCourse uc
@@ -36,10 +44,10 @@ public interface UserRepository extends JpaRepository<User, String> {
             SELECT uc1.user.username
             FROM u.userCourses uc1
             LEFT JOIN u.groups g ON uc1.course.id = g.course.id
-            WHERE g.isDefault = true
+            WHERE uc1.course.id = :courseId AND g.isDefault = true
         )
     """)
-    List<User> findAllWithoutCourse(long courseId);
+    Page<User> findAllWithoutCourseOrInDefault(long courseId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"role"})
     @Query("""
@@ -56,10 +64,10 @@ public interface UserRepository extends JpaRepository<User, String> {
             SELECT uc1.user.username
             FROM u.userCourses uc1
             LEFT JOIN u.groups g ON uc1.course.id = g.course.id
-            WHERE g.isDefault = true
+            WHERE uc1.course.id = :courseId AND g.isDefault = true
         )
     """)
-    List<UserGroupDTO> findAllWithoutCourseOrInGroup(long courseId, long groupId);
+    Page<UserGroupDTO> findAllWithoutCourseOrInGroupOrInDefault(long courseId, long groupId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"role"})
     @Query("""

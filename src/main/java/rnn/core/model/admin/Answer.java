@@ -19,7 +19,8 @@ import rnn.core.model.admin.content.DetailedContent;
 @Entity
 public class Answer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "sequence_id_auto_gen", allocationSize = 15)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_auto_gen")
     private long id;
 
     @Column(length = 500)

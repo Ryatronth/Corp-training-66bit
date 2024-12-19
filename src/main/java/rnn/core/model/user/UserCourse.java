@@ -19,13 +19,15 @@ import java.util.List;
                 @UniqueConstraint(name = "unique_username_course_id", columnNames = {"username", "course_id"})
         },
         indexes = {
-                @Index(name = "idx_username", columnList = "username")
+                @Index(name = "idx_username", columnList = "username"),
+                @Index(name = "idx_course_id", columnList = "course_id")
         }
 )
 @Entity
 public class UserCourse {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "sequence_id_auto_gen", allocationSize = 15)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_auto_gen")
     private long id;
 
     private int currentScore;
