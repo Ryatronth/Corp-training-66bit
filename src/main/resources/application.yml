@@ -1,6 +1,6 @@
 frontend:
   url: http://localhost:5173
-  auth_url: "${frontend.url}/login"
+  auth_url: "${frontend.url}/auth"
 
 file_server:
   url: http://localhost:8090

@@ -21,6 +21,13 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     """)
     Optional<Group> findByIdWithUsers(long groupId);
 
+    @EntityGraph(attributePaths = {"users.role", "course"})
+    @Query("""
+        FROM Group g
+        WHERE g.id = :groupId
+    """)
+    Optional<Group> findByIdWithUsersAndCourse(long groupId);
+
     @EntityGraph(attributePaths = {"deadlines.module"})
     @Query("""
         FROM Group g
@@ -28,8 +35,16 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     """)
     Optional<Group> findByIdWithDeadlines(long groupId);
 
+    @EntityGraph(attributePaths = {"users.role"})
     @Query("""
-        FROM Group g LEFT JOIN FETCH g.users u WHERE g.course.id = :courseId AND g.isDefault = true
+        FROM Group g
+        WHERE g.course.id = :courseId AND g.isDefault = true
     """)
-    Optional<Group> findDefaultGroup(long courseId);
+    Optional<Group> findDefaultGroupWithUsers(long courseId);
+
+    @EntityGraph(attributePaths = {"users.role", "course"})
+    @Query("""
+        FROM Group g WHERE g.course.id = :courseId AND g.isDefault = true
+    """)
+    Optional<Group> findDefaultGroupWithCourseAndUsers(long courseId);
 }

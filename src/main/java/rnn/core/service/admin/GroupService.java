@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rnn.core.event.event.AddUserEvent;
 import rnn.core.event.event.CreateGroupEvent;
 import rnn.core.event.event.DeleteGroupEvent;
 import rnn.core.model.admin.Course;
@@ -53,19 +54,31 @@ public class GroupService {
 
     @Transactional
     public Group addUsersInDefaultGroup(long courseId, List<String> usernames) {
-        Group defaultGroup = getDefaultGroup(courseId);
-        for (String username : usernames) {
-            defaultGroup.getUsers().add(userService.findOne(username));
-        }
-        return groupRepository.save(defaultGroup);
+        Group defaultGroup = groupRepository.findDefaultGroupWithCourseAndUsers(courseId).orElseThrow(
+                () -> new RuntimeException("Курс с указанным id не найден либо у него отсутствует группа по умолчанию")
+        );
+
+        return updateUsers(usernames, defaultGroup);
     }
 
     @Transactional
     public Group addUsersInGroup(long groupId, List<String> usernames) {
-        Group group = findGroupWithUsers(groupId);
+        Group group = groupRepository.findByIdWithUsersAndCourse(groupId).orElseThrow(
+                () -> new RuntimeException("Группа с указанным id не найдена")
+        );
+
+        return updateUsers(usernames, group);
+    }
+
+    private Group updateUsers(List<String> usernames, Group group) {
+        List<User> toAdd = new ArrayList<>();
         for (String username : usernames) {
-            group.getUsers().add(userService.findOne(username));
+            User user = userService.findOne(username);
+            group.getUsers().add(user);
+            toAdd.add(user);
         }
+
+        eventPublisher.publishEvent(new AddUserEvent(this, group.getCourse(), toAdd));
         return groupRepository.save(group);
     }
 
@@ -92,12 +105,6 @@ public class GroupService {
                 .isDefault(true)
                 .build();
         return groupRepository.save(group);
-    }
-
-    private Group getDefaultGroup(long courseId) {
-        return groupRepository.findDefaultGroup(courseId).orElseThrow(
-                () -> new RuntimeException("Курс с указанным id не найден либо у него отсутствует группа по умолчанию")
-        );
     }
 
     public List<Group> findAll(long courseId) {
@@ -133,7 +140,9 @@ public class GroupService {
     @Transactional
     public void deleteAndMove(long courseId, long groupId) {
         Group group = findGroupWithUsers(groupId);
-        Group defaultGroup = getDefaultGroup(courseId);
+        Group defaultGroup = groupRepository.findDefaultGroupWithUsers(courseId).orElseThrow(
+                () -> new RuntimeException("Курс с указанным id не найден либо у него отсутствует группа по умолчанию")
+        );
 
         addUsersInDefaultGroup(defaultGroup, group.getUsers());
         groupRepository.delete(group);

@@ -3,6 +3,7 @@ package rnn.core.event.listener;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import rnn.core.event.event.AddUserEvent;
 import rnn.core.event.event.CreateGroupEvent;
 import rnn.core.event.event.DeleteGroupEvent;
 import rnn.core.service.admin.DeadlineService;
@@ -18,6 +19,11 @@ public class GroupEventListener {
     public void handleCreateGroupEvent(CreateGroupEvent event) {
         userCourseService.createAll(event.getCourse(), event.getUsers());
         deadlineService.createAll(event.getGroup(), event.getDeadlines());
+    }
+
+    @EventListener
+    public void handleAddUserEventListener(AddUserEvent event) {
+        userCourseService.createAll(event.getCourse(), event.getUsers());
     }
 
     @EventListener
