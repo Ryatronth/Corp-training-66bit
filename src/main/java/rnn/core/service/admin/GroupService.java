@@ -53,33 +53,42 @@ public class GroupService {
     }
 
     @Transactional
+    public Group updateUsers(long groupId, List<String> usernames) {
+        Group group = groupRepository.findByIdWithUsersAndCourse(groupId).orElseThrow(
+                () -> new RuntimeException("Группа с указанным id не найдена")
+        );
+
+        List<User> newUsers = new ArrayList<>();
+        for (String username : usernames) {
+            User user = userService.findOne(username);
+            newUsers.add(user);
+        }
+
+        eventPublisher.publishEvent(new DeleteGroupEvent(this, group.getCourse().getId(), groupId));
+        eventPublisher.publishEvent(new AddUserEvent(this, group.getCourse(), newUsers));
+
+        group.setUsers(newUsers);
+        group.setCountMembers(group.getUsers().size());
+        return groupRepository.save(group);
+    }
+
+    @Transactional
     public Group addUsersInDefaultGroup(long courseId, List<String> usernames) {
         Group defaultGroup = groupRepository.findDefaultGroupWithCourseAndUsers(courseId).orElseThrow(
                 () -> new RuntimeException("Курс с указанным id не найден либо у него отсутствует группа по умолчанию")
         );
 
-        return updateUsers(usernames, defaultGroup);
-    }
-
-    @Transactional
-    public Group addUsersInGroup(long groupId, List<String> usernames) {
-        Group group = groupRepository.findByIdWithUsersAndCourse(groupId).orElseThrow(
-                () -> new RuntimeException("Группа с указанным id не найдена")
-        );
-
-        return updateUsers(usernames, group);
-    }
-
-    private Group updateUsers(List<String> usernames, Group group) {
         List<User> toAdd = new ArrayList<>();
         for (String username : usernames) {
             User user = userService.findOne(username);
-            group.getUsers().add(user);
+            defaultGroup.getUsers().add(user);
             toAdd.add(user);
         }
 
-        eventPublisher.publishEvent(new AddUserEvent(this, group.getCourse(), toAdd));
-        return groupRepository.save(group);
+        defaultGroup.setCountMembers(defaultGroup.getUsers().size());
+
+        eventPublisher.publishEvent(new AddUserEvent(this, defaultGroup.getCourse(), toAdd));
+        return groupRepository.save(defaultGroup);
     }
 
     @Transactional

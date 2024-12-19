@@ -53,8 +53,8 @@ public class GroupController {
 
     @PutMapping("/groups/users")
     public ResponseEntity<Group> addUsersGroup(
-            @RequestParam(name = "courseId") long courseId,
-            @RequestParam(name = "groupId", required = false) long groupId,
+            @RequestParam(name = "courseId", required = false) Long courseId,
+            @RequestParam(name = "groupId", required = false) Long groupId,
             @RequestParam(name = "default", required = false) boolean def,
             @RequestBody List<String> usernames
     ) {
@@ -67,7 +67,7 @@ public class GroupController {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.addUsersInGroup(groupId, usernames));
+                .body(groupService.updateUsers(groupId, usernames));
     }
 
     @PutMapping("/groups/{groupId}/deadlines")
