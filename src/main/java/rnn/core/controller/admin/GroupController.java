@@ -109,4 +109,17 @@ public class GroupController {
                 .contentType(MediaType.APPLICATION_JSON)
                 .build();
     }
+
+    @DeleteMapping("/groups/users")
+    public ResponseEntity<Void> deleteUsersFromGroup(
+            @RequestParam(name = "courseId", required = false) Long courseId,
+            @RequestParam(name = "groupId", required = false) Long groupId,
+            @RequestBody List<String> usernames
+    ) {
+        groupService.deleteUsersFromGroup(courseId, groupId, usernames);
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
 }

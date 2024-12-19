@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import rnn.core.event.event.AddUserEvent;
 import rnn.core.event.event.CreateGroupEvent;
 import rnn.core.event.event.DeleteGroupEvent;
+import rnn.core.event.event.DeleteUserEvent;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Group;
 import rnn.core.model.admin.GroupDeadline;
@@ -162,6 +163,13 @@ public class GroupService {
                 .group(group)
                 .deadlines(group.getDeadlines())
                 .build();
+    }
+
+    @Transactional
+    public void deleteUsersFromGroup(long courseId, long groupId, List<String> usernames) {
+        Group group = findGroupWithUsers(groupId);
+        eventPublisher.publishEvent(new DeleteUserEvent(this, courseId, usernames));
+        group.getUsers().removeIf(user -> usernames.contains(user.getUsername()));
     }
 
     @Transactional

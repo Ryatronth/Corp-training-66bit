@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import rnn.core.event.event.AddUserEvent;
 import rnn.core.event.event.CreateGroupEvent;
 import rnn.core.event.event.DeleteGroupEvent;
+import rnn.core.event.event.DeleteUserEvent;
 import rnn.core.service.admin.DeadlineService;
 import rnn.core.service.user.UserCourseService;
 
@@ -24,6 +25,11 @@ public class GroupEventListener {
     @EventListener
     public void handleAddUserEventListener(AddUserEvent event) {
         userCourseService.createAll(event.getCourse(), event.getUsers());
+    }
+
+    @EventListener
+    public void handleAddUserEventListener(DeleteUserEvent event) {
+        userCourseService.deleteAllByCourseIdAndUsernames(event.getCourseId(), event.getUsernames());
     }
 
     @EventListener

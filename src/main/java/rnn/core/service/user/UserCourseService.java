@@ -37,6 +37,10 @@ public class UserCourseService {
         return userCourseRepository.saveAll(userCourses);
     }
 
+    public void deleteAllByCourseIdAndUsernames(long courseId, List<String> username) {
+        userCourseRepository.deleteAllByCourseIdAndUsernames(courseId, username);
+    }
+
     public void deleteAllByCourseIdAndGroupId(long courseId, long groupId) {
         userCourseRepository.deleteAllByCourseIdAndGroupId(courseId, groupId);
     }

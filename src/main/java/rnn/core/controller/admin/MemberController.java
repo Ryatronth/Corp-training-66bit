@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rnn.core.model.admin.dto.UserCourseGroupDTO;
 import rnn.core.model.admin.dto.UserGroupDTO;
+import rnn.core.model.security.User;
 import rnn.core.service.admin.MemberService;
 
 import java.util.List;
@@ -20,11 +21,24 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/members/groups")
-    public ResponseEntity<List<UserGroupDTO>> getAllWithoutCourseOrInGroup(@RequestParam long courseId, @RequestParam long groupId) {
+    public ResponseEntity<List<UserGroupDTO>> getAllWithoutCourseOrInGroup(
+            @RequestParam long courseId,
+            @RequestParam long groupId
+    ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(memberService.findAllWithoutCourseOrInGroup(courseId, groupId));
+    }
+
+    @GetMapping("/members/groups/new")
+    public ResponseEntity<List<User>> getAllWithoutCourse(
+            @RequestParam long courseId
+    ) {
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(memberService.findAllWithoutCourse(courseId));
     }
 
     @GetMapping("/members")

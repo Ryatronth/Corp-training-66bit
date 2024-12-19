@@ -12,9 +12,6 @@ import rnn.core.model.admin.content.AnswerContent;
 @Builder
 @Table(
         name = "question_t",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "unique_question_content_id", columnNames = {"question", "content_id"}),
-        },
         indexes = {
                 @Index(name = "idx_question_content_id", columnList = "content_id")
         }
@@ -25,6 +22,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column(length = 500)
     private String question;
 
     @JsonIgnore

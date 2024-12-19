@@ -14,6 +14,18 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, String> {
     @EntityGraph(attributePaths = {"role"})
     @Query("""
+        FROM User u
+        LEFT JOIN FETCH u.userCourses uc
+        WHERE uc.user.username NOT IN (
+            SELECT uc.user.username
+            FROM UserCourse uc
+            WHERE uc.course.id = :courseId
+        ) OR uc.course.id IS NULL
+    """)
+    List<User> findAllWithoutCourse(long courseId);
+
+    @EntityGraph(attributePaths = {"role"})
+    @Query("""
         SELECT new rnn.core.model.admin.dto.UserGroupDTO(
             u,
             CASE WHEN :groupId IN (SELECT g.id FROM u.groups g WHERE g.id = :groupId) THEN true ELSE false END
@@ -26,7 +38,7 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query("""
         SELECT new rnn.core.model.admin.dto.UserCourseGroupDTO(
-            u.username, u.email, r.name, g.name, uc.currentScore
+            u.username, u.email, r.name, g, uc.currentScore
         )
         FROM User u
         JOIN u.role r

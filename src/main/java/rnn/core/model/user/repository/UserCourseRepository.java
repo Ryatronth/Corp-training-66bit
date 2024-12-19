@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import rnn.core.model.user.UserCourse;
 
+import java.util.List;
+
 @Repository
 public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
     @Modifying
@@ -19,4 +21,11 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
         )
     """)
     void deleteAllByCourseIdAndGroupId(long courseId, long groupId);
+
+    @Modifying
+    @Query("""
+        DELETE FROM UserCourse uc
+        WHERE uc.course.id = :courseId AND uc.user.username IN :usernames
+    """)
+    void deleteAllByCourseIdAndUsernames(long courseId, List<String> usernames);
 }
