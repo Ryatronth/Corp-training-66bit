@@ -70,6 +70,18 @@ public class GroupController {
                 .body(groupService.updateUsers(groupId, usernames));
     }
 
+    @PutMapping("/groups/users/move")
+    public ResponseEntity<List<Group>> moveUsersGroup(
+            @RequestParam(name = "destinationId") long destinationId,
+            @RequestParam(name = "targetId") long targetId,
+            @RequestBody List<String> usernames
+    ) {
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(groupService.moveUsers(destinationId, targetId, usernames));
+    }
+
     @PutMapping("/groups/{groupId}/deadlines")
     public ResponseEntity<Group> addDeadlines(
             @PathVariable long groupId,

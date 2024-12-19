@@ -53,6 +53,24 @@ public class GroupService {
     }
 
     @Transactional
+    public List<Group> moveUsers(long destinationId, long targetId, List<String> usernames) {
+        Group destinationGroup = findGroupWithUsers(destinationId);
+        Group targetGroup = findGroupWithUsers(targetId);
+
+        for (String username : usernames) {
+            User user = userService.findOne(username);
+            destinationGroup.getUsers().remove(user);
+            targetGroup.getUsers().add(user);
+        }
+        destinationGroup.setCountMembers(destinationGroup.getUsers().size());
+        targetGroup.setCountMembers(targetGroup.getUsers().size());
+
+        groupRepository.save(destinationGroup);
+        groupRepository.save(targetGroup);
+        return List.of(destinationGroup, targetGroup);
+    }
+
+    @Transactional
     public Group updateUsers(long groupId, List<String> usernames) {
         Group group = groupRepository.findByIdWithUsersAndCourse(groupId).orElseThrow(
                 () -> new RuntimeException("Группа с указанным id не найдена")
