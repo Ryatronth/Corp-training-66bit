@@ -5,6 +5,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rnn.core.event.event.CreateGroupEvent;
+import rnn.core.event.event.DeleteGroupEvent;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Group;
 import rnn.core.model.admin.GroupDeadline;
@@ -135,7 +136,7 @@ public class GroupService {
         Group defaultGroup = getDefaultGroup(courseId);
 
         addUsersInDefaultGroup(defaultGroup, group.getUsers());
-        deleteAndExclude(groupId);
+        groupRepository.delete(group);
     }
 
     @Transactional
@@ -147,7 +148,10 @@ public class GroupService {
         return groupRepository.save(defaultGroup);
     }
 
-    public void deleteAndExclude(long groupId) {
+    @Transactional
+    public void deleteAndExclude(long courseId, long groupId) {
+        eventPublisher.publishEvent(new DeleteGroupEvent(this, courseId, groupId));
+
         groupRepository.deleteById(groupId);
     }
 }

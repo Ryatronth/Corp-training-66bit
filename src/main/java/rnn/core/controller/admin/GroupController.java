@@ -88,7 +88,7 @@ public class GroupController {
             @RequestParam(name = "exclude") boolean exclude
     ) {
         if (exclude) {
-            groupService.deleteAndExclude(groupId);
+            groupService.deleteAndExclude(courseId, groupId);
         } else {
             groupService.deleteAndMove(courseId, groupId);
         }

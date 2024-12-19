@@ -12,7 +12,7 @@ public class CourseEventListener {
     private final GroupService groupService;
 
     @EventListener
-    public void handleCourseCreatedEvent(CreateCourseEvent event) {
+    public void handleCreateCourseEvent(CreateCourseEvent event) {
         groupService.createDefaultGroup(event.getCourse());
     }
 }

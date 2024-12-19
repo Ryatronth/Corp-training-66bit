@@ -36,4 +36,8 @@ public class UserCourseService {
         }
         return userCourseRepository.saveAll(userCourses);
     }
+
+    public void deleteAllByCourseIdAndGroupId(long courseId, long groupId) {
+        userCourseRepository.deleteAllByCourseIdAndGroupId(courseId, groupId);
+    }
 }

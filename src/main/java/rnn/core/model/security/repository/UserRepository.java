@@ -13,7 +13,13 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, String> {
     @EntityGraph(attributePaths = {"role"})
     @Query("""
-        FROM User u LEFT JOIN FETCH u.userCourses uc WHERE uc.course.id != :courseId or uc.course.id is null
+        FROM User u
+        LEFT JOIN FETCH u.userCourses uc
+        WHERE uc.user.username NOT IN (
+            SELECT uc.user.username
+            FROM UserCourse uc
+            WHERE uc.course.id = :courseId
+        ) OR uc.course.id IS NULL
     """)
     List<User> findAllWithoutCourse(long courseId);
 
