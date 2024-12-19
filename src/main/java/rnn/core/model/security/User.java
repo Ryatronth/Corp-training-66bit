@@ -9,6 +9,8 @@ import rnn.core.model.admin.Group;
 import rnn.core.model.user.UserCourse;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,7 +47,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "group_id"),
             uniqueConstraints = @UniqueConstraint(name = "unique_user_group_t", columnNames = {"username", "group_id"})
     )
-    private List<Group> groups;
+    private Set<Group> groups;
 
     @JsonProperty(value = "role")
     private String roleJson() {
@@ -60,5 +62,18 @@ public class User {
                 ", avatarUrl='" + avatarUrl + '\'' +
                 ", role=" + role +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(avatarUrl, user.avatarUrl);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, email, avatarUrl);
     }
 }

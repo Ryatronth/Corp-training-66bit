@@ -1,5 +1,6 @@
 package rnn.core.model.admin.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
     @Query("FROM Group g WHERE g.course.id = :courseId ORDER BY g.name ASC")
-    List<Group> findAllByCourseId(long courseId);
+    List<Group> findAllByCourseId(long courseId, Pageable pageable);
 
     @EntityGraph(attributePaths = {"users.role"})
     @Query("""

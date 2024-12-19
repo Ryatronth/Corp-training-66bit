@@ -5,14 +5,14 @@ import org.springframework.context.ApplicationEvent;
 import rnn.core.model.admin.Course;
 import rnn.core.model.security.User;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 public class AddUserEvent extends ApplicationEvent {
     private final Course course;
-    private final List<User> users;
+    private final Set<User> users;
 
-    public AddUserEvent(Object source, Course course, List<User> users) {
+    public AddUserEvent(Object source, Course course, Set<User> users) {
         super(source);
         this.course = course;
         this.users = users;

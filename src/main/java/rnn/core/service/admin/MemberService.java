@@ -1,6 +1,8 @@
 package rnn.core.service.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import rnn.core.model.admin.dto.UserCourseGroupDTO;
 import rnn.core.model.admin.dto.UserGroupDTO;
@@ -22,7 +24,7 @@ public class MemberService {
         return userRepository.findAllWithoutCourseOrInGroup(courseId, groupId);
     }
 
-    public List<UserCourseGroupDTO> findAllWithCourseAndGroup(long courseId) {
-        return userRepository.findAllWithCourseAndGroup(courseId);
+    public Page<UserCourseGroupDTO> findAllWithCourseAndGroup(long courseId, int page, int limit) {
+        return userRepository.findAllWithCourseAndGroup(courseId, PageRequest.of(page, limit));
     }
 }

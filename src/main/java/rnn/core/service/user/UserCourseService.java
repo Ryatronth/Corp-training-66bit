@@ -9,6 +9,7 @@ import rnn.core.model.user.repository.UserCourseRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Service
@@ -24,7 +25,7 @@ public class UserCourseService {
         return userCourseRepository.save(userCourse);
     }
 
-    public List<UserCourse> createAll(Course course, List<User> users) {
+    public void createAll(Course course, Set<User> users) {
         List<UserCourse> userCourses = new ArrayList<>();
         for (User user : users) {
             UserCourse userCourse = UserCourse
@@ -34,7 +35,7 @@ public class UserCourseService {
                     .build();
             userCourses.add(userCourse);
         }
-        return userCourseRepository.saveAll(userCourses);
+        userCourseRepository.saveAll(userCourses);
     }
 
     public void deleteAllByCourseIdAndUsernames(long courseId, List<String> username) {

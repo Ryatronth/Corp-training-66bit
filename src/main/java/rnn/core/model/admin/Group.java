@@ -6,6 +6,8 @@ import lombok.*;
 import rnn.core.model.security.User;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -50,5 +52,18 @@ public class Group {
             inverseJoinColumns = @JoinColumn(name = "username"),
             uniqueConstraints = @UniqueConstraint(name = "unique_user_group_t", columnNames = {"username", "group_id"})
     )
-    private List<User> users;
+    private Set<User> users;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return id == group.id && isDefault == group.isDefault && countMembers == group.countMembers && Objects.equals(name, group.name) && Objects.equals(course, group.course);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, isDefault, countMembers, course);
+    }
 }

@@ -19,7 +19,10 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping("/courses")
-    public ResponseEntity<Page<Course>> getCourses(@RequestParam(name = "page", defaultValue = "0") int page, @RequestParam(name = "limit", defaultValue = "20") int limit) {
+    public ResponseEntity<Page<Course>> getCourses(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "limit", defaultValue = "20") int limit
+    ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,7 +47,10 @@ public class CourseController {
     }
 
     @PutMapping("/courses/{id}/fields")
-    public ResponseEntity<Course> updateCourseFields(@PathVariable long id, @ModelAttribute CourseWithoutImageDTO courseDTO) {
+    public ResponseEntity<Course> updateCourseFields(
+            @PathVariable long id,
+            @ModelAttribute CourseWithoutImageDTO courseDTO
+    ) {
         Course course = courseService.updateFields(id, courseDTO);
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -53,7 +59,10 @@ public class CourseController {
     }
 
     @PutMapping("/courses/{id}/image")
-    public ResponseEntity<Course> updateCourseImage(@PathVariable long id, @RequestPart(value = "image") MultipartFile image) {
+    public ResponseEntity<Course> updateCourseImage(
+            @PathVariable long id,
+            @RequestPart(value = "image") MultipartFile image
+    ) {
         Course course = courseService.updateImage(id, image);
         return ResponseEntity
                 .status(HttpStatus.OK)

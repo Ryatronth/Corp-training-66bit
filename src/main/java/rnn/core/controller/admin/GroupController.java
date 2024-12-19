@@ -8,6 +8,7 @@ import rnn.core.model.admin.Group;
 import rnn.core.model.admin.dto.DeadlineDTO;
 import rnn.core.model.admin.dto.GroupDTO;
 import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
+import rnn.core.model.admin.dto.MoveGroupsDTO;
 import rnn.core.service.admin.GroupService;
 
 import java.util.List;
@@ -19,11 +20,15 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping("/groups")
-    public ResponseEntity<List<Group>> getGroups(@RequestParam long courseId) {
+    public ResponseEntity<List<Group>> getGroups(
+            @RequestParam long courseId,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int limit
+    ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.findAll(courseId));
+                .body(groupService.findAll(courseId, page, limit));
     }
 
     @GetMapping("/groups/{groupId}/deadlines")
@@ -61,11 +66,11 @@ public class GroupController {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.updateUsers(groupId, usernames));
+                .body(groupService.updateUsers(courseId, groupId, usernames));
     }
 
     @PutMapping("/groups/users/move")
-    public ResponseEntity<List<Group>> moveUsersGroup(
+    public ResponseEntity<MoveGroupsDTO> moveUsersGroup(
             @RequestParam(name = "destinationId") long destinationId,
             @RequestParam(name = "targetId") long targetId,
             @RequestBody List<String> usernames

@@ -28,7 +28,7 @@ public class GroupEventListener {
     }
 
     @EventListener
-    public void handleAddUserEventListener(DeleteUserEvent event) {
+    public void handleDeleteUserEventListener(DeleteUserEvent event) {
         userCourseService.deleteAllByCourseIdAndUsernames(event.getCourseId(), event.getUsernames());
     }
 
