@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import rnn.core.controller.admin.filter.CourseFilter;
 import rnn.core.model.admin.dto.CourseWithImageDTO;
 import rnn.core.model.admin.dto.CourseWithoutImageDTO;
 import rnn.core.service.admin.CourseService;
@@ -20,13 +21,24 @@ public class CourseController {
 
     @GetMapping("/courses")
     public ResponseEntity<Page<Course>> getCourses(
+            @RequestParam(name = "filter", defaultValue = "ALL") CourseFilter filter,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "limit", defaultValue = "20") int limit
     ) {
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(courseService.findAll(page, limit));
+        return switch (filter) {
+            case ALL -> ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(courseService.findAll(page, limit));
+            case PUBLISHED -> ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(courseService.findAllPublished(page, limit));
+            case UNPUBLISHED -> ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(courseService.findAllNotPublished(page, limit));
+        };
     }
 
     @GetMapping("/courses/{id}")
@@ -44,6 +56,23 @@ public class CourseController {
                 .status(HttpStatus.CREATED)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(course);
+    }
+
+    @PutMapping("/courses/{id}/publish")
+    public ResponseEntity<Course> publishCourse(
+            @PathVariable long id,
+            @RequestParam(name = "publish", defaultValue = "true") boolean publish
+    ) {
+        if (publish) {
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(courseService.publish(id));
+        }
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courseService.unpublish(id));
     }
 
     @PutMapping("/courses/{id}/fields")

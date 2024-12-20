@@ -70,7 +70,27 @@ public class CourseService {
     }
 
     public Page<Course> findAll(int page, int limit) {
-        return courseRepository.findAll(PageRequest.of(page, limit));
+        return courseRepository.findAllCourses(PageRequest.of(page, limit));
+    }
+
+    public Course publish(long courseId) {
+        Course course = find(courseId);
+        course.setPublished(true);
+        return courseRepository.save(course);
+    }
+
+    public Course unpublish(long courseId) {
+        Course course = find(courseId);
+        course.setPublished(false);
+        return courseRepository.save(course);
+    }
+
+    public Page<Course> findAllPublished(int page, int limit) {
+        return courseRepository.findAllPublished(PageRequest.of(page, limit));
+    }
+
+    public Page<Course> findAllNotPublished(int page, int limit) {
+        return courseRepository.findAllNotPublished(PageRequest.of(page, limit));
     }
 
 //    public List<Course> findAllNotEnrolledByUser(String username) {

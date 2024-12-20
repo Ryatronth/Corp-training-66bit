@@ -39,6 +39,8 @@ public class Course {
 
     private int score;
 
+    private boolean isPublished;
+
     @Convert(converter = TagConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Tag> tags;
