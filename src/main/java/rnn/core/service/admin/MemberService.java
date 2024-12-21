@@ -32,7 +32,7 @@ public class MemberService {
                 .selectOne()
                 .from(userCourse)
                 .where(
-                        userCourse.course.id.eq(courseId).and(userCourse.user.username.eq(name))
+                        userCourse.course.id.eq(courseId).and(userCourse.user.username.eq(user.username))
                 );
 
         BooleanBuilder builder = new BooleanBuilder();
@@ -58,18 +58,18 @@ public class MemberService {
         QUserCourse userCourse = QUserCourse.userCourse;
         QGroup group = QGroup.group;
 
-        JPQLQuery<String> usersInCourseSubquery = JPAExpressions
-                .select(userCourse.user.username)
-                .from(userCourse)
-                .leftJoin(group)
-                .on(userCourse.course.id.eq(group.course.id))
+        JPQLQuery<Integer> usersInCourseSubquery = JPAExpressions
+                .selectOne()
+                .from(group)
+                .join(group.users, user)
                 .where(
-                        userCourse.course.id.eq(courseId)
-                        .and(group.isDefault.isFalse())
+                        group.course.id.eq(courseId)
+                                .and(user.username.eq(user.username))
+                                .and(group.isDefault.isFalse())
                 );
 
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(userCourse.user.username.notIn(usersInCourseSubquery));
+        builder.and(usersInCourseSubquery.notExists());
         builder.or(userCourse.course.id.isNull());
 
         if (name != null && !name.trim().isEmpty()) {
