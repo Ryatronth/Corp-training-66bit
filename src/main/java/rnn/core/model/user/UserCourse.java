@@ -32,6 +32,8 @@ public class UserCourse {
 
     private int currentScore;
 
+    private boolean isCompleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username")
     private User user;

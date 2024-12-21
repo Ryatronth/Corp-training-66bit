@@ -2,6 +2,8 @@ package rnn.core.service.admin;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -127,7 +129,14 @@ public class MemberService {
         return PageableBuilder.build(query, page, limit);
     }
 
-    public Page<UserCourseGroupDTO> findAllWithCourseAndGroup(long courseId, String name, int page, int limit) {
+    public Page<UserCourseGroupDTO> findAllWithCourseAndGroup(
+            long courseId,
+            String name,
+            String sort,
+            String direction,
+            int page,
+            int limit
+    ) {
         QUser user = QUser.user;
         QGroup group = QGroup.group;
         QUserCourse userCourse = QUserCourse.userCourse;
@@ -144,6 +153,7 @@ public class MemberService {
                 .selectDistinct(Projections.constructor(
                         UserCourseGroupDTO.class,
                         user,
+                        userCourse.isCompleted,
                         group,
                         userCourse.currentScore
                 ))
@@ -151,9 +161,39 @@ public class MemberService {
                 .leftJoin(user.role).fetchJoin()
                 .leftJoin(user.userCourses, userCourse)
                 .leftJoin(user.groups, group)
-                .where(builder)
-                .orderBy(user.username.asc());
+                .where(builder);
+
+        if (sort != null && !sort.trim().isEmpty() && direction != null && !direction.trim().isEmpty()) {
+            query.orderBy(createOrderSpecifier(sort, direction));
+        }
 
         return PageableBuilder.build(query, page, limit);
+    }
+
+    private OrderSpecifier<?> createOrderSpecifier(String sort, String direction) {
+        QUser user = QUser.user;
+        QUserCourse userCourse = QUserCourse.userCourse;
+        QGroup group = QGroup.group;
+
+        Order order = direction.equalsIgnoreCase("asc") ? Order.ASC : Order.DESC;
+        return switch (sort) {
+            case "username" -> new OrderSpecifier<>(
+                    order,
+                    user.username
+            );
+            case "group" -> new OrderSpecifier<>(
+                    order,
+                    group.name
+            );
+            case "progress" -> new OrderSpecifier<>(
+                    order,
+                    userCourse.currentScore
+            );
+            case "status" -> new OrderSpecifier<>(
+                    order,
+                    userCourse.isCompleted
+            );
+            default -> throw new IllegalArgumentException("Invalid sort field: " + sort);
+        };
     }
 }

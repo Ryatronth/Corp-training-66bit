@@ -50,13 +50,15 @@ public class MemberController {
     public ResponseEntity<Page<UserCourseGroupDTO>> findAllWithCourseAndGroup(
             @RequestParam long courseId,
             @RequestParam(required = false) String name,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String direction,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findAllWithCourseAndGroup(courseId, name, page, limit));
+                .body(memberService.findAllWithCourseAndGroup(courseId, name, sort, direction, page, limit));
     }
 
     @GetMapping("/members/groups/exclude")

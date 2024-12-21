@@ -1,8 +1,12 @@
 package rnn.core.service.admin;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rnn.core.event.event.AddUserEvent;
@@ -12,11 +16,13 @@ import rnn.core.event.event.DeleteUserEvent;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Group;
 import rnn.core.model.admin.GroupDeadline;
+import rnn.core.model.admin.QGroup;
 import rnn.core.model.admin.dto.DeadlineDTO;
 import rnn.core.model.admin.dto.GroupDTO;
 import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
 import rnn.core.model.admin.dto.MoveGroupsDTO;
 import rnn.core.model.admin.repository.GroupRepository;
+import rnn.core.model.querydsl.PageableBuilder;
 import rnn.core.model.security.User;
 import rnn.core.service.security.UserService;
 
@@ -28,6 +34,7 @@ import java.util.Set;
 @Service
 public class GroupService {
     private final ApplicationEventPublisher eventPublisher;
+    private final JPAQueryFactory queryFactory;
 
     private final GroupRepository groupRepository;
     private final CourseService courseService;
@@ -174,8 +181,27 @@ public class GroupService {
         groupRepository.save(group);
     }
 
-    public List<Group> findAll(long courseId, int page, int limit) {
-        return groupRepository.findAllByCourseId(courseId, PageRequest.of(page, limit));
+    public Page<Group> findAll(long courseId, String sort, String direction, int page, int limit) {
+        QGroup group = QGroup.group;
+        JPAQuery<Group> query = queryFactory
+                .selectFrom(group)
+                .where(group.course.id.eq(courseId));
+
+        if (sort != null && !sort.trim().isEmpty() && direction != null && !direction.trim().isEmpty()) {
+            query.orderBy(createFindAllOrderSpecifier(sort, direction));
+        }
+
+        return PageableBuilder.build(query, page, limit);
+    }
+
+    private OrderSpecifier<?> createFindAllOrderSpecifier(String sort, String direction) {
+        Order order = direction.equalsIgnoreCase("asc") ? Order.ASC : Order.DESC;
+
+        return switch (sort) {
+            case "name" -> new OrderSpecifier<>(order, QGroup.group.name);
+            case "count" -> new OrderSpecifier<>(order, QGroup.group.countMembers);
+            default -> throw new IllegalArgumentException("Invalid sort field: " + sort);
+        };
     }
 
     private Group findGroupWithUsers(long groupId) {

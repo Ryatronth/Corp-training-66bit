@@ -1,6 +1,7 @@
 package rnn.core.controller.admin;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,15 +21,17 @@ public class GroupController {
     private final GroupService groupService;
 
     @GetMapping("/groups")
-    public ResponseEntity<List<Group>> getGroups(
+    public ResponseEntity<Page<Group>> getGroups(
             @RequestParam long courseId,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String direction,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.findAll(courseId, page, limit));
+                .body(groupService.findAll(courseId, sort, direction, page, limit));
     }
 
     @GetMapping("/groups/{groupId}/deadlines")
