@@ -5,6 +5,7 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanPath;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -66,13 +67,13 @@ public class MemberService {
                 .join(group.users, user)
                 .where(
                         group.course.id.eq(courseId)
-                                .and(user.username.eq(user.username))
-                                .and(group.isDefault.isFalse())
+                                .and(user.username.eq(userCourse.user.username))
+                                .and(group.isDefault.eq(false))
                 );
 
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(usersInCourseSubquery.notExists());
-        builder.or(userCourse.course.id.isNull());
+        builder.or(userCourse.id.isNull());
 
         if (name != null && !name.trim().isEmpty()) {
             builder.and(user.username.containsIgnoreCase(name.trim()).or(user.email.containsIgnoreCase(name.trim())));
@@ -96,7 +97,7 @@ public class MemberService {
 
         Expression<Boolean> inGroupExpression = Expressions.booleanTemplate(
                 "case when {0} = {1} then true else false end", group.id, groupId
-        );
+        ).as("in_group");
 
         JPQLQuery<Integer> usersInCourseSubquery = JPAExpressions
                 .selectOne()
@@ -117,14 +118,19 @@ public class MemberService {
             builder.and(user.username.containsIgnoreCase(name.trim()).or(user.email.containsIgnoreCase(name.trim())));
         }
 
+        BooleanPath InGroupPath = Expressions.booleanPath("in_group");
         JPAQuery<UserGroupDTO> query = queryFactory
-                .selectDistinct(Projections.constructor(UserGroupDTO.class, user, inGroupExpression))
+                .selectDistinct(Projections.constructor(
+                        UserGroupDTO.class,
+                        user,
+                        inGroupExpression
+                ))
                 .from(user)
-                .join(user.role).fetchJoin()
-                .join(user.groups, group)
                 .leftJoin(user.userCourses, userCourse)
+                .leftJoin(user.role).fetchJoin()
+                .leftJoin(user.groups, group)
                 .where(builder)
-                .orderBy(user.username.asc());
+                .orderBy(InGroupPath.desc(), user.username.asc());
 
         return PageableBuilder.build(query, page, limit);
     }
