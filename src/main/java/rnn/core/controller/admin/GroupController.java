@@ -69,6 +69,19 @@ public class GroupController {
                 .body(groupService.updateUsers(courseId, groupId, usernames));
     }
 
+    @PutMapping("/groups/{groupId}/users")
+    public ResponseEntity<Void> deleteUsersFromGroup(
+            @PathVariable(name = "groupId") long groupId,
+            @RequestParam(name = "courseId") long courseId,
+            @RequestBody List<String> usernames
+    ) {
+        groupService.deleteUsersFromGroup(courseId, groupId, usernames);
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .build();
+    }
+
     @PutMapping("/groups/users/move")
     public ResponseEntity<MoveGroupsDTO> moveUsersGroup(
             @RequestParam(name = "destinationId") long destinationId,
@@ -103,19 +116,6 @@ public class GroupController {
         } else {
             groupService.deleteAndMove(courseId, groupId);
         }
-        return ResponseEntity
-                .status(200)
-                .contentType(MediaType.APPLICATION_JSON)
-                .build();
-    }
-
-    @DeleteMapping("/groups/{groupId}/users")
-    public ResponseEntity<Void> deleteUsersFromGroup(
-            @PathVariable(name = "groupId") long groupId,
-            @RequestParam(name = "courseId") long courseId,
-            @RequestBody List<String> usernames
-    ) {
-        groupService.deleteUsersFromGroup(courseId, groupId, usernames);
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)

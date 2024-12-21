@@ -21,24 +21,16 @@ public class CourseController {
 
     @GetMapping("/courses")
     public ResponseEntity<Page<Course>> getCourses(
-            @RequestParam(name = "filter", defaultValue = "ALL") CourseFilter filter,
-            @RequestParam(name = "page", defaultValue = "0") int page,
-            @RequestParam(name = "limit", defaultValue = "20") int limit
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "tag", required = false) String tag,
+            @RequestParam(name = "filter", required = false, defaultValue = "ALL") CourseFilter filter,
+            @RequestParam(name = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(name = "limit", required = false, defaultValue = "20") int limit
     ) {
-        return switch (filter) {
-            case ALL -> ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(courseService.findAll(page, limit));
-            case PUBLISHED -> ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(courseService.findAllPublished(page, limit));
-            case UNPUBLISHED -> ResponseEntity
-                    .status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(courseService.findAllNotPublished(page, limit));
-        };
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courseService.findAll(title, tag, filter, page, limit));
     }
 
     @GetMapping("/courses/{id}")

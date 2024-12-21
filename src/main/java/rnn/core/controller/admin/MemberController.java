@@ -23,48 +23,52 @@ public class MemberController {
     public ResponseEntity<Page<UserGroupDTO>> findAllWithoutCourseOrInGroupOrInDefault(
             @RequestParam long courseId,
             @RequestParam long groupId,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findAllWithoutCourseOrInGroupOrInDefault(courseId, groupId, page, limit));
+                .body(memberService.findAllWithoutCourseOrInGroupOrInDefault(courseId, groupId, name, page, limit));
     }
 
     @GetMapping("/members/groups/new")
     public ResponseEntity<Page<User>> findAllWithoutCourseOrInDefault(
             @RequestParam long courseId,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findAllWithoutCourseOrInDefault(courseId, page, limit));
+                .body(memberService.findAllWithoutCourseOrInDefault(courseId, name, page, limit));
     }
 
     @GetMapping("/members/groups/all")
     public ResponseEntity<Page<UserCourseGroupDTO>> findAllWithCourseAndGroup(
             @RequestParam long courseId,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findAllWithCourseAndGroup(courseId, page, limit));
+                .body(memberService.findAllWithCourseAndGroup(courseId, name, page, limit));
     }
 
     @GetMapping("/members/groups/exclude")
     public ResponseEntity<Page<User>> findAllWithoutCourse(
             @RequestParam long courseId,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findAllWithoutCourse(courseId, page, limit));
+                .body(memberService.findAllWithoutCourse(courseId, name, page, limit));
     }
 }

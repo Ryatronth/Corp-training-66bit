@@ -1,18 +1,27 @@
 package rnn.core.service.admin;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import rnn.core.controller.admin.filter.CourseFilter;
 import rnn.core.event.event.CreateCourseEvent;
 import rnn.core.model.admin.Course;
+import rnn.core.model.admin.QCourse;
 import rnn.core.model.admin.converter.TagConverter;
 import rnn.core.model.admin.dto.CourseWithImageDTO;
 import rnn.core.model.admin.dto.CourseWithoutImageDTO;
 import rnn.core.model.admin.repository.CourseRepository;
+import rnn.core.model.querydsl.PageableBuilder;
+import rnn.core.model.security.QRole;
+import rnn.core.model.security.QUser;
 import rnn.core.service.filestorage.FileService;
 import rnn.core.service.security.UserService;
 
@@ -22,6 +31,7 @@ import java.util.UUID;
 @Service
 public class CourseService {
     private final ApplicationEventPublisher eventPublisher;
+    private final JPAQueryFactory queryFactory;
 
     private final CourseRepository courseRepository;
     private final UserService userService;
@@ -69,8 +79,41 @@ public class CourseService {
         return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Курс с id = %s не найден.".formatted(id)));
     }
 
-    public Page<Course> findAll(int page, int limit) {
-        return courseRepository.findAllCourses(PageRequest.of(page, limit));
+    public Page<Course> findAll(String title, String tag, CourseFilter filter, int page, int limit) {
+        QCourse course = QCourse.course;
+        QUser user = QUser.user;
+        QRole role = QRole.role;
+
+        JPAQuery<Course> query = queryFactory
+                .selectFrom(course)
+                .leftJoin(course.author, user).fetchJoin()
+                .leftJoin(user.role, role).fetchJoin();
+
+        BooleanBuilder builder = new BooleanBuilder();
+
+        if (title != null && !title.trim().isEmpty()) {
+            builder.and(course.title.containsIgnoreCase(title.trim()));
+        }
+
+        if (tag != null && !tag.trim().isEmpty()) {
+            String likePattern = "%\"name\":\"%" + tag.trim().toLowerCase() + "%\",\"color%";
+
+            builder.and(Expressions.booleanTemplate(
+                    "lower({0}) like {1} escape '!'",
+                    course.tags,
+                    ConstantImpl.create(likePattern)
+            ));
+        }
+
+        switch (filter) {
+            case PUBLISHED -> builder.and(course.isPublished.eq(true));
+            case UNPUBLISHED -> builder.and(course.isPublished.eq(false));
+            case ALL -> {
+            }
+        }
+
+        query.where(builder);
+        return PageableBuilder.build(query, page, limit);
     }
 
     public Course publish(long courseId) {
@@ -84,16 +127,4 @@ public class CourseService {
         course.setPublished(false);
         return courseRepository.save(course);
     }
-
-    public Page<Course> findAllPublished(int page, int limit) {
-        return courseRepository.findAllPublished(PageRequest.of(page, limit));
-    }
-
-    public Page<Course> findAllNotPublished(int page, int limit) {
-        return courseRepository.findAllNotPublished(PageRequest.of(page, limit));
-    }
-
-//    public List<Course> findAllNotEnrolledByUser(String username) {
-//        return courseRepository.findCoursesNotEnrolledByUser(username);
-//    }
 }
