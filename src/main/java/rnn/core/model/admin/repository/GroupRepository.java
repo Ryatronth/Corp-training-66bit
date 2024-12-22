@@ -56,4 +56,12 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         WHERE ugt.group_id = :groupId AND ugt.username IN (:usernames)
     """, nativeQuery = true)
     void deleteUsersByUsernames(long groupId, List<String> usernames);
+
+    @Modifying
+    @Query("""
+        UPDATE Group g
+        SET g.countMembers = g.countMembers - :decreaseMemberCount
+        WHERE g.id = :groupId
+    """)
+    void updateDecreaseMemberCount(long groupId, long decreaseMemberCount);
 }

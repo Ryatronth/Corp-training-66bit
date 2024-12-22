@@ -123,7 +123,7 @@ public class GroupService {
             Group destination = findGroupWithUsers(entry.getKey());
             Set<User> users = userService.findAllByUsernames(entry.getValue());
 
-            moveUsersBetweenGroups(target, destination, users);
+            moveUsersBetweenGroups(destination, target, users);
         }
 
         return target;
@@ -229,6 +229,7 @@ public class GroupService {
 
         for (Map.Entry<Long, List<String>> entry : groupToUsers.entrySet()) {
             groupRepository.deleteUsersByUsernames(entry.getKey(), entry.getValue());
+            groupRepository.updateDecreaseMemberCount(entry.getKey(), entry.getValue().size());
 
             eventPublisher.publishEvent(new DeleteUserEvent(this, courseId, entry.getValue()));
         }
