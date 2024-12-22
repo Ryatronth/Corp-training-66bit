@@ -69,7 +69,7 @@ public class GroupController {
                 .body(groupService.updateUsers(courseId, groupId, usernames));
     }
 
-    @PutMapping("/groups/{groupId}/users")
+    @PutMapping("/groups/users/exclude")
     public ResponseEntity<Void> deleteUsersFromGroup(
             @RequestParam(name = "courseId") long courseId,
             @RequestBody List<ProcessGroupsUsersDTO> dtos
