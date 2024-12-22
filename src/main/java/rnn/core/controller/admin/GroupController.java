@@ -6,10 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rnn.core.model.admin.Group;
-import rnn.core.model.admin.dto.DeadlineDTO;
-import rnn.core.model.admin.dto.GroupDTO;
-import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
-import rnn.core.model.admin.dto.MoveGroupsDTO;
+import rnn.core.model.admin.dto.*;
 import rnn.core.service.admin.GroupService;
 
 import java.util.List;
@@ -74,11 +71,10 @@ public class GroupController {
 
     @PutMapping("/groups/{groupId}/users")
     public ResponseEntity<Void> deleteUsersFromGroup(
-            @PathVariable(name = "groupId") long groupId,
             @RequestParam(name = "courseId") long courseId,
-            @RequestBody List<String> usernames
+            @RequestBody List<ProcessGroupsUsersDTO> dtos
     ) {
-        groupService.deleteUsersFromGroup(courseId, groupId, usernames);
+        groupService.deleteUsersFromGroup(courseId, dtos);
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -86,15 +82,14 @@ public class GroupController {
     }
 
     @PutMapping("/groups/users/move")
-    public ResponseEntity<MoveGroupsDTO> moveUsersGroup(
-            @RequestParam(name = "destinationId") long destinationId,
+    public ResponseEntity<Group> moveUsersGroup(
             @RequestParam(name = "targetId") long targetId,
-            @RequestBody List<String> usernames
+            @RequestBody List<ProcessGroupsUsersDTO> dtos
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.moveUsers(destinationId, targetId, usernames));
+                .body(groupService.moveUsers(targetId, dtos));
     }
 
     @PutMapping("/groups/{groupId}/deadlines")

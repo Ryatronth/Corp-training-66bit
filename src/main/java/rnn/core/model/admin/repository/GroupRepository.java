@@ -3,6 +3,7 @@ package rnn.core.model.admin.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import rnn.core.model.admin.Group;
@@ -48,4 +49,11 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
         FROM Group g WHERE g.course.id = :courseId AND g.isDefault = true
     """)
     Optional<Group> findDefaultGroupWithCourseAndUsers(long courseId);
+
+    @Modifying
+    @Query(value = """
+        DELETE FROM user_group_t ugt
+        WHERE ugt.group_id = :groupId AND ugt.username IN (:usernames)
+    """, nativeQuery = true)
+    void deleteUsersByUsernames(long groupId, List<String> usernames);
 }

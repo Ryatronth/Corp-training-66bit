@@ -17,18 +17,13 @@ import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Group;
 import rnn.core.model.admin.GroupDeadline;
 import rnn.core.model.admin.QGroup;
-import rnn.core.model.admin.dto.DeadlineDTO;
-import rnn.core.model.admin.dto.GroupDTO;
-import rnn.core.model.admin.dto.GroupWithDeadlinesDTO;
-import rnn.core.model.admin.dto.MoveGroupsDTO;
+import rnn.core.model.admin.dto.*;
 import rnn.core.model.admin.repository.GroupRepository;
 import rnn.core.model.querydsl.PageableBuilder;
 import rnn.core.model.security.User;
 import rnn.core.service.security.UserService;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -74,7 +69,7 @@ public class GroupService {
         group = groupRepository.save(group);
         eventPublisher.publishEvent(new CreateGroupEvent(this, course, group, dto.deadlines(), newUsers));
 
-        return moveUsersBetweenGroups(defaultGroup, group, moveToTarget).target();
+        return moveUsersBetweenGroups(defaultGroup, group, moveToTarget);
     }
 
     @Transactional
@@ -115,19 +110,26 @@ public class GroupService {
 
         eventPublisher.publishEvent(new AddUserEvent(this, group.getCourse(), newUsers));
         eventPublisher.publishEvent(new DeleteUserEvent(this, group.getCourse().getId(), toDelete.stream().map(User::getUsername).toList()));
-        return moveUsersBetweenGroups(defaultGroup, group, moveToTarget).target();
+        return moveUsersBetweenGroups(defaultGroup, group, moveToTarget);
     }
 
     @Transactional
-    public MoveGroupsDTO moveUsers(long destinationId, long targetId, List<String> usernames) {
-        Set<User> users = userService.findAllByUsernames(usernames);
+    public Group moveUsers(long targetId, List<ProcessGroupsUsersDTO> dtos) {
+        Map<Long, List<String>> groupToUsers = buildGroupToUsersMap(dtos);
 
-        Group destination = findGroupWithUsers(destinationId);
         Group target = findGroupWithUsers(targetId);
-        return moveUsersBetweenGroups(destination, target, users);
+
+        for (Map.Entry<Long, List<String>> entry : groupToUsers.entrySet()) {
+            Group destination = findGroupWithUsers(entry.getKey());
+            Set<User> users = userService.findAllByUsernames(entry.getValue());
+
+            moveUsersBetweenGroups(target, destination, users);
+        }
+
+        return target;
     }
 
-    private MoveGroupsDTO moveUsersBetweenGroups(Group destinationGroup, Group targetGroup, Set<User> users) {
+    private Group moveUsersBetweenGroups(Group destinationGroup, Group targetGroup, Set<User> users) {
         for (User user : users) {
             destinationGroup.getUsers().remove(user);
             targetGroup.getUsers().add(user);
@@ -138,7 +140,7 @@ public class GroupService {
 
         groupRepository.save(destinationGroup);
         groupRepository.save(targetGroup);
-        return new MoveGroupsDTO(destinationGroup, targetGroup);
+        return targetGroup;
     }
 
     @Transactional
@@ -222,14 +224,26 @@ public class GroupService {
     }
 
     @Transactional
-    public void deleteUsersFromGroup(long courseId, long groupId, List<String> usernames) {
-        Group group = findGroupWithUsers(groupId);
+    public void deleteUsersFromGroup(long courseId, List<ProcessGroupsUsersDTO> dtos) {
+        Map<Long, List<String>> groupToUsers = buildGroupToUsersMap(dtos);
 
-        eventPublisher.publishEvent(new DeleteUserEvent(this, courseId, usernames));
+        for (Map.Entry<Long, List<String>> entry : groupToUsers.entrySet()) {
+            groupRepository.deleteUsersByUsernames(entry.getKey(), entry.getValue());
 
-        group.getUsers().removeIf(user -> usernames.contains(user.getUsername()));
-        group.setCountMembers(group.getUsers().size());
-        groupRepository.save(group);
+            eventPublisher.publishEvent(new DeleteUserEvent(this, courseId, entry.getValue()));
+        }
+    }
+
+    private Map<Long, List<String>> buildGroupToUsersMap(List<ProcessGroupsUsersDTO> dtos) {
+        Map<Long, List<String>> groupToUsers = new HashMap<>();
+
+        for (ProcessGroupsUsersDTO dto : dtos) {
+            List<String> usernames = groupToUsers.getOrDefault(dto.groupId(), new ArrayList<>());
+            usernames.add(dto.username());
+            groupToUsers.put(dto.groupId(), usernames);
+        }
+
+        return groupToUsers;
     }
 
     @Transactional
