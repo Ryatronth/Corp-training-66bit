@@ -46,11 +46,8 @@ public class FileService {
     }
 
     public String updateContentFile(FileContent fileContent, MultipartFile file) {
-        String fileUrl = fileContent.getFileUrl();
-
-        if (fileUrl != null) {
-            UUID uuid = extractUUID(fileUrl);
-            return createContentFile(fileContent.getTopic().getId(), uuid, file);
+        if (file != null) {
+            return createContentFile(fileContent.getTopic().getId(), UUID.randomUUID(), file);
         }
 
         return null;

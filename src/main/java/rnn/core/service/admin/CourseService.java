@@ -1,7 +1,6 @@
 package rnn.core.service.admin;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.ConstantImpl;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,6 +24,7 @@ import rnn.core.model.security.QUser;
 import rnn.core.service.filestorage.FileService;
 import rnn.core.service.security.UserService;
 
+import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -79,15 +79,10 @@ public class CourseService {
         return courseRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Курс с id = %s не найден.".formatted(id)));
     }
 
-    public Page<Course> findAll(String title, String tag, CourseFilter filter, int page, int limit) {
+    public Page<Course> findAll(String title, List<String> tags, CourseFilter filter, int page, int limit) {
         QCourse course = QCourse.course;
         QUser user = QUser.user;
         QRole role = QRole.role;
-
-        JPAQuery<Course> query = queryFactory
-                .selectFrom(course)
-                .leftJoin(course.author, user).fetchJoin()
-                .leftJoin(user.role, role).fetchJoin();
 
         BooleanBuilder builder = new BooleanBuilder();
 
@@ -95,13 +90,21 @@ public class CourseService {
             builder.and(course.title.containsIgnoreCase(title.trim()));
         }
 
-        if (tag != null && !tag.trim().isEmpty()) {
-            String likePattern = "%\"name\":\"%" + tag.trim().toLowerCase() + "%\",\"color%";
+        if (tags != null && !tags.isEmpty()) {
+            StringBuilder template = new StringBuilder();
+
+            for (int i = 0; i < tags.size(); i++) {
+                template.append("lower({0}) like '%\"name\":\"%").append(tags.get(i).trim().toLowerCase()).append("%\",\"color%'");
+                if (i < tags.size() - 1) {
+                    template.append(" or ");
+                }
+            }
+
+            System.out.println(template);
 
             builder.and(Expressions.booleanTemplate(
-                    "lower({0}) like {1} escape '!'",
-                    course.tags,
-                    ConstantImpl.create(likePattern)
+                    template.toString(),
+                    course.tags
             ));
         }
 
@@ -112,7 +115,13 @@ public class CourseService {
             }
         }
 
-        query.where(builder);
+        JPAQuery<Course> query = queryFactory
+                .selectFrom(course)
+                .leftJoin(course.author, user).fetchJoin()
+                .leftJoin(user.role, role).fetchJoin()
+                .where(builder)
+                .orderBy(course.title.asc());
+
         return PageableBuilder.build(query, page, limit);
     }
 

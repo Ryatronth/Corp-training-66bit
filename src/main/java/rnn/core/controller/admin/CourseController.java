@@ -13,6 +13,8 @@ import rnn.core.model.admin.dto.CourseWithoutImageDTO;
 import rnn.core.service.admin.CourseService;
 import rnn.core.model.admin.Course;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/admin")
@@ -22,15 +24,15 @@ public class CourseController {
     @GetMapping("/courses")
     public ResponseEntity<Page<Course>> getCourses(
             @RequestParam(name = "title", required = false) String title,
-            @RequestParam(name = "tag", required = false) String tag,
-            @RequestParam(name = "filter", required = false, defaultValue = "ALL") CourseFilter filter,
+            @RequestParam(name = "tags", required = false) List<String> tags,
+            @RequestParam(name = "status", required = false, defaultValue = "ALL") CourseFilter filter,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "limit", required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(courseService.findAll(title, tag, filter, page, limit));
+                .body(courseService.findAll(title, tags, filter, page, limit));
     }
 
     @GetMapping("/courses/{id}")
