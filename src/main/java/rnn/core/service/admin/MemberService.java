@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import rnn.core.model.admin.QGroup;
 import rnn.core.model.admin.dto.UserCourseGroupDTO;
 import rnn.core.model.admin.dto.UserGroupDTO;
-import rnn.core.model.querydsl.PageableBuilder;
+import rnn.core.querydsl.PageableBuilder;
 import rnn.core.model.security.QUser;
 import rnn.core.model.security.User;
 import rnn.core.model.user.QUserCourse;

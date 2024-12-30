@@ -31,6 +31,7 @@ public class UserModule {
     @JoinColumn(name = "course_id")
     private UserCourse course;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "module")
     private List<UserTopic> topics;
 

@@ -19,7 +19,7 @@ import rnn.core.model.admin.GroupDeadline;
 import rnn.core.model.admin.QGroup;
 import rnn.core.model.admin.dto.*;
 import rnn.core.model.admin.repository.GroupRepository;
-import rnn.core.model.querydsl.PageableBuilder;
+import rnn.core.querydsl.PageableBuilder;
 import rnn.core.model.security.User;
 import rnn.core.service.security.UserService;
 

@@ -36,7 +36,7 @@ public class TopicController {
     }
 
     @PutMapping("/topics/{id}")
-    public ResponseEntity<Topic> updateModule(@PathVariable long id, @RequestBody TopicDTO topicDTO) {
+    public ResponseEntity<Topic> updateTopic(@PathVariable long id, @RequestBody TopicDTO topicDTO) {
         Topic module = topicService.update(id, topicDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -45,7 +45,7 @@ public class TopicController {
     }
 
     @DeleteMapping("/topics/{id}")
-    public ResponseEntity<Void> deleteModule(@PathVariable long id) {
+    public ResponseEntity<Void> deleteTopic(@PathVariable long id) {
         topicService.delete(id);
         return ResponseEntity.ok().build();
     }

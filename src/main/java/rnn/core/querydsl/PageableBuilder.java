@@ -1,4 +1,4 @@
-package rnn.core.model.querydsl;
+package rnn.core.querydsl;
 
 import com.querydsl.jpa.impl.JPAQuery;
 import org.springframework.data.domain.Page;

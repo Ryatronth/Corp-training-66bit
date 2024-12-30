@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import rnn.core.model.admin.converter.TagConverter;
-import rnn.core.model.security.User;
 import rnn.core.model.user.UserCourse;
 
 import java.util.List;
@@ -34,9 +33,6 @@ public class Course {
 
     private String pictureUrl;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private User author;
-
     private int score;
 
     private boolean isPublished;
@@ -64,7 +60,6 @@ public class Course {
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 ", pictureUrl='" + pictureUrl + '\'' +
-                ", author=" + author +
                 ", score=" + score +
                 ", tags=" + tags +
                 '}';

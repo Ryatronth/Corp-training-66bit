@@ -46,8 +46,8 @@ public class TopicService extends PositionableService<Topic, Long> {
     }
 
     @Transactional
-    public Topic create(long moduleID, TopicDTO topicDTO) {
-        Module module = moduleService.find(moduleID);
+    public Topic create(long moduleId, TopicDTO topicDTO) {
+        Module module = moduleService.find(moduleId);
 
         Topic topic = Topic
                 .builder()
@@ -55,7 +55,7 @@ public class TopicService extends PositionableService<Topic, Long> {
                 .module(module)
                 .build();
 
-        return super.create(topic, moduleID, topicDTO.position());
+        return super.create(topic, moduleId, topicDTO.position());
     }
 
     @Transactional

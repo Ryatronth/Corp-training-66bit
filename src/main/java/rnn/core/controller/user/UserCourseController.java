@@ -8,7 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import rnn.core.controller.admin.filter.CourseFilter;
 import rnn.core.service.user.UserCourseService;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -20,6 +23,9 @@ public class UserCourseController {
     public ResponseEntity<Page<?>> getUserCourses(
             @RequestParam(name = "username") String username,
             @RequestParam(name = "enrolled", required = false, defaultValue = "true") boolean enrolled,
+            @RequestParam(name = "title", required = false) String title,
+            @RequestParam(name = "tags", required = false) List<String> tags,
+            @RequestParam(name = "status", required = false, defaultValue = "ALL") CourseFilter filter,
             @RequestParam(name = "page", required = false, defaultValue = "0") int page,
             @RequestParam(name = "limit", required = false, defaultValue = "20") int limit
     ) {
@@ -27,11 +33,11 @@ public class UserCourseController {
             return ResponseEntity
                     .status(200)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(userCourseService.findAllByUsernameWithCourse(username, page, limit));
+                    .body(userCourseService.findAllByUsernameWithCourse(username, title, tags, filter, page, limit));
         }
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(userCourseService.findAllNotEnrolled(username, page, limit));
+                .body(userCourseService.findAllNotEnrolled(username, title, tags, filter, page, limit));
     }
 }

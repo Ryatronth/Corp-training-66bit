@@ -34,6 +34,7 @@ public class UserCourse {
 
     private boolean isCompleted = false;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "username")
     private User user;

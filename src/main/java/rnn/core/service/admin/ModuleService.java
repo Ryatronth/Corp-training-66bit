@@ -96,6 +96,10 @@ public class ModuleService extends PositionableService<Module, Long> {
                 .toList();
     }
 
+    public List<Module> findByCourseIdFetchTopics(long courseId) {
+        return moduleRepository.findAllByCourseIdFetchTopic(courseId);
+    }
+
     public Module find(long id) {
         return moduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Модуль с id = %s не найден.".formatted(id)));
     }

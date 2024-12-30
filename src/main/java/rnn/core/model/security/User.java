@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Group;
 import rnn.core.model.user.UserCourse;
 
@@ -30,10 +29,6 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "role_name")
     private Role role;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "author")
-    private List<Course> courses;
 
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)
