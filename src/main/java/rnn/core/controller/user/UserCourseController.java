@@ -2,13 +2,12 @@ package rnn.core.controller.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
 import rnn.core.service.user.UserCourseService;
 
 import java.util.List;
@@ -39,5 +38,16 @@ public class UserCourseController {
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userCourseService.findAllNotEnrolled(username, title, tags, filter, page, limit));
+    }
+
+    @GetMapping("/courses/{id}")
+    public ResponseEntity<UserCourseWithCourseAndGroupDTO> getCourse(
+            @PathVariable long id,
+            @RequestParam(name = "username") String username
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userCourseService.findWithCourseAndGroup(id, username));
     }
 }

@@ -20,12 +20,13 @@ public class UserModuleController {
     @GetMapping("/modules")
     public ResponseEntity<List<UserModuleWithModuleDTO>> findByCourseId(
             @RequestParam(name = "courseId") long courseId,
-            @RequestParam(name = "userCourseId") long userCourseId
+            @RequestParam(name = "userCourseId") long userCourseId,
+            @RequestParam(name = "groupId") long groupId
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(userModuleService.findAllWithModule(courseId, userCourseId));
+                .body(userModuleService.findAllWithModuleAndDeadline(courseId, userCourseId, groupId));
     }
 
     @PostMapping("/modules")

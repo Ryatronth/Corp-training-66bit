@@ -16,7 +16,7 @@ public interface UserModuleRepository extends JpaRepository<UserModule, Long> {
         LEFT JOIN um.topics ut
         JOIN um.module m
         WHERE um.course.id = :userCourseId
-        ORDER BY um.module.id ASC
+        ORDER BY um.module.id ASC, ut.topic.id ASC
     """)
-    List<UserModule> findAllByCourseIdFetchTopics(long userCourseId);
+    List<UserModule> findByCourseIdFetchTopics(long userCourseId);
 }

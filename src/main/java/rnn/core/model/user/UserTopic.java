@@ -26,6 +26,8 @@ public class UserTopic {
 
     private int currentScore;
 
+    private boolean isCompleted;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "module_id")

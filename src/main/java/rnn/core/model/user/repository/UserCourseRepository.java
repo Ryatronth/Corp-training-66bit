@@ -1,29 +1,25 @@
 package rnn.core.model.user.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import rnn.core.model.user.UserCourse;
-import rnn.core.model.user.dto.UserCourseDTO;
+import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
 
 import java.util.List;
 
 @Repository
 public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
-    @EntityGraph(attributePaths = {"course.author.role"})
     @Query("""
-        SELECT new rnn.core.model.user.dto.UserCourseDTO(
-            c, u
-        )
-        FROM UserCourse u
-        JOIN u.course c
-        WHERE u.user.username = :username
+        SELECT new rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO(c, uc, g)
+        FROM UserCourse uc
+        JOIN uc.course c
+        JOIN c.groups g
+        JOIN g.users u
+        WHERE uc.id = :id AND u.username = :username
     """)
-    Page<UserCourseDTO> findAllByUsernameWithCourse(String username, Pageable pageable);
+    UserCourseWithCourseAndGroupDTO findByIdWithCourseAndGroup(long id, String username);
 
     @Modifying
     @Query("""

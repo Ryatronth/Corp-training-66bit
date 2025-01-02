@@ -29,6 +29,7 @@ public class GroupDeadline {
 
     private LocalDateTime endTime;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;

@@ -25,7 +25,7 @@ public class CustomExceptionHandler {
         } else if (errorMessage.contains("unique_position_module")) {
             message = "Тема с такой позицией уже существует";
         } else {
-            message = e.getMessage();
+            throw e;
         }
 
         return ResponseEntity

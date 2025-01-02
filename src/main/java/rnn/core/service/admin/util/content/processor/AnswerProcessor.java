@@ -36,6 +36,7 @@ public class AnswerProcessor<T> implements ContentProcessor<T> {
 
         if (entity instanceof Topic topic) {
             content.setTopic(topic);
+            topic.setCountContents(topic.getCountContents() + 1);
         }
 
         if (entity instanceof AnswerContent answerContent) {

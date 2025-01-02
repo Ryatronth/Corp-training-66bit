@@ -6,7 +6,6 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import rnn.core.controller.admin.filter.CourseFilter;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.QCourse;
@@ -14,6 +13,7 @@ import rnn.core.model.security.User;
 import rnn.core.model.user.QUserCourse;
 import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.dto.UserCourseDTO;
+import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
 import rnn.core.model.user.repository.UserCourseRepository;
 import rnn.core.querydsl.PageableBuilder;
 import rnn.core.querydsl.course.CourseQueryFilter;
@@ -29,7 +29,10 @@ public class UserCourseService {
 
     private final UserCourseRepository userCourseRepository;
 
-    @Transactional
+    public UserCourseWithCourseAndGroupDTO findWithCourseAndGroup(long userCourseId, String username) {
+        return userCourseRepository.findByIdWithCourseAndGroup(userCourseId, username);
+    }
+
     public Page<UserCourseDTO> findAllByUsernameWithCourse(
             String username,
             String title,

@@ -59,6 +59,7 @@ public class ModuleService extends PositionableService<Module, Long> {
     @Transactional
     public Module create(long courseId, ModuleDTO moduleDTO) {
         Course course = courseService.find(courseId);
+        course.setCountModules(course.getCountModules() + 1);
 
         Module module = Module
                 .builder()

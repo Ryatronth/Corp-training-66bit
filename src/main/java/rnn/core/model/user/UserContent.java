@@ -21,7 +21,7 @@ public class UserContent {
 
     private int currentAttempts;
 
-    private boolean isDone;
+    private boolean isCompleted;
 
     private boolean isSuccess;
 

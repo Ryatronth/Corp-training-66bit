@@ -48,6 +48,7 @@ public class TopicService extends PositionableService<Topic, Long> {
     @Transactional
     public Topic create(long moduleId, TopicDTO topicDTO) {
         Module module = moduleService.find(moduleId);
+        module.setCountTopics(module.getCountTopics() + 1);
 
         Topic topic = Topic
                 .builder()

@@ -42,4 +42,8 @@ public class DeadlineService {
         }
         return groupDeadlineRepository.saveAll(deadlines);
     }
+
+    public List<GroupDeadline> findAllByGroupIdFetchModule(long groupId) {
+        return groupDeadlineRepository.findAllByGroupIdFetchModule(groupId);
+    }
 }
