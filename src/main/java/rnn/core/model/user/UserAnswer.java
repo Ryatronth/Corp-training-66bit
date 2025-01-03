@@ -18,6 +18,6 @@ public class UserAnswer {
     private String answer;
 
     @JsonIgnore
-    @OneToOne(mappedBy = "answer")
+    @OneToOne
     private UserContent content;
 }
