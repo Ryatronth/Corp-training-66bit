@@ -13,8 +13,7 @@ import rnn.core.model.admin.dto.contentImpl.*;
         visible = true
 )
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = DetailedContentDTO.class, name = "DETAILED_ANSWER"),
-        @JsonSubTypes.Type(value = AnswerContentDTO.class, names = {"SINGLE_ANSWER", "MULTI_ANSWER"}),
+        @JsonSubTypes.Type(value = DetailedContentDTO.class, names = {"DETAILED_ANSWER", "SINGLE_ANSWER", "MULTI_ANSWER"}),
         @JsonSubTypes.Type(value = FreeformContentDTO.class, name = "FREEFORM_ANSWER"),
         @JsonSubTypes.Type(value = FileContentDTO.class, names = {"PICTURE", "VIDEO"}),
         @JsonSubTypes.Type(value = TextContentDTO.class, names = {"TEXT"})

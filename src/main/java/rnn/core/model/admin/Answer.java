@@ -26,6 +26,8 @@ public class Answer {
     @Column(length = 500)
     private String answer;
 
+    private boolean isRight;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")

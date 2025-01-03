@@ -25,6 +25,8 @@ public class UserContent {
 
     private boolean isSuccess;
 
+    private String answer;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")

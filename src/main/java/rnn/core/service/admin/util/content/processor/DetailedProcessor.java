@@ -49,6 +49,6 @@ public class DetailedProcessor<T> implements ContentProcessor<T> {
 
     @Override
     public List<Content.Type> getType() {
-        return List.of(Content.Type.DETAILED_ANSWER);
+        return List.of(Content.Type.DETAILED_ANSWER, Content.Type.SINGLE_ANSWER, Content.Type.MULTI_ANSWER);
     }
 }

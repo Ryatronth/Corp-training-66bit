@@ -84,6 +84,7 @@ public class ContentService extends PositionableService<Content, Long> {
         Content updatedContent = contentManager.getUpdater(content.getType()).process(content, contentDTO);
         updatedContent = super.update(updatedContent, updatedContent.getPosition(), updatedContent.getTopic().getId());
 
+        // TODO переписать на async событие
         if (updatedContent instanceof FreeformContent contentWithScore
                 && content instanceof FreeformContent oldContent
                 && contentWithScore.getScore() != oldContent.getScore()
@@ -103,8 +104,7 @@ public class ContentService extends PositionableService<Content, Long> {
 
     @Transactional
     public List<Content> findByTopicId(long topicId) {
-        List<Content> contentsWithAnswers = contentRepository.findByTopicIdOrderByPositionAscWithAnswers(topicId);
-        return contentRepository.findByTopicIdOrderByPositionAscWithQuestions(topicId);
+        return contentRepository.findByTopicIdOrderByPositionAscWithAnswers(topicId);
     }
 
     @Transactional
@@ -113,7 +113,6 @@ public class ContentService extends PositionableService<Content, Long> {
     }
 
     public Content find(long id) {
-        Content content = contentRepository.findByIdOrderByPositionAscWithAnswers(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
-        return contentRepository.findByIdOrderByPositionAscWithQuestions(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
+        return contentRepository.findByIdOrderByPositionAscWithAnswers(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
     }
 }

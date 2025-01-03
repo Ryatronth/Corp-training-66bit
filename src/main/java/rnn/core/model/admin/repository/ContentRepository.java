@@ -18,12 +18,6 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
             "ORDER BY c.position ASC")
     List<Content> findByTopicIdOrderByPositionAscWithAnswers(long topicId);
 
-    @Query("SELECT DISTINCT c FROM Content c " +
-            "LEFT JOIN FETCH c.questions q " +
-            "WHERE c.topic.id = :topicId " +
-            "ORDER BY c.position ASC")
-    List<Content> findByTopicIdOrderByPositionAscWithQuestions(long topicId);
-
     @Query("FROM Content c WHERE c.topic.id = :topicId AND c.position > :position ORDER BY c.position DESC")
     List<Content> findAllWhichPositionIsHigher(long topicId, int position);
 
@@ -35,10 +29,4 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
             "WHERE c.id = :id " +
             "ORDER BY c.position ASC")
     Optional<Content> findByIdOrderByPositionAscWithAnswers(long id);
-
-    @Query("FROM Content c " +
-            "LEFT JOIN FETCH c.questions q " +
-            "WHERE c.id = :id " +
-            "ORDER BY c.position ASC")
-    Optional<Content> findByIdOrderByPositionAscWithQuestions(long id);
 }

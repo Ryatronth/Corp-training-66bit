@@ -17,5 +17,7 @@ public class DetailedContentDTO extends ContentDTO {
 
     private int score;
 
-    private List<String> answers;
+    private List<AnswerDTO> answers;
+
+    public record AnswerDTO(String answer, boolean isRight){}
 }
