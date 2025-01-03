@@ -107,7 +107,20 @@ public class ContentService extends PositionableService<Content, Long> {
 
     @Transactional
     public void delete(long id) {
-        contentRepository.findById(id).ifPresent(existingContent -> super.delete(existingContent, existingContent.getTopic().getId()));
+        Content content = findWithAnswersAndTopicAndModuleAndCourse(id);
+
+        if (content instanceof FreeformContent contentWithScore) {
+            Topic topic = contentWithScore.getTopic();
+            topic.setScore(topic.getScore() - contentWithScore.getScore());
+
+            Module module = topic.getModule();
+            module.setScore(module.getScore() - contentWithScore.getScore());
+
+            Course course = module.getCourse();
+            course.setScore(course.getScore() - contentWithScore.getScore());
+        }
+
+        super.delete(content, content.getTopic().getId());
     }
 
     public Content find(long id) {

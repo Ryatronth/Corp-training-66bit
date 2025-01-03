@@ -34,10 +34,10 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @EntityGraph(attributePaths = {"topic.module.course"})
     @Query("""
         FROM Content co
-        JOIN FETCH co.answers a
         JOIN co.topic t
         JOIN t.module m
         JOIN m.course c
+        LEFT JOIN FETCH co.answers a
         WHERE co.id = :id
         ORDER BY co.position ASC
     """)
