@@ -25,8 +25,6 @@ public class UserContent {
 
     private boolean isSuccess;
 
-    private String answer;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")
@@ -36,4 +34,9 @@ public class UserContent {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")
     private Content content;
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "content", cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @JoinColumn(name = "answer_id", referencedColumnName = "id")
+    private UserAnswer answer;
 }

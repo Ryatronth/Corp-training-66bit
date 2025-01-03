@@ -26,7 +26,7 @@ public class UserTopicService {
         return userTopicRepository.save(userTopic);
     }
 
-    public UserTopic find(long id) {
-        return userTopicRepository.findById(id).orElseThrow(() -> new RuntimeException("Пользовательская тема с данным id не найдена"));
+    public UserTopic findWithModuleAndCourse(long id) {
+        return userTopicRepository.findByIdFetchModuleAndCourse(id).orElseThrow(() -> new RuntimeException("Пользовательская тема с данным id не найдена"));
     }
 }

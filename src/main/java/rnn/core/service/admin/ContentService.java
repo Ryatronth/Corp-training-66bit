@@ -101,7 +101,6 @@ public class ContentService extends PositionableService<Content, Long> {
         return updatedContent;
     }
 
-    @Transactional
     public List<Content> findByTopicId(long topicId) {
         return contentRepository.findByTopicIdOrderByPositionAscWithAnswers(topicId);
     }

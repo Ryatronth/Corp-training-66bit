@@ -32,6 +32,8 @@ public class UserCourse {
 
     private int currentScore;
 
+    private int completedModules;
+
     private boolean isCompleted;
 
     @JsonIgnore
