@@ -79,4 +79,8 @@ public class TopicService extends PositionableService<Topic, Long> {
     public Topic find(long id) {
         return topicRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Тема с id = %s не найдена.".formatted(id)));
     }
+
+    public Topic findWithModuleAndCourse(long id) {
+        return topicRepository.findByIdWithModuleAndCourse(id).orElseThrow(() -> new IllegalArgumentException("Тема с id = %s не найдена.".formatted(id)));
+    }
 }

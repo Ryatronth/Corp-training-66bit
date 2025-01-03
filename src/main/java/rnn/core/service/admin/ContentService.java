@@ -56,7 +56,7 @@ public class ContentService extends PositionableService<Content, Long> {
 
     @Transactional
     public Content create(long topicId, ContentDTO contentDTO) {
-        Topic topic = topicService.find(topicId);
+        Topic topic = topicService.findWithModuleAndCourse(topicId);
         Content content = contentManager.getCreator(contentDTO.getType()).process(topic, contentDTO);
         content = super.create(content, topic.getId(), content.getPosition());
 
@@ -75,7 +75,7 @@ public class ContentService extends PositionableService<Content, Long> {
 
     @Transactional
     public Content update(long id, ContentDTO contentDTO) {
-        Content content = find(id);
+        Content content = findWithAnswersAndTopicAndModuleAndCourse(id);
 
         if (content.getType() != contentDTO.getType()) {
             throw new IllegalArgumentException("Несоответствие типов контента");
@@ -84,7 +84,6 @@ public class ContentService extends PositionableService<Content, Long> {
         Content updatedContent = contentManager.getUpdater(content.getType()).process(content, contentDTO);
         updatedContent = super.update(updatedContent, updatedContent.getPosition(), updatedContent.getTopic().getId());
 
-        // TODO переписать на async событие
         if (updatedContent instanceof FreeformContent contentWithScore
                 && content instanceof FreeformContent oldContent
                 && contentWithScore.getScore() != oldContent.getScore()
@@ -114,5 +113,9 @@ public class ContentService extends PositionableService<Content, Long> {
 
     public Content find(long id) {
         return contentRepository.findByIdOrderByPositionAscWithAnswers(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
+    }
+
+    public Content findWithAnswersAndTopicAndModuleAndCourse(long id) {
+        return contentRepository.findByIdWithAnswersAndTopicAndModuleAndCourse(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
     }
 }

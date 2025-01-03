@@ -32,7 +32,7 @@ public class UserCourse {
 
     private int currentScore;
 
-    private boolean isCompleted = false;
+    private boolean isCompleted;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

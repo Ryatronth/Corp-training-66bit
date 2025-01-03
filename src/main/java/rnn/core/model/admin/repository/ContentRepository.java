@@ -1,5 +1,6 @@
 package rnn.core.model.admin.repository;
 
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -29,4 +30,16 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
             "WHERE c.id = :id " +
             "ORDER BY c.position ASC")
     Optional<Content> findByIdOrderByPositionAscWithAnswers(long id);
+
+    @EntityGraph(attributePaths = {"topic.module.course"})
+    @Query("""
+        FROM Content co
+        JOIN FETCH co.answers a
+        JOIN co.topic t
+        JOIN t.module m
+        JOIN m.course c
+        WHERE co.id = :id
+        ORDER BY co.position ASC
+    """)
+    Optional<Content> findByIdWithAnswersAndTopicAndModuleAndCourse(long id);
 }
