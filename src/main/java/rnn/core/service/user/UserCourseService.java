@@ -119,4 +119,8 @@ public class UserCourseService {
     public UserCourse findById(long userCourseId) {
         return userCourseRepository.findById(userCourseId).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id не найден"));
     }
+
+    public UserCourse findByCourseIdAndUsername(long courseId, String username) {
+        return userCourseRepository.findByCourseIdAndUsername(courseId, username);
+    }
 }

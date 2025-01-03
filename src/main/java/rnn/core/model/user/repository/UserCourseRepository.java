@@ -21,6 +21,12 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
     """)
     UserCourseWithCourseAndGroupDTO findByIdWithCourseAndGroup(long id, String username);
 
+    @Query("""
+        FROM UserCourse uc
+        WHERE uc.course.id = :courseId AND uc.user.username = :username
+    """)
+    UserCourse findByCourseIdAndUsername(long courseId, String username);
+
     @Modifying
     @Query("""
         DELETE FROM UserCourse uc

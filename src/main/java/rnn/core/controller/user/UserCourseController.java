@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
 import rnn.core.service.user.UserCourseService;
 
@@ -38,6 +39,17 @@ public class UserCourseController {
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userCourseService.findAllNotEnrolled(username, title, tags, filter, page, limit));
+    }
+
+    @GetMapping("/courses/current")
+    public ResponseEntity<UserCourse> getUserCourses(
+            @RequestParam(name = "courseId") long courseId,
+            @RequestParam(name = "username") String username
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(userCourseService.findByCourseIdAndUsername(courseId, username));
     }
 
     @GetMapping("/courses/{id}")
