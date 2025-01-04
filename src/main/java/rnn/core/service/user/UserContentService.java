@@ -94,17 +94,15 @@ public class UserContentService {
         int countSuccess = 0;
 
         for (Answer trueAnswer : trueAnswers) {
-            if (trueAnswer.isRight()) {
-                for (String answer : answers) {
-                    if (trueAnswer.getAnswer().equals(answer)) {
-                        countSuccess++;
-                        break;
-                    }
+            for (String answer : answers) {
+                if (trueAnswer.getAnswer().equalsIgnoreCase(answer)) {
+                    countSuccess++;
+                    break;
                 }
             }
         }
 
-        return countSuccess == trueAnswers.size();
+        return countSuccess == trueAnswers.size() && answers.size() == trueAnswers.size();
     }
 
     public List<UserContentDTO> findByTopicId(long userTopicId, long topicId) {

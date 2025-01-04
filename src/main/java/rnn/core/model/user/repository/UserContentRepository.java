@@ -18,7 +18,7 @@ public interface UserContentRepository extends JpaRepository<UserContent, Long> 
             WHERE uc1.topic.id = :topicId
             GROUP BY uc1.content.id
         )
-        ORDER BY uc.id ASC
+        ORDER BY uc.content.id ASC
     """)
     List<UserContent> findAllByTopicIdFetchContent(long topicId);
 }

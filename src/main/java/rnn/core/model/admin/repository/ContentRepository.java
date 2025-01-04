@@ -25,10 +25,12 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @Query("FROM Content c WHERE c.topic.id = :topicId AND c.position >= :position ORDER BY c.position DESC")
     List<Content> findAllWhichPositionIsHigherOrEqual(long topicId, int position);
 
-    @Query("FROM Content c " +
-            "LEFT JOIN FETCH c.answers a " +
-            "WHERE c.id = :id " +
-            "ORDER BY c.position ASC")
+    @Query("""
+        FROM Content c
+        LEFT JOIN FETCH c.answers a
+        WHERE c.id = :id AND a.isRight is true
+        ORDER BY c.position ASC
+    """)
     Optional<Content> findByIdOrderByPositionAscWithAnswers(long id);
 
     @EntityGraph(attributePaths = {"topic.module.course"})
