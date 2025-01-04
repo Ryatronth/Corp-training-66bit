@@ -7,7 +7,10 @@ import rnn.core.model.admin.Answer;
 import rnn.core.model.admin.Content;
 import rnn.core.model.admin.content.DetailedContent;
 import rnn.core.model.admin.content.FreeformContent;
-import rnn.core.model.user.*;
+import rnn.core.model.user.UserContent;
+import rnn.core.model.user.UserCourse;
+import rnn.core.model.user.UserModule;
+import rnn.core.model.user.UserTopic;
 import rnn.core.model.user.dto.UserContentDTO;
 import rnn.core.model.user.repository.UserContentRepository;
 import rnn.core.service.admin.ContentService;
@@ -21,7 +24,6 @@ public class UserContentService {
     private final UserContentRepository userContentRepository;
     private final UserTopicService userTopicService;
     private final ContentService contentService;
-    private final UserAnswerService userAnswerService;
 
     @Transactional
     public UserContent answer(long userTopicId, long contentId, int currentAttempts, List<String> answers) {
@@ -51,9 +53,10 @@ public class UserContentService {
                 if (userContent.getCurrentAttempts() == 0) {
                     userContent.setCompleted(true);
                 }
+                userContent.setAnswer(answers.toString());
+            } else {
+                userContent.setAnswer(answers.getFirst());
             }
-
-            userContent.setAnswer(userAnswerService.create(userContent, answers));
 
             UserTopic topic = userContent.getTopic();
             UserModule module = topic.getModule();
