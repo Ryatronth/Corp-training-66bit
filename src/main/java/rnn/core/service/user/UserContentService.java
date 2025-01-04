@@ -119,7 +119,15 @@ public class UserContentService {
                 UserContent userContent = userContents.get(mid);
 
                 if (userContent.getContent().getId() == content.getId()) {
-                    userContentDTOs.add(new UserContentDTO(content, userContent));
+                    if (content instanceof DetailedContent detailedContent) {
+                        List<Answer> answers = detailedContent.getAnswers();
+                        answers.forEach(answer -> answer.setRight(false));
+                        detailedContent.setAnswers(answers);
+
+                        userContentDTOs.add(new UserContentDTO(detailedContent, userContent));
+                    } else {
+                        userContentDTOs.add(new UserContentDTO(content, userContent));
+                    }
                     found = true;
                     break;
                 } else if (userContent.getContent().getId() > content.getId()) {
