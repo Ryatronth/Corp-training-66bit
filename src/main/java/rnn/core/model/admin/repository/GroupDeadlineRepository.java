@@ -13,6 +13,7 @@ public interface GroupDeadlineRepository extends JpaRepository<GroupDeadline, Lo
         FROM GroupDeadline gd
         JOIN FETCH gd.module
         WHERE gd.group.id = :groupId
+        ORDER BY gd.module.id ASC
     """)
     List<GroupDeadline> findAllByGroupIdFetchModule(long groupId);
 }
