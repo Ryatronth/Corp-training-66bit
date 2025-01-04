@@ -114,20 +114,26 @@ public class UserModuleService {
         List<UserTopic> userTopics = userModule.getTopics();
         for (Topic topic : module.getTopics()) {
             int l = 0;
-            int r = userTopics.size();
+            int r = userTopics.size() - 1;
 
+            boolean found = false;
             while (l <= r) {
                 int mid = l + (r - l) / 2;
                 UserTopic userTopic = userTopics.get(mid);
 
                 if (userTopic.getTopic().getId() == topic.getId()) {
                     topics.add(new UserModuleWithModuleDTO.TopicWithUserTopicDTO(topic, userTopic));
+                    found = true;
                     break;
                 } else if (userTopic.getTopic().getId() > topic.getId()) {
                     r = mid - 1;
                 } else {
                     l = mid + 1;
                 }
+            }
+
+            if (!found) {
+                topics.add(new UserModuleWithModuleDTO.TopicWithUserTopicDTO(topic, null));
             }
         }
 
