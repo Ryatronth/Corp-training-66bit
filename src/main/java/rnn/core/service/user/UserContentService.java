@@ -70,15 +70,13 @@ public class UserContentService {
 
                 if (topic.getCompletedContents() == topic.getTopic().getCountContents()) {
                     topic.setCompleted(true);
+                    module.setCompletedTopics(1 + module.getCompletedTopics());
                 }
-
-                module.setCompletedTopics(1 + module.getCompletedTopics());
 
                 if (module.getCompletedTopics() == module.getModule().getCountTopics()) {
                     module.setCompleted(true);
+                    course.setCompletedModules(1 + course.getCompletedModules());
                 }
-
-                course.setCompletedModules(1 + course.getCompletedModules());
 
                 if (course.getCompletedModules() == course.getCourse().getCountModules()) {
                     course.setCompleted(true);
