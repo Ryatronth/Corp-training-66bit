@@ -39,7 +39,7 @@ public class UserModuleService {
         List<UserModule> userModules = userModuleRepository.findByCourseIdFetchTopics(userCourseId);
         List<GroupDeadline> deadlines = deadlineService.findAllByGroupIdFetchModule(groupId);
 
-        List<UserModuleWithModuleDTO> userModuleWithModuleDTOs = new ArrayList<>();
+        List<UserModuleWithModuleDTO> userModuleWithModuleDTOs = new ArrayList<>(modules.size());
         for (Module module : modules) {
             int l = 0;
             int r = userModules.size() - 1;
@@ -68,7 +68,7 @@ public class UserModuleService {
             }
 
             if (!found) {
-                List<UserModuleWithModuleDTO.TopicWithUserTopicDTO> topics = new ArrayList<>();
+                List<UserModuleWithModuleDTO.TopicWithUserTopicDTO> topics = new ArrayList<>(module.getTopics().size());
 
                 for (Topic topic : module.getTopics()) {
                     topics.add(new UserModuleWithModuleDTO.TopicWithUserTopicDTO(topic, null));
@@ -109,7 +109,7 @@ public class UserModuleService {
     }
 
     private List<UserModuleWithModuleDTO.TopicWithUserTopicDTO> matchTopics(Module module, UserModule userModule) {
-        List<UserModuleWithModuleDTO.TopicWithUserTopicDTO> topics = new ArrayList<>();
+        List<UserModuleWithModuleDTO.TopicWithUserTopicDTO> topics = new ArrayList<>(module.getTopics().size());
 
         List<UserTopic> userTopics = userModule.getTopics();
         for (Topic topic : module.getTopics()) {

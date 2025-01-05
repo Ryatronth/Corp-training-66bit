@@ -108,7 +108,7 @@ public class UserContentService {
         List<Content> contents = contentService.findByTopicIdWithAnswers(topicId);
         List<UserContent> userContents = userContentRepository.findAllByTopicIdFetchContent(userTopicId);
 
-        List<UserContentDTO> userContentDTOs = new ArrayList<>();
+        List<UserContentDTO> userContentDTOs = new ArrayList<>(contents.size());
         for (Content content : contents) {
             int l = 0;
             int r = userContents.size() - 1;

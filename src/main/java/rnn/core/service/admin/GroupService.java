@@ -144,17 +144,12 @@ public class GroupService {
     }
 
     @Transactional
-    public Group addUsersInDefaultGroup(long courseId, List<String> usernames) {
+    public Group addUsersInDefaultGroup(long courseId, Set<User> users) {
         Group defaultGroup = groupRepository.findDefaultGroupWithCourseAndUsers(courseId).orElseThrow(
                 () -> new RuntimeException("Курс с указанным id не найден либо у него отсутствует группа по умолчанию")
         );
-
-        Set<User> toAdd = userService.findAllByUsernames(usernames);
-        defaultGroup.getUsers().addAll(toAdd);
-
+        defaultGroup.getUsers().addAll(users);
         defaultGroup.setCountMembers(defaultGroup.getUsers().size());
-
-        eventPublisher.publishEvent(new AddUserEvent(this, defaultGroup.getCourse(), toAdd));
         return groupRepository.save(defaultGroup);
     }
 

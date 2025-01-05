@@ -6,6 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rnn.core.controller.admin.filter.CourseFilter;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.QCourse;
@@ -95,8 +96,9 @@ public class UserCourseService {
         return userCourseRepository.save(userCourse);
     }
 
-    public void createAll(Course course, Set<User> users) {
-        List<UserCourse> userCourses = new ArrayList<>();
+    @Transactional
+    public List<UserCourse> createAll(Course course, Set<User> users) {
+        List<UserCourse> userCourses = new ArrayList<>(users.size());
         for (User user : users) {
             UserCourse userCourse = UserCourse
                     .builder()
@@ -105,7 +107,8 @@ public class UserCourseService {
                     .build();
             userCourses.add(userCourse);
         }
-        userCourseRepository.saveAll(userCourses);
+
+        return userCourseRepository.saveAll(userCourses);
     }
 
     public void deleteAllByCourseIdAndUsernames(long courseId, List<String> username) {

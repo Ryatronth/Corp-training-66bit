@@ -7,8 +7,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.model.general.dto.SubscribeCourseDTO;
 import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
+import rnn.core.service.general.CourseSubscribeService;
 import rnn.core.service.user.UserCourseService;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/user")
 public class UserCourseController {
+    private final CourseSubscribeService courseSubscribeService;
     private final UserCourseService userCourseService;
 
     @GetMapping("/courses")
@@ -61,5 +64,16 @@ public class UserCourseController {
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(userCourseService.findWithCourseAndGroup(id, username));
+    }
+
+    @PostMapping("/courses/subscribe")
+    public ResponseEntity<SubscribeCourseDTO> subscribe(
+            @RequestParam(name = "courseId", required = false) Long courseId,
+            @RequestBody List<String> usernames
+    ) {
+        return ResponseEntity
+                .status(200)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(courseSubscribeService.subscribeCourse(courseId, usernames));
     }
 }

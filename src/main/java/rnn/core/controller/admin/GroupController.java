@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rnn.core.model.admin.Group;
 import rnn.core.model.admin.dto.*;
+import rnn.core.service.general.CourseSubscribeService;
 import rnn.core.service.admin.GroupService;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class GroupController {
+    private final CourseSubscribeService courseSubscribeService;
     private final GroupService groupService;
 
     @GetMapping("/groups")
@@ -61,7 +63,7 @@ public class GroupController {
             return ResponseEntity
                     .status(200)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(groupService.addUsersInDefaultGroup(courseId, usernames));
+                    .body(courseSubscribeService.subscribeCourse(courseId, usernames).group());
         }
         return ResponseEntity
                 .status(200)
