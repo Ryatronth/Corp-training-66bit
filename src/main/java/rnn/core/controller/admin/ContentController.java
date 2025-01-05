@@ -23,7 +23,7 @@ public class ContentController {
 
     @GetMapping("/contents")
     public ResponseEntity<List<Content>> findAll(@RequestParam long topicId) {
-        List<Content> contents = contentService.findByTopicId(topicId);
+        List<Content> contents = contentService.findByTopicIdWithAnswers(topicId);
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)

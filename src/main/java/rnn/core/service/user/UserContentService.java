@@ -53,10 +53,9 @@ public class UserContentService {
                 if (userContent.getCurrentAttempts() == 0) {
                     userContent.setCompleted(true);
                 }
-                userContent.setAnswer(answers.toString());
-            } else {
-                userContent.setAnswer(answers.getFirst());
             }
+
+            userContent.setAnswer(answers.toString());
 
             UserTopic topic = userContent.getTopic();
             UserModule module = topic.getModule();
@@ -106,7 +105,7 @@ public class UserContentService {
     }
 
     public List<UserContentDTO> findByTopicId(long userTopicId, long topicId) {
-        List<Content> contents = contentService.findByTopicId(topicId);
+        List<Content> contents = contentService.findByTopicIdWithAnswers(topicId);
         List<UserContent> userContents = userContentRepository.findAllByTopicIdFetchContent(userTopicId);
 
         List<UserContentDTO> userContentDTOs = new ArrayList<>();

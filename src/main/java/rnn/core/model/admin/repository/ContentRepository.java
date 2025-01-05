@@ -13,10 +13,12 @@ import java.util.Optional;
 public interface ContentRepository extends JpaRepository<Content, Long> {
     List<Content> findByTopicIdOrderByPositionAsc(long topicId);
 
-    @Query("SELECT DISTINCT c FROM Content c " +
-            "LEFT JOIN FETCH c.answers a " +
-            "WHERE c.topic.id = :topicId " +
-            "ORDER BY c.position ASC")
+    @Query("""
+        SELECT DISTINCT c FROM Content c
+        LEFT JOIN FETCH c.answers a
+        WHERE c.topic.id = :topicId
+        ORDER BY c.position ASC
+    """)
     List<Content> findByTopicIdOrderByPositionAscWithAnswers(long topicId);
 
     @Query("FROM Content c WHERE c.topic.id = :topicId AND c.position > :position ORDER BY c.position DESC")
