@@ -1,4 +1,4 @@
-package rnn.core.controller.admin.filter;
+package rnn.core.util;
 
 public enum CourseFilter {
     ALL,
