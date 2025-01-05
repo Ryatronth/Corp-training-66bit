@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rnn.core.model.user.UserContent;
+import rnn.core.model.user.dto.AnswerDTO;
 import rnn.core.model.user.dto.UserContentDTO;
 import rnn.core.service.user.UserContentService;
 
@@ -29,7 +29,7 @@ public class UserContentController {
     }
 
     @PostMapping("/contents")
-    public ResponseEntity<UserContent> createContent(
+    public ResponseEntity<AnswerDTO> createContent(
             @RequestParam(name = "userTopicId") long userTopicId,
             @RequestParam(name = "contentId") long contentId,
             @RequestParam(name = "currentAttempts") int currentAttempts,
