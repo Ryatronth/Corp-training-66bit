@@ -68,7 +68,7 @@ public class UserCourseController {
 
     @PostMapping("/courses/subscribe")
     public ResponseEntity<SubscribeCourseDTO> subscribe(
-            @RequestParam(name = "courseId", required = false) Long courseId,
+            @RequestParam(name = "courseId") long courseId,
             @RequestBody List<String> usernames
     ) {
         return ResponseEntity
