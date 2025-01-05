@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.util.CourseFilter;
 import rnn.core.event.event.CreateCourseEvent;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.QCourse;

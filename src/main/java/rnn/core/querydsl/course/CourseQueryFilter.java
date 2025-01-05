@@ -3,7 +3,7 @@ package rnn.core.querydsl.course;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
-import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.util.CourseFilter;
 import rnn.core.model.admin.QCourse;
 import rnn.core.querydsl.PredicateBuilder;
 

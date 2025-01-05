@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.util.CourseFilter;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.QCourse;
 import rnn.core.model.security.User;

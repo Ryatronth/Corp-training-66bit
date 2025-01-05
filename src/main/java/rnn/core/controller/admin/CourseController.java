@@ -7,7 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.util.CourseFilter;
 import rnn.core.model.admin.dto.CourseWithImageDTO;
 import rnn.core.model.admin.dto.CourseWithoutImageDTO;
 import rnn.core.service.admin.CourseService;

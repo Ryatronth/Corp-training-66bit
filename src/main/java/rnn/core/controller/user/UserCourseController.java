@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import rnn.core.controller.admin.filter.CourseFilter;
+import rnn.core.util.CourseFilter;
 import rnn.core.model.general.dto.SubscribeCourseDTO;
 import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
