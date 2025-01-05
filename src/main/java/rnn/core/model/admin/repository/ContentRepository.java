@@ -28,7 +28,7 @@ public interface ContentRepository extends JpaRepository<Content, Long> {
     @Query("""
         FROM Content c
         LEFT JOIN FETCH c.answers a
-        WHERE c.id = :id AND a.isRight is true
+        WHERE c.id = :id AND (a.isRight is true OR a.id is NULL)
         ORDER BY c.position ASC
     """)
     Optional<Content> findByIdOrderByPositionAscWithAnswers(long id);

@@ -27,7 +27,7 @@ public class UserContentService {
 
     @Transactional
     public UserContent answer(long userTopicId, long contentId, int currentAttempts, List<String> answers) {
-        Content content = contentService.find(contentId);
+        Content content = contentService.findWithRightAnswers(contentId);
         UserTopic userTopic = userTopicService.findWithModuleAndCourse(userTopicId);
 
         UserContent userContent = UserContent

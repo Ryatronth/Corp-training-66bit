@@ -123,7 +123,7 @@ public class ContentService extends PositionableService<Content, Long> {
         super.delete(content, content.getTopic().getId());
     }
 
-    public Content find(long id) {
+    public Content findWithRightAnswers(long id) {
         return contentRepository.findByIdOrderByPositionAscWithAnswers(id).orElseThrow(() -> new IllegalArgumentException("Контент с id = %s не найден".formatted(id)));
     }
 
