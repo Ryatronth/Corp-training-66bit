@@ -36,8 +36,6 @@ public class Module {
 
     private int score;
 
-    private int countTopics;
-
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "course_id", nullable = false)

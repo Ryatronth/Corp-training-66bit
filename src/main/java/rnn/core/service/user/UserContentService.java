@@ -11,6 +11,7 @@ import rnn.core.model.user.UserContent;
 import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.UserModule;
 import rnn.core.model.user.UserTopic;
+import rnn.core.model.user.dto.AnswerDTO;
 import rnn.core.model.user.dto.UserContentDTO;
 import rnn.core.model.user.repository.UserContentRepository;
 import rnn.core.service.admin.ContentService;
@@ -26,7 +27,7 @@ public class UserContentService {
     private final ContentService contentService;
 
     @Transactional
-    public UserContent answer(long userTopicId, long contentId, int currentAttempts, List<String> answers) {
+    public AnswerDTO answer(long userTopicId, long contentId, int currentAttempts, List<String> answers) {
         Content content = contentService.findWithRightAnswers(contentId);
         UserTopic userTopic = userTopicService.findWithModuleAndCourse(userTopicId);
 
@@ -40,7 +41,11 @@ public class UserContentService {
         return processContent(userContent, answers);
     }
 
-    private UserContent processContent(UserContent userContent, List<String> answers) {
+    private AnswerDTO processContent(UserContent userContent, List<String> answers) {
+        UserTopic topic = userContent.getTopic();
+        UserModule module = topic.getModule();
+        UserCourse course = module.getCourse();
+
         if (userContent.getContent() instanceof FreeformContent freeformContent) {
             if (freeformContent instanceof DetailedContent detailedContent) {
                 boolean isSuccess = isSuccess(detailedContent.getAnswers(), answers);
@@ -57,10 +62,6 @@ public class UserContentService {
 
             userContent.setAnswer(answers.toString());
 
-            UserTopic topic = userContent.getTopic();
-            UserModule module = topic.getModule();
-            UserCourse course = module.getCourse();
-
             if (userContent.isSuccess()) {
                 topic.setCurrentScore(freeformContent.getScore() + topic.getCurrentScore());
                 module.setCurrentScore(freeformContent.getScore() + module.getCurrentScore());
@@ -68,25 +69,22 @@ public class UserContentService {
             }
 
             if (userContent.isCompleted()) {
-                topic.setCompletedContents(1 + topic.getCompletedContents());
-
-                if (topic.getCompletedContents() == topic.getTopic().getCountContents()) {
+                if (topic.getCurrentScore() == topic.getTopic().getScore()) {
                     topic.setCompleted(true);
-                    module.setCompletedTopics(1 + module.getCompletedTopics());
                 }
 
-                if (module.getCompletedTopics() == module.getModule().getCountTopics()) {
+                if (module.getCurrentScore() == module.getModule().getScore()) {
                     module.setCompleted(true);
-                    course.setCompletedModules(1 + course.getCompletedModules());
                 }
 
-                if (course.getCompletedModules() == course.getCourse().getCountModules()) {
+                if (course.getCurrentScore() == course.getCourse().getScore()) {
                     course.setCompleted(true);
                 }
             }
         }
 
-        return userContentRepository.save(userContent);
+        UserContent content = userContentRepository.save(userContent);
+        return new AnswerDTO(course, module, topic, content);
     }
 
     private boolean isSuccess(List<Answer> trueAnswers, List<String> answers) {

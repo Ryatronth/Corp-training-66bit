@@ -37,8 +37,6 @@ public class Course {
 
     private boolean isPublished;
 
-    private int countModules;
-
     @Convert(converter = TagConverter.class)
     @Column(columnDefinition = "TEXT")
     private List<Tag> tags;
