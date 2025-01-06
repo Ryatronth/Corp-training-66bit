@@ -93,6 +93,11 @@ public class UserCourseService {
                 .course(course)
                 .user(user)
                 .build();
+
+        if (course.getCountModules() == 0) {
+            userCourse.setCompleted(true);
+        }
+
         return userCourseRepository.save(userCourse);
     }
 
@@ -100,12 +105,7 @@ public class UserCourseService {
     public List<UserCourse> createAll(Course course, Set<User> users) {
         List<UserCourse> userCourses = new ArrayList<>(users.size());
         for (User user : users) {
-            UserCourse userCourse = UserCourse
-                    .builder()
-                    .course(course)
-                    .user(user)
-                    .build();
-            userCourses.add(userCourse);
+            userCourses.add(create(course, user));
         }
 
         return userCourseRepository.saveAll(userCourses);

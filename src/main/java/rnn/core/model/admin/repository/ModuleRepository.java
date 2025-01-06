@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import rnn.core.model.admin.Module;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ModuleRepository extends JpaRepository<Module, Long> {
@@ -20,4 +21,11 @@ public interface ModuleRepository extends JpaRepository<Module, Long> {
 
     @Query(" FROM Module m LEFT JOIN FETCH m.topics t WHERE m.course.id = :courseId ORDER BY m.position ASC, t.module.id ASC")
     List<Module> findAllByCourseIdFetchTopic(long courseId);
+
+    @Query("""
+        FROM Module m
+        LEFT JOIN FETCH m.course c
+        WHERE m.id = :id
+    """)
+    Optional<Module> findByIdFetchCourse(long id);
 }

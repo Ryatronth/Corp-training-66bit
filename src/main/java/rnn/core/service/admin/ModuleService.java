@@ -59,6 +59,7 @@ public class ModuleService extends PositionableService<Module, Long> {
     @Transactional
     public Module create(long courseId, ModuleDTO moduleDTO) {
         Course course = courseService.find(courseId);
+        course.setCountModules(course.getCountModules() + 1);
 
         Module module = Module
                 .builder()
@@ -79,7 +80,12 @@ public class ModuleService extends PositionableService<Module, Long> {
 
     @Transactional
     public void delete(long id) {
-        moduleRepository.findById(id).ifPresent(existingModule -> super.delete(existingModule, existingModule.getCourse().getId()));
+        Module module = findWithCourse(id);
+
+        Course course = module.getCourse();
+        course.setScore(course.getScore() - module.getScore());
+
+        super.delete(module, course.getId());
     }
 
     public List<ModuleWithTopicsDTO> findByCourseIdWithTopics(long courseId) {
@@ -102,5 +108,9 @@ public class ModuleService extends PositionableService<Module, Long> {
 
     public Module find(long id) {
         return moduleRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Модуль с id = %s не найден.".formatted(id)));
+    }
+
+    public Module findWithCourse(long id) {
+        return moduleRepository.findByIdFetchCourse(id).orElseThrow(() -> new IllegalArgumentException("Модуль с id = %s не найден.".formatted(id)));
     }
 }

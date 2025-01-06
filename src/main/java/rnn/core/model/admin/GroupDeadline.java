@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 @Entity
 public class GroupDeadline {
     @Id
-    @SequenceGenerator(name = "sequence_id_auto_gen", allocationSize = 15)
+    @SequenceGenerator(name = "deadline_sequence_id_auto_gen", allocationSize = 15)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_auto_gen")
     private long id;
 

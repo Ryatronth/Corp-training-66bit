@@ -2,6 +2,7 @@ package rnn.core.service.admin;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rnn.core.model.admin.Course;
 import rnn.core.model.admin.dto.TopicDTO;
 import rnn.core.model.admin.Module;
 import rnn.core.model.admin.Topic;
@@ -48,6 +49,7 @@ public class TopicService extends PositionableService<Topic, Long> {
     @Transactional
     public Topic create(long moduleId, TopicDTO topicDTO) {
         Module module = moduleService.find(moduleId);
+        module.setCountTopics(module.getCountTopics() + 1);
 
         Topic topic = Topic
                 .builder()
@@ -68,7 +70,15 @@ public class TopicService extends PositionableService<Topic, Long> {
 
     @Transactional
     public void delete(long id) {
-        topicRepository.findById(id).ifPresent(existingTopic -> super.delete(existingTopic, existingTopic.getModule().getId()));
+        Topic topic = findWithModuleAndCourse(id);
+
+        Module module = topic.getModule();
+        module.setScore(module.getScore() - topic.getScore());
+
+        Course course = module.getCourse();
+        course.setScore(course.getScore() - topic.getScore());
+
+        super.delete(topic, module.getId());
     }
 
     public List<Topic> findByModuleId(long moduleId) {

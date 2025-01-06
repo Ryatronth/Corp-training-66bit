@@ -61,6 +61,7 @@ public class ContentService extends PositionableService<Content, Long> {
         content = super.create(content, topic.getId(), content.getPosition());
 
         if (content instanceof FreeformContent contentWithScore) {
+            topic.setCountAnsweredContents(topic.getCountAnsweredContents() + 1);
             topic.setScore(contentWithScore.getScore() + topic.getScore());
 
             Module module = topic.getModule();

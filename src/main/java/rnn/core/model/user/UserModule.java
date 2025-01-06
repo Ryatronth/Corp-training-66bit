@@ -26,6 +26,8 @@ public class UserModule {
 
     private int currentScore;
 
+    private int countTopics;
+
     private boolean isCompleted;
 
     @JsonIgnore

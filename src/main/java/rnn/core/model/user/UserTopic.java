@@ -26,6 +26,8 @@ public class UserTopic {
 
     private int currentScore;
 
+    private int countAnsweredContents;
+
     private boolean isCompleted;
 
     @JsonIgnore

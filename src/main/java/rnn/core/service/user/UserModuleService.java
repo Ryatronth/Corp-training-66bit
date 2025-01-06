@@ -28,7 +28,7 @@ public class UserModuleService {
                 .builder()
                 .module(moduleService.find(moduleId))
                 .course(userCourseService.findById(userCourseId))
-                .topics(new ArrayList<>())
+                .topics(new ArrayList<>(0))
                 .currentScore(0)
                 .build();
         return userModuleRepository.save(userModule);
@@ -140,7 +140,7 @@ public class UserModuleService {
         return topics;
     }
 
-    public UserModule find(long id) {
-        return userModuleRepository.findById(id).orElseThrow(() -> new RuntimeException("Модуль пользователя с указанным id не найден"));
+    public UserModule findWithModuleUserModuleCourseUserCourse(long id) {
+        return userModuleRepository.findByIdFetchModuleUserModuleCourseUserCourse(id).orElseThrow(() -> new RuntimeException("Модуль пользователя с указанным id не найден"));
     }
 }

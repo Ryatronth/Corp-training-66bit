@@ -69,15 +69,19 @@ public class UserContentService {
             }
 
             if (userContent.isCompleted()) {
-                if (topic.getCurrentScore() == topic.getTopic().getScore()) {
+                topic.setCountAnsweredContents(topic.getCountAnsweredContents() + 1);
+
+                if (topic.getCountAnsweredContents() == topic.getTopic().getCountAnsweredContents()) {
                     topic.setCompleted(true);
+                    module.setCountTopics(module.getCountTopics() + 1);
                 }
 
-                if (module.getCurrentScore() == module.getModule().getScore()) {
+                if (module.getCountTopics() == module.getModule().getCountTopics()) {
                     module.setCompleted(true);
+                    course.setCountModules(course.getCountModules() + 1);
                 }
 
-                if (course.getCurrentScore() == course.getCourse().getScore()) {
+                if (course.getCountModules() == course.getCourse().getCountModules()) {
                     course.setCompleted(true);
                 }
             }

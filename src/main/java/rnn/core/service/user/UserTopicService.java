@@ -2,6 +2,10 @@ package rnn.core.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import rnn.core.model.admin.Topic;
+import rnn.core.model.user.UserCourse;
+import rnn.core.model.user.UserModule;
 import rnn.core.model.user.UserTopic;
 import rnn.core.model.user.repository.UserTopicRepository;
 import rnn.core.service.admin.TopicService;
@@ -15,14 +19,35 @@ public class UserTopicService {
     private final UserModuleService userModuleService;
     private final TopicService topicService;
 
+    @Transactional
     public UserTopic create(long userModuleId, long topicId) {
+        Topic topic = topicService.find(topicId);
+        UserModule userModule = userModuleService.findWithModuleUserModuleCourseUserCourse(userModuleId);
+
         UserTopic userTopic = UserTopic
                 .builder()
-                .topic(topicService.find(topicId))
-                .module(userModuleService.find(userModuleId))
+                .topic(topic)
+                .module(userModule)
                 .currentScore(0)
-                .contents(new ArrayList<>())
+                .contents(new ArrayList<>(0))
                 .build();
+
+        if (topic.getCountAnsweredContents() == 0) {
+            userTopic.setCompleted(true);
+            userModule.setCountTopics(userModule.getCountTopics() + 1);
+
+            if (userModule.getCountTopics() == userModule.getModule().getCountTopics()) {
+                userModule.setCompleted(true);
+
+                UserCourse userCourse = userModule.getCourse();
+                userCourse.setCountModules(userCourse.getCountModules() + 1);
+
+                if (userCourse.getCountModules() == userCourse.getCourse().getCountModules()) {
+                    userCourse.setCompleted(true);
+                }
+            }
+        }
+
         return userTopicRepository.save(userTopic);
     }
 

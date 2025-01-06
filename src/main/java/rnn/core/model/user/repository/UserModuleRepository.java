@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import rnn.core.model.user.UserModule;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserModuleRepository extends JpaRepository<UserModule, Long> {
@@ -19,4 +20,14 @@ public interface UserModuleRepository extends JpaRepository<UserModule, Long> {
         ORDER BY um.module.id ASC, ut.topic.id ASC
     """)
     List<UserModule> findByCourseIdFetchTopics(long userCourseId);
+
+    @EntityGraph(attributePaths = {"module", "course.course"})
+    @Query("""
+        FROM UserModule um
+        JOIN um.module m
+        JOIN um.course uc
+        JOIN uc.course c
+        WHERE um.id = :id
+    """)
+    Optional<UserModule> findByIdFetchModuleUserModuleCourseUserCourse(long id);
 }

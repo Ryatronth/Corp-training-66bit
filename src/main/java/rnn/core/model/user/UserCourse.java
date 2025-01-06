@@ -26,11 +26,13 @@ import java.util.List;
 @Entity
 public class UserCourse {
     @Id
-    @SequenceGenerator(name = "sequence_id_auto_gen", allocationSize = 15)
+    @SequenceGenerator(name = "user_course_sequence_id_auto_gen", allocationSize = 15)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_auto_gen")
     private long id;
 
     private int currentScore;
+
+    private int countModules;
 
     private boolean isCompleted;
 

@@ -35,6 +35,8 @@ public class Course {
 
     private int score;
 
+    private int countModules;
+
     private boolean isPublished;
 
     @Convert(converter = TagConverter.class)
