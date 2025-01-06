@@ -34,7 +34,8 @@ public class UserCourse {
 
     private int countModules;
 
-    private boolean isCompleted;
+    @Enumerated(EnumType.STRING)
+    private CourseStatus status;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,7 +44,7 @@ public class UserCourse {
 
     @JsonIgnore
     @OneToMany(mappedBy = "course", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<UserModule> userModules;
+    private List<UserModule> modules;
 
     @JsonIgnore
     @ManyToOne

@@ -274,7 +274,7 @@ CREATE TABLE IF NOT EXISTS public.user_course_t
     id            int8         NOT NULL,
     count_modules int4         NOT NULL,
     current_score int4         NOT NULL,
-    is_completed  bool         NOT NULL,
+    status        varchar(255) CHECK (status IN ('NOT_STARTED', 'IN_PROGRESS', 'FINISHED')),
     course_id     int8         NULL,
     username      varchar(255) NULL,
     CONSTRAINT unique_username_course_id UNIQUE (username, course_id),
@@ -318,6 +318,7 @@ CREATE TABLE IF NOT EXISTS public.user_module_t
     course_id     int8                                                                                                                     NULL,
     module_id     int8                                                                                                                     NULL,
     CONSTRAINT user_module_t_pkey PRIMARY KEY (id),
+    CONSTRAINT unique_user_course_id_module_id UNIQUE (course_id, module_id),
     CONSTRAINT fk7k7knsptpa0uu816nnb2kprda FOREIGN KEY (module_id) REFERENCES public.module_t (id),
     CONSTRAINT fkq4obpf01lp57ijb3bhiinr625 FOREIGN KEY (course_id) REFERENCES public.user_course_t (id) ON DELETE SET NULL
 );
@@ -339,6 +340,7 @@ CREATE TABLE IF NOT EXISTS public.user_topic_t
     module_id               int8                                                                                                                     NULL,
     topic_id                int8                                                                                                                     NULL,
     CONSTRAINT user_topic_t_pkey PRIMARY KEY (id),
+    CONSTRAINT unique_user_module_id_topic_id UNIQUE (module_id, topic_id),
     CONSTRAINT fkc1uyls2mkgyft71ew03ydopy6 FOREIGN KEY (module_id) REFERENCES public.user_module_t (id) ON DELETE SET NULL,
     CONSTRAINT fksnirfplri4gc945enkbw01v88 FOREIGN KEY (topic_id) REFERENCES public.topic_t (id) ON DELETE CASCADE
 );
@@ -382,3 +384,4 @@ CREATE TABLE IF NOT EXISTS public.user_content_t
     CONSTRAINT fkhtl6t6yakjrdehof6uj2rx1un FOREIGN KEY (topic_id) REFERENCES public.user_topic_t (id) ON DELETE SET NULL,
     CONSTRAINT fkso6juykhvw5ufwg0r7f4b6siv FOREIGN KEY (content_id) REFERENCES public.content_t (id) ON DELETE CASCADE
 );
+CREATE INDEX IF NOT EXISTS idx_user_topic_id ON user_content_t (topic_id)

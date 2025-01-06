@@ -159,7 +159,7 @@ public class MemberService {
                 .selectDistinct(Projections.constructor(
                         UserCourseGroupDTO.class,
                         user,
-                        userCourse.isCompleted,
+                        userCourse.status,
                         group,
                         userCourse.currentScore
                 ))
@@ -197,7 +197,7 @@ public class MemberService {
             );
             case "status" -> new OrderSpecifier<>(
                     order,
-                    userCourse.isCompleted
+                    userCourse.status
             );
             default -> throw new IllegalArgumentException("Invalid sort field: " + sort);
         };

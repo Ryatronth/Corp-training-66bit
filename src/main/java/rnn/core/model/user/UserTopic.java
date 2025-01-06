@@ -16,6 +16,9 @@ import java.util.List;
         name = "user_topic_t",
         indexes = {
                 @Index(name = "idx_user_module_id", columnList = "module_id")
+        },
+        uniqueConstraints = {
+                @UniqueConstraint(name = "unique_user_module_id_topic_id", columnNames = {"module_id", "topic_id"})
         }
 )
 @Entity

@@ -1,7 +1,9 @@
 package rnn.core.service.admin;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import rnn.core.event.event.DeleteModuleEvent;
 import rnn.core.model.admin.dto.ModuleDTO;
 import rnn.core.model.admin.dto.ModuleWithTopicsDTO;
 import rnn.core.model.admin.Course;
@@ -13,13 +15,16 @@ import java.util.List;
 
 @Service
 public class ModuleService extends PositionableService<Module, Long> {
+    private final ApplicationEventPublisher eventPublisher;
+
     private final ModuleRepository moduleRepository;
     private final CourseService courseService;
 
-    public ModuleService(ModuleRepository repository, CourseService courseService) {
+    public ModuleService(ModuleRepository repository, CourseService courseService, ApplicationEventPublisher eventPublisher) {
         super(repository);
         this.moduleRepository = repository;
         this.courseService = courseService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -83,7 +88,10 @@ public class ModuleService extends PositionableService<Module, Long> {
         Module module = findWithCourse(id);
 
         Course course = module.getCourse();
+        course.setCountModules(course.getCountModules() - 1);
         course.setScore(course.getScore() - module.getScore());
+
+        eventPublisher.publishEvent(new DeleteModuleEvent(this, id, - module.getScore()));
 
         super.delete(module, course.getId());
     }

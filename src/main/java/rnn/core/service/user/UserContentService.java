@@ -7,13 +7,11 @@ import rnn.core.model.admin.Answer;
 import rnn.core.model.admin.Content;
 import rnn.core.model.admin.content.DetailedContent;
 import rnn.core.model.admin.content.FreeformContent;
-import rnn.core.model.user.UserContent;
-import rnn.core.model.user.UserCourse;
-import rnn.core.model.user.UserModule;
-import rnn.core.model.user.UserTopic;
+import rnn.core.model.user.*;
 import rnn.core.model.user.dto.AnswerDTO;
 import rnn.core.model.user.dto.UserContentDTO;
 import rnn.core.model.user.repository.UserContentRepository;
+import rnn.core.model.user.repository.projection.UserContentTopicModuleCourseProjection;
 import rnn.core.service.admin.ContentService;
 
 import java.util.ArrayList;
@@ -73,16 +71,20 @@ public class UserContentService {
 
                 if (topic.getCountAnsweredContents() == topic.getTopic().getCountAnsweredContents()) {
                     topic.setCompleted(true);
-                    module.setCountTopics(module.getCountTopics() + 1);
-                }
+                    if (module.getCountTopics() < module.getModule().getCountTopics()) {
+                        module.setCountTopics(module.getCountTopics() + 1);
+                    }
 
-                if (module.getCountTopics() == module.getModule().getCountTopics()) {
-                    module.setCompleted(true);
-                    course.setCountModules(course.getCountModules() + 1);
-                }
+                    if (module.getCountTopics() == module.getModule().getCountTopics()) {
+                        module.setCompleted(true);
+                        if (course.getCountModules() < course.getCourse().getCountModules()) {
+                            course.setCountModules(course.getCountModules() + 1);
+                        }
 
-                if (course.getCountModules() == course.getCourse().getCountModules()) {
-                    course.setCompleted(true);
+                        if (course.getCountModules() == course.getCourse().getCountModules()) {
+                            course.setStatus(CourseStatus.FINISHED);
+                        }
+                    }
                 }
             }
         }
@@ -145,5 +147,13 @@ public class UserContentService {
         }
 
         return userContentDTOs;
+    }
+
+    public List<UserContent> findAllSuccessByContentIdWithUserModuleAndCourse(long contentId) {
+        return userContentRepository.findAllSuccessByContentIdFetchUserTopicModuleAndCourse(contentId);
+    }
+
+    public List<UserContentTopicModuleCourseProjection> findAllCompletedByContentIdWithUserModuleAndCourse(long contentId) {
+        return userContentRepository.findAllCompletedByContentIdFetchUserTopicModuleAndCourse(contentId);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import rnn.core.model.user.UserModule;
+import rnn.core.model.user.repository.projection.UserModuleCourseProjection;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,4 +31,14 @@ public interface UserModuleRepository extends JpaRepository<UserModule, Long> {
         WHERE um.id = :id
     """)
     Optional<UserModule> findByIdFetchModuleUserModuleCourseUserCourse(long id);
+
+//    @EntityGraph(attributePaths = {"course.course"})
+    @Query("""
+        SELECT um as userModule, uc as userCourse, c as course
+        FROM UserModule um
+        RIGHT JOIN um.course uc
+        JOIN uc.course c
+        WHERE um.module.id = :moduleId
+    """)
+    List<UserModuleCourseProjection> findAllByModuleIdFetchUserCourseAndCourse(long moduleId);
 }

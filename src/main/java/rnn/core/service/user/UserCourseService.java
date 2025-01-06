@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rnn.core.util.CourseFilter;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.QCourse;
 import rnn.core.model.security.User;
+import rnn.core.model.user.CourseStatus;
 import rnn.core.model.user.QUserCourse;
 import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.dto.UserCourseDTO;
@@ -18,6 +18,7 @@ import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
 import rnn.core.model.user.repository.UserCourseRepository;
 import rnn.core.querydsl.PageableBuilder;
 import rnn.core.querydsl.course.CourseQueryFilter;
+import rnn.core.util.CourseFilter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +32,7 @@ public class UserCourseService {
     private final UserCourseRepository userCourseRepository;
 
     public UserCourseWithCourseAndGroupDTO findWithCourseAndGroup(long userCourseId, String username) {
-        return userCourseRepository.findByIdWithCourseAndGroup(userCourseId, username);
+        return userCourseRepository.findByIdFetchCourseAndGroup(userCourseId, username).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id и username не найден"));
     }
 
     public Page<UserCourseDTO> findAllByUsernameWithCourse(
@@ -91,12 +92,9 @@ public class UserCourseService {
         UserCourse userCourse = UserCourse
                 .builder()
                 .course(course)
+                .status(CourseStatus.NOT_STARTED)
                 .user(user)
                 .build();
-
-        if (course.getCountModules() == 0) {
-            userCourse.setCompleted(true);
-        }
 
         return userCourseRepository.save(userCourse);
     }
@@ -124,6 +122,6 @@ public class UserCourseService {
     }
 
     public UserCourse findByCourseIdAndUsername(long courseId, String username) {
-        return userCourseRepository.findByCourseIdAndUsername(courseId, username);
+        return userCourseRepository.findByCourseIdAndUsername(courseId, username).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id и username не найден"));
     }
 }

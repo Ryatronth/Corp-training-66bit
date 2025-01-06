@@ -2,13 +2,17 @@ package rnn.core.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import rnn.core.model.admin.GroupDeadline;
 import rnn.core.model.admin.Module;
 import rnn.core.model.admin.Topic;
+import rnn.core.model.user.CourseStatus;
+import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.UserModule;
 import rnn.core.model.user.UserTopic;
 import rnn.core.model.user.dto.UserModuleWithModuleDTO;
 import rnn.core.model.user.repository.UserModuleRepository;
+import rnn.core.model.user.repository.projection.UserModuleCourseProjection;
 import rnn.core.service.admin.DeadlineService;
 import rnn.core.service.admin.ModuleService;
 
@@ -23,14 +27,19 @@ public class UserModuleService {
     private final UserCourseService userCourseService;
     private final DeadlineService deadlineService;
 
+    @Transactional
     public UserModule create(long userCourseId, long moduleId) {
+        UserCourse userCourse = userCourseService.findById(userCourseId);
+        userCourse.setStatus(CourseStatus.IN_PROGRESS);
+
         UserModule userModule = UserModule
                 .builder()
                 .module(moduleService.find(moduleId))
-                .course(userCourseService.findById(userCourseId))
+                .course(userCourse)
                 .topics(new ArrayList<>(0))
                 .currentScore(0)
                 .build();
+
         return userModuleRepository.save(userModule);
     }
 
@@ -142,5 +151,9 @@ public class UserModuleService {
 
     public UserModule findWithModuleUserModuleCourseUserCourse(long id) {
         return userModuleRepository.findByIdFetchModuleUserModuleCourseUserCourse(id).orElseThrow(() -> new RuntimeException("Модуль пользователя с указанным id не найден"));
+    }
+
+    public List<UserModuleCourseProjection> findAllByModuleIdWithUserCourseAndCourse(long moduleId) {
+        return userModuleRepository.findAllByModuleIdFetchUserCourseAndCourse(moduleId);
     }
 }

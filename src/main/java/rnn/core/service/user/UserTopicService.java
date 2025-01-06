@@ -4,13 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import rnn.core.model.admin.Topic;
+import rnn.core.model.user.CourseStatus;
 import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.UserModule;
 import rnn.core.model.user.UserTopic;
 import rnn.core.model.user.repository.UserTopicRepository;
+import rnn.core.model.user.repository.projection.UserTopicModuleCourseProjection;
 import rnn.core.service.admin.TopicService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +46,7 @@ public class UserTopicService {
                 userCourse.setCountModules(userCourse.getCountModules() + 1);
 
                 if (userCourse.getCountModules() == userCourse.getCourse().getCountModules()) {
-                    userCourse.setCompleted(true);
+                    userCourse.setStatus(CourseStatus.FINISHED);
                 }
             }
         }
@@ -53,5 +56,13 @@ public class UserTopicService {
 
     public UserTopic findWithModuleAndCourse(long id) {
         return userTopicRepository.findByIdFetchModuleAndCourse(id).orElseThrow(() -> new RuntimeException("Пользовательская тема с данным id не найдена"));
+    }
+
+    public List<UserTopicModuleCourseProjection> findAllByTopicIdWithUserModuleAndCourse(long topicId) {
+        return userTopicRepository.findAllByTopicIdFetchUserModuleAndCourse(topicId);
+    }
+
+    public List<UserTopic> findAllByTopicIdWithModuleCourseUserModuleAndCourse(long topicId) {
+        return userTopicRepository.findAllByTopicIdFetchModuleCourseUserModuleAndCourse(topicId);
     }
 }

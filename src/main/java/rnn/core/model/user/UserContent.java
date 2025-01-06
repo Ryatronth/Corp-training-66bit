@@ -11,7 +11,10 @@ import rnn.core.model.admin.Content;
 @AllArgsConstructor
 @Builder
 @Table(
-        name = "user_content_t"
+        name = "user_content_t",
+        indexes = {
+                @Index(name = "idx_user_topic_id", columnList = "topic_id")
+        }
 )
 @Entity
 public class UserContent {

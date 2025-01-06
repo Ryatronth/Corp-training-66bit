@@ -8,6 +8,7 @@ import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.dto.UserCourseWithCourseAndGroupDTO;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
@@ -19,13 +20,13 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
         JOIN g.users u
         WHERE uc.id = :id AND u.username = :username
     """)
-    UserCourseWithCourseAndGroupDTO findByIdWithCourseAndGroup(long id, String username);
+    Optional<UserCourseWithCourseAndGroupDTO> findByIdFetchCourseAndGroup(long id, String username);
 
     @Query("""
         FROM UserCourse uc
         WHERE uc.course.id = :courseId AND uc.user.username = :username
     """)
-    UserCourse findByCourseIdAndUsername(long courseId, String username);
+    Optional<UserCourse> findByCourseIdAndUsername(long courseId, String username);
 
     @Modifying
     @Query("""
