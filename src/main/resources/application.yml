@@ -1,17 +1,16 @@
 frontend:
-  url: http://localhost:5173
-  auth_url: "${frontend.url}/auth"
+  url: ${FRONTEND_URL}
 
 file_server:
-  url: http://localhost:8090
+  url: ${FILESTORAGE_URL}
   api_header: FILE-API-KEY
-  api_key: test
+  api_key: ${API_KEY}
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/learn_pr
-    username: ryatronth
-    password: ryatronth
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
 
   servlet:
     multipart:
@@ -34,14 +33,15 @@ spring:
           batch_versioned_data: true
         order_inserts: true
         order_updates: true
+    open-in-view: false
 
   security:
     oauth2:
       client:
         registration:
           github:
-            clientId: ${github_client_id}
-            clientSecret: ${github_client_secret}
+            clientId: ${GITHUB_CLIENT_ID}
+            clientSecret: ${GITHUB_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/login/oauth2/code/github
             authorization-grant-type: authorization_code
             scope:
@@ -49,8 +49,8 @@ spring:
               - user:email
             client-name: GitHub
           gitlab:
-            clientId: ${gitlab_client_id}
-            clientSecret: ${gitlab_client_secret}
+            clientId: ${GITLAB_CLIENT_ID}
+            clientSecret: ${GITLAB_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/login/oauth2/code/gitlab
             authorization-grant-type: authorization_code
             scope:
@@ -71,14 +71,5 @@ spring:
             user-info-uri: https://git.66bit.ru/oauth/userinfo
             jwk-set-uri: https://git.66bit.ru/oauth/discovery/keys
             user-name-attribute: nickname
-      default_success_url: "${frontend.url}/redirect"
 
-logging:
-  level:
-    org:
-      hibernate:
-        sql: debug
-        engine:
-          jdbc:
-            batch:
-              internal: trace
+      default_success_url: "${frontend.url}/redirect"
