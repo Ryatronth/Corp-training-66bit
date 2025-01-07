@@ -27,7 +27,7 @@ import java.util.List;
 public class UserCourse {
     @Id
     @SequenceGenerator(name = "user_course_sequence_id_auto_gen", allocationSize = 15)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequence_id_auto_gen")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_course_sequence_id_auto_gen")
     private long id;
 
     private int currentScore;
