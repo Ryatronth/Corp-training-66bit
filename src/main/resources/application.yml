@@ -5,10 +5,10 @@ server:
 spring:
   web:
     resources:
-      static-locations: C:/66bit/files
+      static-locations: ${STORAGE_DIR}
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 15MB
+      max-file-size: 500MB
+      max-request-size: 500MB
   security:
-    apiKey: test
+    apiKey: ${API_KEY}

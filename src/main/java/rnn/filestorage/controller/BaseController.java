@@ -24,6 +24,8 @@ public class BaseController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.CONTENT_TYPE, Files.probeContentType(resource.getFile().toPath()))
+                .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(resource.getFile().length()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 
