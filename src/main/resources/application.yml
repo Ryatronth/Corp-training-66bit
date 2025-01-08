@@ -25,7 +25,6 @@ spring:
     defer-datasource-initialization: true
     hibernate:
       ddl-auto: none
-    show-sql: true
     properties:
       hibernate:
         jdbc:
@@ -42,7 +41,7 @@ spring:
           github:
             clientId: ${GITHUB_CLIENT_ID}
             clientSecret: ${GITHUB_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/login/oauth2/code/github
+            redirect-uri: ${HOST}/login/oauth2/code/github
             authorization-grant-type: authorization_code
             scope:
               - read:user
@@ -51,7 +50,7 @@ spring:
           gitlab:
             clientId: ${GITLAB_CLIENT_ID}
             clientSecret: ${GITLAB_CLIENT_SECRET}
-            redirect-uri: http://localhost:8080/login/oauth2/code/gitlab
+            redirect-uri: ${HOST}/login/oauth2/code/gitlab
             authorization-grant-type: authorization_code
             scope:
               - read_user
@@ -73,3 +72,9 @@ spring:
             user-name-attribute: nickname
 
       default_success_url: "${frontend.url}/redirect"
+
+logging:
+  level:
+    org:
+      springframework:
+        security: trace

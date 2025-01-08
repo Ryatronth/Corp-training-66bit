@@ -18,12 +18,12 @@ public class CustomExceptionHandler {
             message = "Курс с таким названием уже существует.";
         } else if (errorMessage.contains("unique_title_course")) {
             message = "Модуль с таким именем уже существует.";
-        } else if (errorMessage.contains("unique_position_course")) {
-            message = "Модуль с такой позицией уже существует.";
-        } else if (errorMessage.contains("unique_title_module")) {
+        }else if (errorMessage.contains("unique_title_module")) {
             message = "Тема с таким названием уже существует.";
         } else if (errorMessage.contains("unique_position_module")) {
-            message = "Тема с такой позицией уже существует";
+            message = "Тема с такой позицией уже существует.";
+        } else if (errorMessage.contains("unique_group_name_course")) {
+            message = "Группа с таким названием уже существует.";
         } else {
             throw e;
         }
@@ -33,19 +33,6 @@ public class CustomExceptionHandler {
                 .body(ExceptionDTO
                         .builder()
                         .message(message)
-                        .error(e.getStackTrace()[0])
-                        .build()
-                );
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ExceptionDTO> handleIllegalArgumentException(IllegalArgumentException e) {
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionDTO
-                        .builder()
-                        .message(e.getMessage())
-                        .error(e.getStackTrace()[0])
                         .build()
                 );
     }

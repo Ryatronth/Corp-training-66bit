@@ -3,5 +3,5 @@ package rnn.core.exception;
 import lombok.Builder;
 
 @Builder
-public record ExceptionDTO(String message, Object error) {
+public record ExceptionDTO(String message) {
 }
