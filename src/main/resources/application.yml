@@ -72,9 +72,3 @@ spring:
             user-name-attribute: nickname
 
       default_success_url: "${frontend.url}/redirect"
-
-logging:
-  level:
-    org:
-      springframework:
-        security: trace

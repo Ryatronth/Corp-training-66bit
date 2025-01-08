@@ -62,7 +62,7 @@ public class UserCourseService {
         return PageableBuilder.build(query, page, limit);
     }
 
-    public Page<Course> findAllNotEnrolled(
+    public Page<UserCourseDTO> findAllNotEnrolled(
             String username,
             String title,
             List<String> tags,
@@ -73,14 +73,15 @@ public class UserCourseService {
         QCourse course = QCourse.course;
         QUserCourse userCourse = QUserCourse.userCourse;
 
-        JPAQuery<Long> coursesIds = queryFactory
-                .select(userCourse.course.id)
-                .from(userCourse)
-                .where(userCourse.user.username.eq(username));
-
-        JPAQuery<Course> query = queryFactory
-                .selectFrom(course)
-                .where(course.id.notIn(coursesIds))
+        JPAQuery<UserCourseDTO> query = queryFactory
+                .select(Projections.constructor(
+                        UserCourseDTO.class,
+                        course,
+                        userCourse
+                ))
+                .from(course)
+                .leftJoin(course.userCourses, userCourse)
+                .on(course.id.eq(userCourse.course.id).and(userCourse.user.username.eq(username)))
                 .orderBy(course.title.asc());
 
         query = CourseQueryFilter.filtrate(query, title, tags, filter);
