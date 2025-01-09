@@ -19,7 +19,7 @@ public class CourseQueryFilter {
         QCourse course = QCourse.course;
         BooleanBuilder predicate = PredicateBuilder
                 .builder()
-                .and(title, course.title::contains)
+                .and(title, course.title::containsIgnoreCase)
                 .build();
 
         switch (filter) {

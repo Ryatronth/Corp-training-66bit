@@ -101,6 +101,7 @@ public class ModuleService extends PositionableService<Module, Long> {
                                 .title(o.getTitle())
                                 .score(o.getScore())
                                 .topics(o.getTopics())
+                                .position(o.getPosition())
                                 .build()
                 )
                 .toList();
