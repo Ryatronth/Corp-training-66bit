@@ -29,7 +29,7 @@ public class UserModule {
 
     private int currentScore;
 
-    private int countTopics;
+    private int countAnsweredContents;
 
     private boolean isCompleted;
 

@@ -37,6 +37,7 @@ public class UserModuleService {
                 .module(moduleService.find(moduleId))
                 .course(userCourse)
                 .topics(new ArrayList<>(0))
+                .countAnsweredContents(0)
                 .currentScore(0)
                 .build();
 

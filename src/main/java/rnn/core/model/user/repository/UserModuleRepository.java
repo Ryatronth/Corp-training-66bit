@@ -32,13 +32,12 @@ public interface UserModuleRepository extends JpaRepository<UserModule, Long> {
     """)
     Optional<UserModule> findByIdFetchModuleUserModuleCourseUserCourse(long id);
 
-//    @EntityGraph(attributePaths = {"course.course"})
     @Query("""
         SELECT um as userModule, uc as userCourse, c as course
         FROM UserModule um
         RIGHT JOIN um.course uc
-        JOIN uc.course c
-        WHERE um.module.id = :moduleId
+        ON um.course.id = uc.id AND um.module.id = :moduleId
+        LEFT JOIN uc.course c
     """)
     List<UserModuleCourseProjection> findAllByModuleIdFetchUserCourseAndCourse(long moduleId);
 }

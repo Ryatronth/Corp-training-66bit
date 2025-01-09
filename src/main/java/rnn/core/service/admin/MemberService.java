@@ -17,6 +17,8 @@ import org.springframework.stereotype.Service;
 import rnn.core.model.admin.QGroup;
 import rnn.core.model.admin.dto.UserCourseGroupDTO;
 import rnn.core.model.admin.dto.UserGroupDTO;
+import rnn.core.model.security.QRole;
+import rnn.core.model.security.Role;
 import rnn.core.querydsl.PageableBuilder;
 import rnn.core.model.security.QUser;
 import rnn.core.model.security.User;
@@ -30,6 +32,7 @@ public class MemberService {
     public Page<User> findAllWithoutCourse(long courseId, String name, int page, int limit) {
         QUser user = QUser.user;
         QUserCourse userCourse = QUserCourse.userCourse;
+        QRole role = QRole.role;
 
         JPQLQuery<Integer> usersInCourseSubquery = JPAExpressions
                 .selectOne()
@@ -48,9 +51,9 @@ public class MemberService {
         JPAQuery<User> query = queryFactory
                 .selectDistinct(user)
                 .from(user)
-                .leftJoin(user.role).fetchJoin()
+                .leftJoin(user.role, role).fetchJoin()
                 .leftJoin(user.userCourses, userCourse)
-                .where(builder)
+                .where(builder.and(role.name.ne(Role.Name.ADMIN)))
                 .orderBy(user.username.asc());
 
         return PageableBuilder.build(query, page, limit);
@@ -60,6 +63,7 @@ public class MemberService {
         QUser user = QUser.user;
         QUserCourse userCourse = QUserCourse.userCourse;
         QGroup group = QGroup.group;
+        QRole role = QRole.role;
 
         JPQLQuery<Integer> usersInCourseSubquery = JPAExpressions
                 .selectOne()
@@ -82,9 +86,9 @@ public class MemberService {
         JPAQuery<User> query = queryFactory
                 .selectDistinct(user)
                 .from(user)
-                .leftJoin(user.role).fetchJoin()
+                .leftJoin(user.role, role).fetchJoin()
                 .leftJoin(user.userCourses, userCourse)
-                .where(builder)
+                .where(builder.and(role.name.ne(Role.Name.ADMIN)))
                 .orderBy(user.username.asc());
 
         return PageableBuilder.build(query, page, limit);
@@ -94,6 +98,7 @@ public class MemberService {
         QUser user = QUser.user;
         QUserCourse userCourse = QUserCourse.userCourse;
         QGroup group = QGroup.group;
+        QRole role = QRole.role;
 
         Expression<Boolean> inGroupExpression = Expressions.booleanTemplate(
                 "case when {0} = {1} then true else false end", group.id, groupId
@@ -127,9 +132,9 @@ public class MemberService {
                 ))
                 .from(user)
                 .leftJoin(user.userCourses, userCourse)
-                .leftJoin(user.role).fetchJoin()
+                .leftJoin(user.role, role).fetchJoin()
                 .leftJoin(user.groups, group)
-                .where(builder)
+                .where(builder.and(role.name.ne(Role.Name.ADMIN)))
                 .orderBy(InGroupPath.desc(), user.username.asc());
 
         return PageableBuilder.build(query, page, limit);
@@ -146,6 +151,7 @@ public class MemberService {
         QUser user = QUser.user;
         QGroup group = QGroup.group;
         QUserCourse userCourse = QUserCourse.userCourse;
+        QRole role = QRole.role;
 
         BooleanBuilder builder = new BooleanBuilder();
         builder.and(userCourse.course.id.eq(courseId));
@@ -164,10 +170,10 @@ public class MemberService {
                         userCourse.currentScore
                 ))
                 .from(user)
-                .leftJoin(user.role).fetchJoin()
+                .leftJoin(user.role, role).fetchJoin()
                 .leftJoin(user.userCourses, userCourse)
                 .leftJoin(user.groups, group)
-                .where(builder);
+                .where(builder.and(role.name.ne(Role.Name.ADMIN)));
 
         if (sort != null && !sort.trim().isEmpty() && direction != null && !direction.trim().isEmpty()) {
             query.orderBy(createOrderSpecifier(sort, direction));

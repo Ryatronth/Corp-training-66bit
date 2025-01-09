@@ -9,6 +9,7 @@ import rnn.core.model.user.CourseStatus;
 import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.UserModule;
 import rnn.core.model.user.UserTopic;
+import rnn.core.model.user.repository.projection.UserTopicModuleCourseAndModuleCourseProjection;
 import rnn.core.service.user.UserTopicService;
 
 import java.util.List;
@@ -21,27 +22,28 @@ public class TopicEventListener {
     @Transactional
     @EventListener
     public void handleDeleteEvent(DeleteTopicEvent event) {
-        List<UserTopic> userTopics = userTopicService.findAllByTopicIdWithModuleCourseUserModuleAndCourse(event.getTopicId());
+        List<UserTopicModuleCourseAndModuleCourseProjection> userTopics = userTopicService.findAllByTopicIdWithModuleCourseUserModuleAndCourse(event.getTopicId());
 
-        for (UserTopic userTopic : userTopics) {
-            UserModule userModule = userTopic.getModule();
-            UserCourse userCourse = userModule.getCourse();
+        for (UserTopicModuleCourseAndModuleCourseProjection projection : userTopics) {
+            UserTopic userTopic = projection.getUserTopic();
+            UserModule userModule = projection.getUserModule();
+            UserCourse userCourse = projection.getUserCourse();
 
-            if (userModule.isCompleted()) {
-                userModule.setCountTopics(userModule.getCountTopics() - 1);
+            if (userTopic != null) {
+                userModule.setCountAnsweredContents(userModule.getCountAnsweredContents() - userTopic.getCountAnsweredContents());
+                userCourse.setCountAnsweredContents(userCourse.getCountAnsweredContents() - userTopic.getCountAnsweredContents());
+
+                userModule.setCurrentScore(userModule.getCurrentScore() - userTopic.getCurrentScore());
+                userCourse.setCurrentScore(userCourse.getCurrentScore() - userTopic.getCurrentScore());
             }
 
-            if (userModule.getCountTopics() == userModule.getModule().getCountTopics()) {
+            if (userModule != null && userModule.getCountAnsweredContents() == userModule.getModule().getCountAnsweredContents()) {
                 userModule.setCompleted(true);
-                userCourse.setCountModules(userCourse.getCountModules() + 1);
-
-                if (userCourse.getCountModules() == userCourse.getCourse().getCountModules()) {
-                    userCourse.setStatus(CourseStatus.FINISHED);
-                }
             }
 
-            userModule.setCurrentScore(userModule.getCurrentScore() - userTopic.getCurrentScore());
-            userCourse.setCurrentScore(userCourse.getCurrentScore() - userTopic.getCurrentScore());
+            if (userCourse.getCountAnsweredContents() == userCourse.getCourse().getCountAnsweredContents()) {
+                userCourse.setStatus(CourseStatus.FINISHED);
+            }
         }
     }
 }

@@ -53,15 +53,11 @@ public class TopicService extends PositionableService<Topic, Long> {
 
     @Transactional
     public Topic create(long moduleId, TopicDTO topicDTO) {
-        Module module = moduleService.find(moduleId);
-        module.setCountTopics(module.getCountTopics() + 1);
-
         Topic topic = Topic
                 .builder()
                 .title(topicDTO.title())
-                .module(module)
+                .module(moduleService.find(moduleId))
                 .build();
-
         return super.create(topic, moduleId, topicDTO.position());
     }
 
@@ -78,10 +74,11 @@ public class TopicService extends PositionableService<Topic, Long> {
         Topic topic = findWithModuleAndCourse(id);
 
         Module module = topic.getModule();
-        module.setCountTopics(module.getCountTopics() - 1);
+        module.setCountAnsweredContents(module.getCountAnsweredContents() - topic.getCountAnsweredContents());
         module.setScore(module.getScore() - topic.getScore());
 
         Course course = module.getCourse();
+        course.setCountAnsweredContents(course.getCountAnsweredContents() - topic.getCountAnsweredContents());
         course.setScore(course.getScore() - topic.getScore());
 
         eventPublisher.publishEvent(new DeleteTopicEvent(this, id));

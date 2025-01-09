@@ -68,23 +68,19 @@ public class UserContentService {
 
             if (userContent.isCompleted()) {
                 topic.setCountAnsweredContents(topic.getCountAnsweredContents() + 1);
+                module.setCountAnsweredContents(module.getCountAnsweredContents() + 1);
+                course.setCountAnsweredContents(course.getCountAnsweredContents() + 1);
 
                 if (topic.getCountAnsweredContents() == topic.getTopic().getCountAnsweredContents()) {
                     topic.setCompleted(true);
-                    if (module.getCountTopics() < module.getModule().getCountTopics()) {
-                        module.setCountTopics(module.getCountTopics() + 1);
-                    }
+                }
 
-                    if (module.getCountTopics() == module.getModule().getCountTopics()) {
-                        module.setCompleted(true);
-                        if (course.getCountModules() < course.getCourse().getCountModules()) {
-                            course.setCountModules(course.getCountModules() + 1);
-                        }
+                if (module.getCountAnsweredContents() == module.getModule().getCountAnsweredContents()) {
+                    module.setCompleted(true);
+                }
 
-                        if (course.getCountModules() == course.getCourse().getCountModules()) {
-                            course.setStatus(CourseStatus.FINISHED);
-                        }
-                    }
+                if (course.getCountAnsweredContents() == course.getCourse().getCountAnsweredContents()) {
+                    course.setStatus(CourseStatus.FINISHED);
                 }
             }
         }
@@ -153,7 +149,7 @@ public class UserContentService {
         return userContentRepository.findAllSuccessByContentIdFetchUserTopicModuleAndCourse(contentId);
     }
 
-    public List<UserContentTopicModuleCourseProjection> findAllCompletedByContentIdWithUserModuleAndCourse(long contentId) {
-        return userContentRepository.findAllCompletedByContentIdFetchUserTopicModuleAndCourse(contentId);
+    public List<UserContentTopicModuleCourseProjection> findAllByContentIdWithUserModuleAndCourse(long contentId) {
+        return userContentRepository.findAllByContentIdFetchUserTopicModuleAndCourse(contentId);
     }
 }

@@ -1,5 +1,6 @@
 package rnn.core.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +40,9 @@ public class SecurityConfig extends WebMvcConfigurationSupport {
                 )
                 .oauth2Login(l -> l
                         .successHandler(successHandler)
+                )
+                .logout(l -> l
+                        .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(c -> c.configurationSource(this.corsConfigurationSource()))

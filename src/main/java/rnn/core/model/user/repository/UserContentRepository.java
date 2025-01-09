@@ -37,10 +37,10 @@ public interface UserContentRepository extends JpaRepository<UserContent, Long> 
     @Query("""
         SELECT uc as userContent, ut as userTopic, um as userModule, uco as userCourse
         FROM UserContent uc
-        JOIN uc.topic ut
-        JOIN ut.module um
-        JOIN um.course uco
-        WHERE uc.content.id = :contentId AND uc.isCompleted is true
+        RIGHT JOIN uc.topic ut
+        RIGHT JOIN ut.module um
+        RIGHT JOIN um.course uco
+        on um.course.id = uco.id AND uc.content.id = :contentId
     """)
-    List<UserContentTopicModuleCourseProjection> findAllCompletedByContentIdFetchUserTopicModuleAndCourse(long contentId);
+    List<UserContentTopicModuleCourseProjection> findAllByContentIdFetchUserTopicModuleAndCourse(long contentId);
 }

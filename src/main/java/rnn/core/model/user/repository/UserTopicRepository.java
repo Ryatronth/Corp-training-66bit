@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import rnn.core.model.user.UserTopic;
+import rnn.core.model.user.repository.projection.UserTopicModuleCourseAndModuleCourseProjection;
 import rnn.core.model.user.repository.projection.UserTopicModuleCourseProjection;
 
 import java.util.List;
@@ -28,19 +29,20 @@ public interface UserTopicRepository extends JpaRepository<UserTopic, Long> {
         SELECT ut as userTopic, um as userModule, uc as userCourse
         FROM UserTopic ut
         RIGHT JOIN ut.module um
+        ON ut.module.id = um.id AND ut.topic.id = :topicId
         RIGHT JOIN um.course uc
-        WHERE ut.topic.id = :id OR ut.id IS NULL
+        ON um.course.id = uc.id AND um.module.id = :moduleId
     """)
-    List<UserTopicModuleCourseProjection> findAllByTopicIdFetchUserModuleAndCourse(long id);
+    List<UserTopicModuleCourseProjection> findAllByTopicIdFetchUserModuleAndCourse(long topicId, long moduleId);
 
-    @EntityGraph(attributePaths = {"module.course.course", "module.module"})
     @Query("""
+        SELECT ut as userTopic, um as userModule, uc as userCourse, m as module, c as course
         FROM UserTopic ut
-        JOIN ut.module um
-        JOIN um.module m
-        JOIN um.course uc
-        JOIN uc.course c
-        WHERE ut.topic.id = :id
+        RIGHT JOIN ut.module um
+        RIGHT JOIN um.course uc
+        ON um.course.id = uc.id AND ut.topic.id = :topicId
+        LEFT JOIN um.module m
+        LEFT JOIN uc.course c
     """)
-    List<UserTopic> findAllByTopicIdFetchModuleCourseUserModuleAndCourse(long id);
+    List<UserTopicModuleCourseAndModuleCourseProjection> findAllByTopicIdFetchModuleCourseUserModuleAndCourse(long topicId);
 }

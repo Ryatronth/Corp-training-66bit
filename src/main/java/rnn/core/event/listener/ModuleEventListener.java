@@ -28,16 +28,13 @@ public class ModuleEventListener {
             UserCourse userCourse = projection.getUserCourse();
 
             if (userModule != null) {
-                if (userModule.isCompleted()) {
-                    userCourse.setCountModules(userCourse.getCountModules() - 1);
-                }
+                userCourse.setCountAnsweredContents(userCourse.getCountAnsweredContents() - userModule.getCountAnsweredContents());
+                userCourse.setCurrentScore(userCourse.getCurrentScore() - userModule.getCurrentScore());
             }
 
-            if (userCourse.getCountModules() == projection.getCourse().getCountModules()) {
+            if (userCourse.getCountAnsweredContents() == projection.getCourse().getCountAnsweredContents()) {
                 userCourse.setStatus(CourseStatus.FINISHED);
             }
-
-            userCourse.setCurrentScore(userCourse.getCurrentScore() + event.getScore());
         }
     }
 }

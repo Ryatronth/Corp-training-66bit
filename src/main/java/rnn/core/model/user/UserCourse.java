@@ -32,7 +32,7 @@ public class UserCourse {
 
     private int currentScore;
 
-    private int countModules;
+    private int countAnsweredContents;
 
     @Enumerated(EnumType.STRING)
     private CourseStatus status;

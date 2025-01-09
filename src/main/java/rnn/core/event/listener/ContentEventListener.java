@@ -36,20 +36,25 @@ public class ContentEventListener {
         Course course = module.getCourse();
 
         topic.setCountAnsweredContents(topic.getCountAnsweredContents() + 1);
-        if (event.getScore() > 0) {
+        module.setCountAnsweredContents(module.getCountAnsweredContents() + 1);
+        course.setCountAnsweredContents(course.getCountAnsweredContents() + 1);
+
+        if (event.getScore() != 0) {
             changeScores(course, module, topic, event.getScore());
         }
 
-        List<UserTopicModuleCourseProjection> userTopics = userTopicService.findAllByTopicIdWithUserModuleAndCourse(event.getTopicId());
+        List<UserTopicModuleCourseProjection> userTopics = userTopicService.findAllByTopicIdWithUserModuleAndCourse(topic.getId(), module.getId());
         for (UserTopicModuleCourseProjection projection : userTopics) {
             UserTopic userTopic = projection.getUserTopic();
             if (userTopic != null) {
                 userTopic.setCompleted(false);
             }
+
             UserModule userModule = projection.getUserModule();
             if (userModule != null) {
                 userModule.setCompleted(false);
             }
+
             UserCourse userCourse = projection.getUserCourse();
             if (!userCourse.getStatus().equals(CourseStatus.NOT_STARTED)) {
                 projection.getUserCourse().setStatus(CourseStatus.IN_PROGRESS);
@@ -86,54 +91,47 @@ public class ContentEventListener {
     @EventListener
     public void handleDeleteEvent(DeleteContentEvent event) {
         Topic topic = topicService.findWithModuleAndCourse(event.getTopicId());
-        topic.setCountAnsweredContents(topic.getCountAnsweredContents() - 1);
         Module module = topic.getModule();
         Course course = module.getCourse();
+
+        topic.setCountAnsweredContents(topic.getCountAnsweredContents() - 1);
+        module.setCountAnsweredContents(module.getCountAnsweredContents() - 1);
+        course.setCountAnsweredContents(course.getCountAnsweredContents() - 1);
 
         if (event.getScore() != 0) {
             changeScores(course, module, topic, event.getScore());
 
-            List<UserContentTopicModuleCourseProjection> userContents = userContentService.findAllCompletedByContentIdWithUserModuleAndCourse(event.getContentId());
-            for (UserContentTopicModuleCourseProjection userContentDeleteDTO : userContents) {
-                UserContent userContent = userContentDeleteDTO.getUserContent();
-                UserTopic userTopic = userContentDeleteDTO.getUserTopic();
-                UserModule userModule = userContentDeleteDTO.getUserModule();
-                UserCourse userCourse = userContentDeleteDTO.getUserCourse();
-
-                if (userContent.isSuccess()) {
-                    userTopic.setCountAnsweredContents(userTopic.getCountAnsweredContents() - 1);
-                    userTopic.setCurrentScore(userTopic.getCurrentScore() + event.getScore());
-                    userModule.setCurrentScore(userModule.getCurrentScore() + event.getScore());
-                    userCourse.setCurrentScore(userCourse.getCurrentScore() + event.getScore());
-                } else {
-                    changeStatuses(topic, module, course, userTopic, userModule, userCourse);
-                }
-            }
-
-            List<UserTopicModuleCourseProjection> userTopics = userTopicService.findAllByTopicIdWithUserModuleAndCourse(event.getTopicId());
-            for (UserTopicModuleCourseProjection projection : userTopics) {
+            List<UserContentTopicModuleCourseProjection> userContents = userContentService.findAllByContentIdWithUserModuleAndCourse(event.getContentId());
+            for (UserContentTopicModuleCourseProjection projection : userContents) {
+                UserContent userContent = projection.getUserContent();
                 UserTopic userTopic = projection.getUserTopic();
+                UserModule userModule = projection.getUserModule();
+                UserCourse userCourse = projection.getUserCourse();
+
+                if (userContent != null) {
+                    if (userContent.isSuccess()) {
+                        userTopic.setCountAnsweredContents(userTopic.getCountAnsweredContents() - 1);
+                        userTopic.setCurrentScore(userTopic.getCurrentScore() + event.getScore());
+                        userModule.setCurrentScore(userModule.getCurrentScore() + event.getScore());
+                        userModule.setCountAnsweredContents(userModule.getCountAnsweredContents() - 1);
+                        userCourse.setCurrentScore(userCourse.getCurrentScore() + event.getScore());
+                        userCourse.setCountAnsweredContents(userCourse.getCountAnsweredContents() - 1);
+                    }
+                }
+
                 if (userTopic != null) {
-                    changeStatuses(topic, module, course, userTopic, projection.getUserModule(), projection.getUserCourse());
-                }
-            }
-        }
-    }
-
-    private void changeStatuses(Topic topic, Module module, Course course, UserTopic userTopic, UserModule userModule, UserCourse userCourse) {
-        if (userTopic.getCountAnsweredContents() == topic.getCountAnsweredContents()) {
-            userTopic.setCompleted(true);
-            if (userModule.getCountTopics() < userModule.getModule().getCountTopics()) {
-                userModule.setCountTopics(userModule.getCountTopics() + 1);
-            }
-
-            if (userModule.getCountTopics() == module.getCountTopics()) {
-                userModule.setCompleted(true);
-                if (userCourse.getCountModules() < userCourse.getCourse().getCountModules()) {
-                    userCourse.setCountModules(userCourse.getCountModules() + 1);
+                    if (userTopic.getCountAnsweredContents() == topic.getCountAnsweredContents()) {
+                        userTopic.setCompleted(true);
+                    }
                 }
 
-                if (userCourse.getCountModules() == course.getCountModules()) {
+                if (userModule != null) {
+                    if (userModule.getCountAnsweredContents() == module.getCountAnsweredContents()) {
+                        userModule.setCompleted(true);
+                    }
+                }
+
+                if (userCourse.getCountAnsweredContents() == course.getCountAnsweredContents()) {
                     userCourse.setStatus(CourseStatus.FINISHED);
                 }
             }

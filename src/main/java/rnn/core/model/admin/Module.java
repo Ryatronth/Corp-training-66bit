@@ -36,7 +36,7 @@ public class Module {
 
     private int score;
 
-    private int countTopics;
+    private int countAnsweredContents;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

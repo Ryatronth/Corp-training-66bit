@@ -35,7 +35,7 @@ public class Course {
 
     private int score;
 
-    private int countModules;
+    private int countAnsweredContents;
 
     private boolean isPublished;
 

@@ -9,6 +9,7 @@ import rnn.core.model.user.UserCourse;
 import rnn.core.model.user.UserModule;
 import rnn.core.model.user.UserTopic;
 import rnn.core.model.user.repository.UserTopicRepository;
+import rnn.core.model.user.repository.projection.UserTopicModuleCourseAndModuleCourseProjection;
 import rnn.core.model.user.repository.projection.UserTopicModuleCourseProjection;
 import rnn.core.service.admin.TopicService;
 
@@ -37,15 +38,12 @@ public class UserTopicService {
 
         if (topic.getCountAnsweredContents() == 0) {
             userTopic.setCompleted(true);
-            userModule.setCountTopics(userModule.getCountTopics() + 1);
 
-            if (userModule.getCountTopics() == userModule.getModule().getCountTopics()) {
+            if (userModule.getCountAnsweredContents() == userModule.getModule().getCountAnsweredContents()) {
                 userModule.setCompleted(true);
 
                 UserCourse userCourse = userModule.getCourse();
-                userCourse.setCountModules(userCourse.getCountModules() + 1);
-
-                if (userCourse.getCountModules() == userCourse.getCourse().getCountModules()) {
+                if (userCourse.getCountAnsweredContents() == userCourse.getCourse().getCountAnsweredContents()) {
                     userCourse.setStatus(CourseStatus.FINISHED);
                 }
             }
@@ -58,11 +56,11 @@ public class UserTopicService {
         return userTopicRepository.findByIdFetchModuleAndCourse(id).orElseThrow(() -> new RuntimeException("Пользовательская тема с данным id не найдена"));
     }
 
-    public List<UserTopicModuleCourseProjection> findAllByTopicIdWithUserModuleAndCourse(long topicId) {
-        return userTopicRepository.findAllByTopicIdFetchUserModuleAndCourse(topicId);
+    public List<UserTopicModuleCourseProjection> findAllByTopicIdWithUserModuleAndCourse(long topicId, long moduleId) {
+        return userTopicRepository.findAllByTopicIdFetchUserModuleAndCourse(topicId, moduleId);
     }
 
-    public List<UserTopic> findAllByTopicIdWithModuleCourseUserModuleAndCourse(long topicId) {
+    public List<UserTopicModuleCourseAndModuleCourseProjection> findAllByTopicIdWithModuleCourseUserModuleAndCourse(long topicId) {
         return userTopicRepository.findAllByTopicIdFetchModuleCourseUserModuleAndCourse(topicId);
     }
 }
