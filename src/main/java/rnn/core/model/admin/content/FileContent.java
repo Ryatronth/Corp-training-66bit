@@ -16,4 +16,16 @@ import rnn.core.model.admin.Content;
 @Entity
 public class FileContent extends Content {
     private String fileUrl;
+
+    @Override
+    public String toString() {
+        return "FileContent{" +
+                "id=" + id +
+                ", position=" + position +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", fileUrl='" + fileUrl + '\'' +
+                '}';
+    }
 }

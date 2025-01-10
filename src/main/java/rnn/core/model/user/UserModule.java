@@ -46,4 +46,14 @@ public class UserModule {
     @ManyToOne
     @JoinColumn(name = "module_id")
     private Module module;
+
+    @Override
+    public String toString() {
+        return "UserModule{" +
+                "id=" + id +
+                ", currentScore=" + currentScore +
+                ", countAnsweredContents=" + countAnsweredContents +
+                ", isCompleted=" + isCompleted +
+                '}';
+    }
 }

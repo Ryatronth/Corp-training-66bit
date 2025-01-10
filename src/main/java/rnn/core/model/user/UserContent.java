@@ -39,4 +39,15 @@ public class UserContent {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")
     private Content content;
+
+    @Override
+    public String toString() {
+        return "UserContent{" +
+                "id=" + id +
+                ", currentAttempts=" + currentAttempts +
+                ", isCompleted=" + isCompleted +
+                ", isSuccess=" + isSuccess +
+                ", answer='" + answer + '\'' +
+                '}';
+    }
 }

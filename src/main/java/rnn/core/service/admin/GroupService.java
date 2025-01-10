@@ -43,7 +43,7 @@ public class GroupService {
         Group group = Group
                 .builder()
                 .course(course)
-                .name(dto.name())
+                .name(dto.name().trim())
                 .users(new HashSet<>())
                 .build();
 

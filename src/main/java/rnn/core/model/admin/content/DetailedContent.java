@@ -24,4 +24,17 @@ public class DetailedContent extends FreeformContent {
 
     @OneToMany(mappedBy = "content", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Answer> answers;
+
+    @Override
+    public String toString() {
+        return "DetailedContent{" +
+                "id=" + id +
+                ", position=" + position +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", countAttempts=" + countAttempts +
+                ", answers=" + answers +
+                '}';
+    }
 }

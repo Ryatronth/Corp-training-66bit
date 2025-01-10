@@ -360,6 +360,7 @@ CREATE TABLE IF NOT EXISTS public.answer_t
     content_id int8               NULL,
     is_right   bool DEFAULT false NULL,
     CONSTRAINT answer_t_pkey PRIMARY KEY (id),
+    CONSTRAINT unique_answer_content UNIQUE (answer, content_id),
     CONSTRAINT fk4ln0fibomw5anvcajlq4r6nm1 FOREIGN KEY (content_id) REFERENCES public.content_t (id) ON DELETE CASCADE
 );
 CREATE INDEX IF NOT EXISTS idx_answer_content_id ON public.answer_t USING btree (content_id);

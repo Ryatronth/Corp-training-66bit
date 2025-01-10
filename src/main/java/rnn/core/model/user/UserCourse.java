@@ -50,4 +50,14 @@ public class UserCourse {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
+    @Override
+    public String toString() {
+        return "UserCourse{" +
+                "id=" + id +
+                ", currentScore=" + currentScore +
+                ", countAnsweredContents=" + countAnsweredContents +
+                ", status=" + status +
+                '}';
+    }
 }

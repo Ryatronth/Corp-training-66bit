@@ -54,4 +54,15 @@ public class Module {
     @JsonIgnore
     @OneToMany(mappedBy = "module", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<GroupDeadline> deadlines;
+
+    @Override
+    public String toString() {
+        return "Module{" +
+                "id=" + id +
+                ", position=" + position +
+                ", title='" + title + '\'' +
+                ", score=" + score +
+                ", countAnsweredContents=" + countAnsweredContents +
+                '}';
+    }
 }

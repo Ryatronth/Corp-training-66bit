@@ -67,4 +67,14 @@ public class Group {
     public int hashCode() {
         return Objects.hash(id, name, isDefault, countMembers, course);
     }
+
+    @Override
+    public String toString() {
+        return "Group{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isDefault=" + isDefault +
+                ", countMembers=" + countMembers +
+                '}';
+    }
 }

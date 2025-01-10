@@ -1,5 +1,6 @@
 package rnn.core.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,8 @@ import rnn.core.model.admin.dto.CourseWithImageDTO;
 import rnn.core.model.admin.dto.CourseWithoutImageDTO;
 import rnn.core.service.admin.CourseService;
 import rnn.core.model.admin.Course;
+import rnn.core.validation.annotations.FileNotEmpty;
+import rnn.core.validation.annotations.IsImage;
 
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class CourseController {
     }
 
     @PostMapping("/courses")
-    public ResponseEntity<Course> createCourse(@ModelAttribute CourseWithImageDTO courseDTO) {
+    public ResponseEntity<Course> createCourse(@Valid @ModelAttribute CourseWithImageDTO courseDTO) {
         Course course = courseService.create(courseDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -72,7 +75,7 @@ public class CourseController {
     @PutMapping("/courses/{id}/fields")
     public ResponseEntity<Course> updateCourseFields(
             @PathVariable long id,
-            @ModelAttribute CourseWithoutImageDTO courseDTO
+            @Valid @ModelAttribute CourseWithoutImageDTO courseDTO
     ) {
         Course course = courseService.updateFields(id, courseDTO);
         return ResponseEntity
@@ -84,7 +87,7 @@ public class CourseController {
     @PutMapping("/courses/{id}/image")
     public ResponseEntity<Course> updateCourseImage(
             @PathVariable long id,
-            @RequestPart(value = "image") MultipartFile image
+            @Valid @FileNotEmpty @IsImage @RequestPart(value = "image") MultipartFile image
     ) {
         Course course = courseService.updateImage(id, image);
         return ResponseEntity

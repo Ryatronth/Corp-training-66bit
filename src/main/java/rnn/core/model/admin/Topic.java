@@ -48,4 +48,15 @@ public class Topic {
     @JsonIgnore
     @OneToMany(mappedBy = "topic", cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<UserTopic> userTopics;
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "id=" + id +
+                ", position=" + position +
+                ", title='" + title + '\'' +
+                ", score=" + score +
+                ", countAnsweredContents=" + countAnsweredContents +
+                '}';
+    }
 }

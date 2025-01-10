@@ -55,7 +55,7 @@ public class TopicService extends PositionableService<Topic, Long> {
     public Topic create(long moduleId, TopicDTO topicDTO) {
         Topic topic = Topic
                 .builder()
-                .title(topicDTO.title())
+                .title(topicDTO.title().trim())
                 .module(moduleService.find(moduleId))
                 .build();
         return super.create(topic, moduleId, topicDTO.position());
@@ -65,7 +65,7 @@ public class TopicService extends PositionableService<Topic, Long> {
     public Topic update(long id, TopicDTO topicDTO) {
         Topic topic = find(id);
 
-        topic.setTitle(topicDTO.title());
+        topic.setTitle(topicDTO.title().trim());
         return super.update(topic, topicDTO.position(), topic.getModule().getId());
     }
 

@@ -23,8 +23,8 @@ public class DetailedProcessor<T> implements ContentProcessor<T> {
 
         DetailedContent content = DetailedContent
                 .builder()
-                .title(detailedContentDTO.getTitle())
-                .description(detailedContentDTO.getDescription())
+                .title(detailedContentDTO.getTitle().trim())
+                .description(detailedContentDTO.getDescription().trim())
                 .position(detailedContentDTO.getPosition())
                 .score(detailedContentDTO.getScore())
                 .type(detailedContentDTO.getType())

@@ -38,8 +38,8 @@ public class CourseService {
         Course course = Course
                 .builder()
                 .tags(tagConverter.convertToEntityAttribute(courseDTO.tags()))
-                .title(courseDTO.title())
-                .description(courseDTO.description())
+                .title(courseDTO.title().trim())
+                .description(courseDTO.description().trim())
                 .pictureUrl(fileService.createCourseImage(UUID.randomUUID(), courseDTO.image()))
                 .build();
 
@@ -52,8 +52,8 @@ public class CourseService {
     public Course updateFields(long id, CourseWithoutImageDTO courseDTO) {
         Course course = find(id);
         course.setTags(tagConverter.convertToEntityAttribute(courseDTO.tags()));
-        course.setTitle(courseDTO.title());
-        course.setDescription(courseDTO.description());
+        course.setTitle(courseDTO.title().trim());
+        course.setDescription(courseDTO.description().trim());
         return courseRepository.save(course);
     }
 

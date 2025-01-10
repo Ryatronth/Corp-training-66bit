@@ -24,8 +24,8 @@ public class FileProcessor<T> implements ContentProcessor<T> {
         FileContent content = FileContent
                 .builder()
                 .type(fileContentDTO.getType())
-                .description(fileContentDTO.getDescription())
-                .title(fileContentDTO.getTitle())
+                .description(fileContentDTO.getDescription().trim())
+                .title(fileContentDTO.getTitle().trim())
                 .position(fileContentDTO.getPosition())
                 .type(fileContentDTO.getType())
                 .build();

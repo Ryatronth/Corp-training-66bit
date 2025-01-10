@@ -65,7 +65,7 @@ public class ModuleService extends PositionableService<Module, Long> {
     public Module create(long courseId, ModuleDTO moduleDTO) {
         Module module = Module
                 .builder()
-                .title(moduleDTO.title())
+                .title(moduleDTO.title().trim())
                 .course(courseService.find(courseId))
                 .build();
         return super.create(module, courseId, moduleDTO.position());
@@ -75,7 +75,7 @@ public class ModuleService extends PositionableService<Module, Long> {
     public Module update(long id, ModuleDTO moduleDTO) {
         Module module = find(id);
 
-        module.setTitle(moduleDTO.title());
+        module.setTitle(moduleDTO.title().trim());
         return super.update(module, moduleDTO.position(), module.getCourse().getId());
     }
 

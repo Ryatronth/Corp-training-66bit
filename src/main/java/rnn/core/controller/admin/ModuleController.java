@@ -1,5 +1,6 @@
 package rnn.core.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +29,7 @@ public class ModuleController {
     }
 
     @PostMapping("/modules")
-    public ResponseEntity<Module> createModule(@RequestParam("courseId") long courseId, @RequestBody ModuleDTO moduleDTO) {
+    public ResponseEntity<Module> createModule(@RequestParam("courseId") long courseId, @Valid @RequestBody ModuleDTO moduleDTO) {
         Module module = moduleService.create(courseId, moduleDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -37,7 +38,7 @@ public class ModuleController {
     }
 
     @PostMapping("/modules/all")
-    public ResponseEntity<List<Module>> updateModules(@RequestParam("courseId") long courseId, @RequestBody List<ModuleDTO> dtos) {
+    public ResponseEntity<List<Module>> updateModules(@RequestParam("courseId") long courseId, @RequestBody List<@Valid ModuleDTO> dtos) {
         List<Module> modules = moduleService.create(courseId, dtos);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -46,7 +47,7 @@ public class ModuleController {
     }
 
     @PutMapping("/modules/{id}")
-    public ResponseEntity<Module> updateModule(@PathVariable long id, @RequestBody ModuleDTO moduleDTO) {
+    public ResponseEntity<Module> updateModule(@PathVariable long id, @Valid @RequestBody ModuleDTO moduleDTO) {
         Module module = moduleService.update(id, moduleDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

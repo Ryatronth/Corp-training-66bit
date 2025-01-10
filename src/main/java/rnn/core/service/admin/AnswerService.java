@@ -11,7 +11,7 @@ import java.util.List;
 @Service
 public class AnswerService {
     public Answer build(DetailedContent content, DetailedContentDTO.AnswerDTO answer) {
-        return Answer.builder().answer(answer.answer()).isRight(answer.isRight()).content(content).build();
+        return Answer.builder().answer(answer.answer().trim()).isRight(answer.isRight()).content(content).build();
     }
 
     public List<Answer> buildAll(DetailedContent content, List<DetailedContentDTO.AnswerDTO> answers) {

@@ -46,4 +46,14 @@ public class UserTopic {
     @JsonIgnore
     @OneToMany(mappedBy = "topic")
     private List<UserContent> contents;
+
+    @Override
+    public String toString() {
+        return "UserTopic{" +
+                "id=" + id +
+                ", currentScore=" + currentScore +
+                ", countAnsweredContents=" + countAnsweredContents +
+                ", isCompleted=" + isCompleted +
+                '}';
+    }
 }

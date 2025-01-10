@@ -31,14 +31,7 @@ public class DeadlineService {
     public List<GroupDeadline> createAll(Group group, List<DeadlineDTO> dtos) {
         List<GroupDeadline> deadlines = new ArrayList<>();
         for (DeadlineDTO dto : dtos) {
-            GroupDeadline deadline = GroupDeadline
-                    .builder()
-                    .startTime(dto.startTime())
-                    .endTime(dto.endTime())
-                    .module(moduleService.find(dto.moduleId()))
-                    .group(group)
-                    .build();
-            deadlines.add(deadline);
+            deadlines.add(create(group, dto));
         }
         return groupDeadlineRepository.saveAll(deadlines);
     }

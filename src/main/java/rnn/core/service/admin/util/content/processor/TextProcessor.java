@@ -18,8 +18,8 @@ public class TextProcessor<T> implements ContentProcessor<T> {
         TextContentDTO textContentDTO = (TextContentDTO) contentDTO;
         TextContent content = TextContent
                 .builder()
-                .title(textContentDTO.getTitle())
-                .description(textContentDTO.getDescription())
+                .title(textContentDTO.getTitle().trim())
+                .description(textContentDTO.getDescription().trim())
                 .type(contentDTO.getType())
                 .position(contentDTO.getPosition())
                 .build();

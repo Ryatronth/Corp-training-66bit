@@ -16,4 +16,16 @@ import rnn.core.model.admin.Content;
 @Entity
 public class FreeformContent extends Content {
     private int score;
+
+    @Override
+    public String toString() {
+        return "FreeformContent{" +
+                "id=" + id +
+                ", position=" + position +
+                ", type=" + type +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", score=" + score +
+                '}';
+    }
 }

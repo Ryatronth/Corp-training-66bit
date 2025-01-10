@@ -1,5 +1,6 @@
 package rnn.core.controller.admin;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,7 +28,7 @@ public class TopicController {
     }
 
     @PostMapping("/topics")
-    public ResponseEntity<Topic> createTopic(@RequestParam("moduleId") long moduleId, @RequestBody TopicDTO topicDTO) {
+    public ResponseEntity<Topic> createTopic(@RequestParam("moduleId") long moduleId, @Valid @RequestBody TopicDTO topicDTO) {
         Topic topic = topicService.create(moduleId, topicDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -36,7 +37,7 @@ public class TopicController {
     }
 
     @PutMapping("/topics/{id}")
-    public ResponseEntity<Topic> updateTopic(@PathVariable long id, @RequestBody TopicDTO topicDTO) {
+    public ResponseEntity<Topic> updateTopic(@PathVariable long id, @Valid @RequestBody TopicDTO topicDTO) {
         Topic module = topicService.update(id, topicDTO);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
