@@ -78,7 +78,7 @@ public class CourseService {
 
         JPAQuery<Course> query = queryFactory
                 .selectFrom(course)
-                .orderBy(course.title.asc());
+                .orderBy(course.createdAt.desc());
 
         query = CourseQueryFilter.filtrate(query, title, tags, filter);
 

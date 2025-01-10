@@ -3,9 +3,11 @@ package rnn.core.model.admin;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import rnn.core.model.admin.converter.TagConverter;
 import rnn.core.model.user.UserCourse;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -32,6 +34,9 @@ public class Course {
     private String description;
 
     private String pictureUrl;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
 
     private int score;
 

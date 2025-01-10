@@ -55,7 +55,7 @@ public class UserCourseService {
                 .from(userCourse)
                 .join(userCourse.course, course)
                 .where(userCourse.user.username.eq(username))
-                .orderBy(course.title.asc());
+                .orderBy(course.createdAt.desc());
 
         query = CourseQueryFilter.filtrate(query, title, tags, filter);
 
@@ -82,7 +82,7 @@ public class UserCourseService {
                 .from(course)
                 .leftJoin(course.userCourses, userCourse)
                 .on(course.id.eq(userCourse.course.id).and(userCourse.user.username.eq(username)))
-                .orderBy(course.title.asc());
+                .orderBy(course.createdAt.desc());
 
         query = CourseQueryFilter.filtrate(query, title, tags, filter);
 
