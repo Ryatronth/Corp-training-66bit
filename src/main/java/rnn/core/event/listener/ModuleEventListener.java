@@ -33,7 +33,9 @@ public class ModuleEventListener {
             }
 
             if (userCourse.getCountAnsweredContents() == projection.getCourse().getCountAnsweredContents()) {
-                userCourse.setStatus(CourseStatus.FINISHED);
+                if (!userCourse.getStatus().equals(CourseStatus.NOT_STARTED)) {
+                    userCourse.setStatus(CourseStatus.FINISHED);
+                }
             }
         }
     }

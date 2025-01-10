@@ -42,7 +42,9 @@ public class TopicEventListener {
             }
 
             if (userCourse.getCountAnsweredContents() == userCourse.getCourse().getCountAnsweredContents()) {
-                userCourse.setStatus(CourseStatus.FINISHED);
+                if (!userCourse.getStatus().equals(CourseStatus.NOT_STARTED)) {
+                    userCourse.setStatus(CourseStatus.FINISHED);
+                }
             }
         }
     }
