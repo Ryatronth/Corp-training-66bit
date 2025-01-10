@@ -14,9 +14,6 @@ import rnn.core.model.admin.content.DetailedContent;
         name = "answer_t",
         indexes = {
                 @Index(name = "idx_answer_content_id", columnList = "content_id")
-        },
-        uniqueConstraints = {
-                @UniqueConstraint(name = "unique_answer_content", columnNames = {"answer", "content_id"})
         }
 )
 @Entity

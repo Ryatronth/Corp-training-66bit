@@ -133,7 +133,9 @@ public class ContentEventListener {
             }
 
             if (userCourse.getCountAnsweredContents() == course.getCountAnsweredContents()) {
-                userCourse.setStatus(CourseStatus.FINISHED);
+                if (!userCourse.getStatus().equals(CourseStatus.NOT_STARTED)) {
+                    userCourse.setStatus(CourseStatus.FINISHED);
+                }
             }
         }
     }
