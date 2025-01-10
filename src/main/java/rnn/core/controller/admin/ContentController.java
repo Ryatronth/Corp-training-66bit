@@ -2,7 +2,6 @@ package rnn.core.controller.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +11,6 @@ import rnn.core.model.admin.Content;
 import rnn.core.model.admin.dto.ContentDTO;
 import rnn.core.model.admin.dto.contentImpl.FileContentDTO;
 import rnn.core.service.admin.ContentService;
-import rnn.core.validation.annotations.FileNotEmpty;
 
 import java.util.List;
 
@@ -36,7 +34,7 @@ public class ContentController {
     public ResponseEntity<Content> create(
             @RequestParam long topicId,
             @RequestPart(value = "content") String json,
-            @Valid @FileNotEmpty @RequestPart(value = "file", required = false) MultipartFile file
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) throws JsonProcessingException {
         ContentDTO contentDTO = objectMapper.readValue(json, ContentDTO.class);
 
@@ -54,7 +52,7 @@ public class ContentController {
     public ResponseEntity<Content> update(
             @PathVariable long id,
             @RequestPart(value = "content") String json,
-            @Valid @FileNotEmpty @RequestPart(value = "file", required = false) MultipartFile file
+            @RequestPart(value = "file", required = false) MultipartFile file
     ) throws JsonProcessingException {
         ContentDTO contentDTO = objectMapper.readValue(json, ContentDTO.class);
 
