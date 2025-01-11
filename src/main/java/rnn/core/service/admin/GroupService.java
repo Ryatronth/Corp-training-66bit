@@ -186,6 +186,8 @@ public class GroupService {
 
         if (sort != null && !sort.trim().isEmpty() && direction != null && !direction.trim().isEmpty()) {
             query.orderBy(createFindAllOrderSpecifier(sort, direction));
+        } else {
+            query.orderBy(group.id.asc());
         }
 
         return PageableBuilder.build(query, page, limit);
