@@ -112,11 +112,14 @@ public class ContentEventListener {
             if (userContent != null) {
                 if (userContent.isCompleted()) {
                     userTopic.setCountAnsweredContents(userTopic.getCountAnsweredContents() - 1);
-                    userTopic.setCurrentScore(userTopic.getCurrentScore() + event.getScore());
-                    userModule.setCurrentScore(userModule.getCurrentScore() + event.getScore());
                     userModule.setCountAnsweredContents(userModule.getCountAnsweredContents() - 1);
-                    userCourse.setCurrentScore(userCourse.getCurrentScore() + event.getScore());
                     userCourse.setCountAnsweredContents(userCourse.getCountAnsweredContents() - 1);
+
+                    if (userContent.isSuccess()) {
+                        userCourse.setCurrentScore(userCourse.getCurrentScore() + event.getScore());
+                        userModule.setCurrentScore(userModule.getCurrentScore() + event.getScore());
+                        userTopic.setCurrentScore(userTopic.getCurrentScore() + event.getScore());
+                    }
                 }
             }
 
