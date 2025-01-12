@@ -57,18 +57,18 @@ public class GroupController {
             @RequestParam(name = "courseId", required = false) Long courseId,
             @RequestParam(name = "groupId", required = false) Long groupId,
             @RequestParam(name = "default", required = false) boolean def,
-            @RequestBody List<String> usernames
+            @RequestBody List<Long> userIds
     ) {
         if (def) {
             return ResponseEntity
                     .status(200)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(courseSubscribeService.subscribeCourse(courseId, usernames).group());
+                    .body(courseSubscribeService.subscribeCourse(courseId, userIds).group());
         }
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(groupService.updateUsers(courseId, groupId, usernames));
+                .body(groupService.updateUsers(courseId, groupId, userIds));
     }
 
     @PutMapping("/groups/users/exclude")

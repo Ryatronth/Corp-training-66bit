@@ -16,13 +16,30 @@ import java.util.Set;
 @Builder
 @Getter
 @Setter
-@Table(name = "user_t")
+@Table(
+        name = "user_t",
+        indexes = {
+                @Index(name = "idx_email", columnList = "email"),
+                @Index(name = "idx_username", columnList = "username"),
+                @Index(name = "idx_git_hub_id", columnList = "git_hub_id"),
+                @Index(name = "idx_git_lab_id", columnList = "git_lab_id")
+        }
+)
 @Entity
 public class User {
     @Id
-    private String username;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     private String email;
+
+    private String username;
+
+    @JsonIgnore
+    private String gitHubId;
+
+    @JsonIgnore
+    private String gitLabId;
 
     private String avatarUrl;
 
@@ -53,10 +70,12 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "id=" + id +
                 ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", gitHubId='" + gitHubId + '\'' +
+                ", gitLabId='" + gitLabId + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
-                ", role=" + role +
                 '}';
     }
 
@@ -65,11 +84,11 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(username, user.username) && Objects.equals(email, user.email) && Objects.equals(avatarUrl, user.avatarUrl);
+        return Objects.equals(email, user.email);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, email, avatarUrl);
+        return Objects.hashCode(email);
     }
 }

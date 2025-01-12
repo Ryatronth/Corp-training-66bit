@@ -8,11 +8,11 @@ import java.util.List;
 @Getter
 public class DeleteUserEvent extends ApplicationEvent {
     private final long courseId;
-    private final List<String> usernames;
+    private final List<Long> userIds;
 
-    public DeleteUserEvent(Object source, long courseId, List<String> usernames) {
+    public DeleteUserEvent(Object source, long courseId, List<Long> userIds) {
         super(source);
         this.courseId = courseId;
-        this.usernames = usernames;
+        this.userIds = userIds;
     }
 }

@@ -7,11 +7,13 @@ import rnn.core.authentication.mapper.OAuth2ProviderMapper;
 public class GitHubMapper implements OAuth2ProviderMapper {
     @Override
     public UserInfo map(OAuth2User principal) {
+        String providerId = Integer.toString(principal.getAttribute("id"));
         String username = principal.getAttribute("login");
         String email = principal.getAttribute("email");
         String avatarUrl = principal.getAttribute("avatar_url");
         return UserInfo
                 .builder()
+                .providerId(providerId)
                 .username(username)
                 .email(email)
                 .avatarUrl(avatarUrl)

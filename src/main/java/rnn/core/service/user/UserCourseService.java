@@ -31,12 +31,12 @@ public class UserCourseService {
 
     private final UserCourseRepository userCourseRepository;
 
-    public UserCourseWithCourseAndGroupDTO findWithCourseAndGroup(long userCourseId, String username) {
-        return userCourseRepository.findByIdFetchCourseAndGroup(userCourseId, username).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id и username не найден"));
+    public UserCourseWithCourseAndGroupDTO findWithCourseAndGroup(long userCourseId, long userId) {
+        return userCourseRepository.findByIdFetchCourseAndGroup(userCourseId, userId).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id и user id не найден"));
     }
 
-    public Page<UserCourseDTO> findAllByUsernameWithCourse(
-            String username,
+    public Page<UserCourseDTO> findAllByUserIdWithCourse(
+            long userId,
             String title,
             List<String> tags,
             CourseFilter filter,
@@ -54,7 +54,7 @@ public class UserCourseService {
                 ))
                 .from(userCourse)
                 .join(userCourse.course, course)
-                .where(userCourse.user.username.eq(username))
+                .where(userCourse.user.id.eq(userId))
                 .orderBy(course.createdAt.desc());
 
         query = CourseQueryFilter.filtrate(query, title, tags, filter);
@@ -63,7 +63,7 @@ public class UserCourseService {
     }
 
     public Page<UserCourseDTO> findAllNotEnrolled(
-            String username,
+            long userId,
             String title,
             List<String> tags,
             CourseFilter filter,
@@ -81,7 +81,7 @@ public class UserCourseService {
                 ))
                 .from(course)
                 .leftJoin(course.userCourses, userCourse)
-                .on(course.id.eq(userCourse.course.id).and(userCourse.user.username.eq(username)))
+                .on(course.id.eq(userCourse.course.id).and(userCourse.user.id.eq(userId)))
                 .orderBy(course.createdAt.desc());
 
         query = CourseQueryFilter.filtrate(query, title, tags, filter);
@@ -110,8 +110,8 @@ public class UserCourseService {
         return userCourseRepository.saveAll(userCourses);
     }
 
-    public void deleteAllByCourseIdAndUsernames(long courseId, List<String> username) {
-        userCourseRepository.deleteAllByCourseIdAndUsernames(courseId, username);
+    public void deleteAllByCourseIdAndUserIds(long courseId, List<Long> userIds) {
+        userCourseRepository.deleteAllByCourseIdAndUserIds(courseId, userIds);
     }
 
     public void deleteAllByCourseIdAndGroupId(long courseId, long groupId) {
@@ -122,7 +122,7 @@ public class UserCourseService {
         return userCourseRepository.findById(userCourseId).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id не найден"));
     }
 
-    public UserCourse findByCourseIdAndUsername(long courseId, String username) {
-        return userCourseRepository.findByCourseIdAndUsername(courseId, username).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id и username не найден"));
+    public UserCourse findByCourseIdAndUserIds(long courseId, long userId) {
+        return userCourseRepository.findByCourseIdAndUserId(courseId, userId).orElseThrow(() -> new RuntimeException("Пользовательский курс с данным id и user id не найден"));
     }
 }

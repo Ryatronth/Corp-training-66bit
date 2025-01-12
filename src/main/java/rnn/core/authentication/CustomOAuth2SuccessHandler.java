@@ -11,10 +11,14 @@ import org.springframework.security.oauth2.client.authentication.OAuth2Authentic
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import rnn.core.authentication.mapper.OAuth2UserMapper;
+import rnn.core.authentication.mapper.Provider;
+import rnn.core.exception.MissingEmailException;
 import rnn.core.model.security.User;
 import rnn.core.service.security.UserService;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,24 +30,34 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
     @Value("${spring.security.oauth2.default_success_url}")
     public String defaultSuccessUrl;
 
+    @Value("${spring.security.oauth2.default_auth_error_url}")
+    public String defaultErrorUrl;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException {
-        OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
+        try {
+            OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken) authentication;
 
-        UserInfo info = OAuth2UserMapper.getUserInfo(oauthToken.getAuthorizedClientRegistrationId(), oauthToken.getPrincipal());
-        User user = userService.checkUserExisted(info);
+            Provider provider = Provider.fromRegistrationId(oauthToken.getAuthorizedClientRegistrationId());
 
-        Set<GrantedAuthority> authorities = new HashSet<>(oauthToken.getAuthorities());
-        authorities.add(user.getRole());
+            UserInfo info = OAuth2UserMapper.getUserInfo(provider, oauthToken.getPrincipal());
+            User user = userService.checkUserExisted(provider, info);
 
-        OAuth2AuthenticationToken newAuth = new OAuth2AuthenticationToken(
-                oauthToken.getPrincipal(),
-                authorities,
-                oauthToken.getAuthorizedClientRegistrationId()
-        );
+            Set<GrantedAuthority> authorities = new HashSet<>(oauthToken.getAuthorities());
+            authorities.add(user.getRole());
 
-        SecurityContextHolder.getContext().setAuthentication(newAuth);
+            OAuth2AuthenticationToken newAuth = new OAuth2AuthenticationToken(
+                    oauthToken.getPrincipal(),
+                    authorities,
+                    oauthToken.getAuthorizedClientRegistrationId()
+            );
 
-        response.sendRedirect(defaultSuccessUrl);
+            SecurityContextHolder.getContext().setAuthentication(newAuth);
+
+            response.sendRedirect(defaultSuccessUrl);
+        } catch (MissingEmailException e) {
+            request.getSession().invalidate();
+            response.sendRedirect(defaultErrorUrl + URLEncoder.encode(e.getMessage(), StandardCharsets.UTF_8));
+        }
     }
 }

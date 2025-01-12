@@ -29,7 +29,7 @@ public class GroupEventListener {
 
     @EventListener
     public void handleDeleteUserEventListener(DeleteUserEvent event) {
-        userCourseService.deleteAllByCourseIdAndUsernames(event.getCourseId(), event.getUsernames());
+        userCourseService.deleteAllByCourseIdAndUserIds(event.getCourseId(), event.getUserIds());
     }
 
     @EventListener
