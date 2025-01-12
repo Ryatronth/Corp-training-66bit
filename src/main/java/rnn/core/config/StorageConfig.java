@@ -25,9 +25,33 @@ public class StorageConfig {
     }
 
     public String uploadCourseImage(UUID courseImageUUID, MultipartFile file) {
+        return uploadFile(COURSE_PATH, courseImageUUID, file);
+    }
+
+    public String uploadContentFile(UUID contentImageUUID, MultipartFile file) {
+        return uploadFile(CONTENT_PATH, contentImageUUID, file);
+    }
+
+    public void deleteCourseImage(String courseImageURL) {
+        deleteFile(COURSE_PATH, courseImageURL);
+    }
+
+    public void deleteContentFile(String contentURL) {
+        deleteFile(CONTENT_PATH, contentURL);
+    }
+
+    public static String extractFileName(String imageUrl) {
+        return imageUrl.substring(imageUrl.length() - 36);
+    }
+
+    public static UUID extractFileNameUUID(String imageUrl) {
+        return UUID.fromString(extractFileName(imageUrl));
+    }
+
+    private String uploadFile(String path, UUID fileUUID, MultipartFile file) {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("path", COURSE_PATH);
-        builder.part("name", courseImageUUID.toString());
+        builder.part("path", path);
+        builder.part("name", fileUUID.toString());
         builder.part("file", file.getResource());
         MultiValueMap<String, HttpEntity<?>> multipartData = builder.build();
 
@@ -41,20 +65,18 @@ public class StorageConfig {
                 .block();
     }
 
-    public String uploadContentFile(long topicId, UUID contentImageUUID, MultipartFile file) {
-        MultipartBodyBuilder builder = new MultipartBodyBuilder();
-        builder.part("path", "%s/%s".formatted(CONTENT_PATH, topicId));
-        builder.part("name", contentImageUUID.toString());
-        builder.part("file", file.getResource());
-        MultiValueMap<String, HttpEntity<?>> multipartData = builder.build();
-
-        return webClient
-                .post()
-                .uri("/api/v1/files")
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(multipartData))
+    private void deleteFile(String path, String fileURL) {
+        webClient
+                .delete()
+                .uri(
+                        uriBuilder -> uriBuilder
+                                .path("/api/v1/files")
+                                .queryParam("path", path)
+                                .queryParam("name", extractFileName(fileURL))
+                                .build()
+                )
                 .retrieve()
-                .bodyToMono(String.class)
-                .block();
+                .toBodilessEntity()
+                .subscribe();
     }
 }

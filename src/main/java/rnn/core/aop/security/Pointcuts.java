@@ -6,8 +6,4 @@ public class Pointcuts {
     @Pointcut(value = "execution(* rnn.core.service.security.UserService.checkUserExisted(..))")
     public void checkPointcut() {
     }
-
-    @Pointcut(value = "execution(* rnn.core.service.security.UserService.getUser(..))")
-    public void getPointcut() {
-    }
 }

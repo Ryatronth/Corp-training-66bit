@@ -3,9 +3,8 @@ package rnn.core.service.filestorage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import rnn.core.model.admin.Course;
 import rnn.core.config.StorageConfig;
-import rnn.core.model.admin.content.FileContent;
+import rnn.core.model.admin.Course;
 
 import java.util.UUID;
 
@@ -26,30 +25,34 @@ public class FileService {
         String pictureUrl = course.getPictureUrl();
 
         if (pictureUrl != null) {
-            UUID uuid = extractUUID(pictureUrl);
+            UUID uuid = StorageConfig.extractFileNameUUID(pictureUrl);
             return createCourseImage(uuid, file);
         }
 
         return null;
     }
 
-    protected UUID extractUUID(String imageUrl) {
-        return UUID.fromString(imageUrl.substring(imageUrl.length() - 36));
-    }
-
-    public String createContentFile(long topicId, UUID fileName, MultipartFile file) {
+    public String createContentFile(UUID fileName, MultipartFile file) {
         if (file.isEmpty()) {
             throw new IllegalArgumentException("Файл не может быть пустым.");
         }
 
-        return storageConfig.uploadContentFile(topicId, fileName, file);
+        return storageConfig.uploadContentFile(fileName, file);
     }
 
-    public String updateContentFile(FileContent fileContent, MultipartFile file) {
+    public String updateContentFile(MultipartFile file) {
         if (file != null) {
-            return createContentFile(fileContent.getTopic().getId(), UUID.randomUUID(), file);
+            return createContentFile(UUID.randomUUID(), file);
         }
 
         return null;
+    }
+
+    public void deleteCourseImage(String imageURL) {
+        storageConfig.deleteCourseImage(imageURL);
+    }
+
+    public void deleteContentFile(String fileURL) {
+        storageConfig.deleteContentFile(fileURL);
     }
 }

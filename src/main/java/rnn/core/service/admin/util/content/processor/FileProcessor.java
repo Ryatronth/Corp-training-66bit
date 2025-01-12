@@ -31,13 +31,13 @@ public class FileProcessor<T> implements ContentProcessor<T> {
                 .build();
 
         if (entity instanceof Topic topic) {
-            content.setFileUrl(fileService.createContentFile(topic.getId(), UUID.randomUUID(), fileContentDTO.getFile()));
+            content.setFileUrl(fileService.createContentFile(UUID.randomUUID(), fileContentDTO.getFile()));
             content.setTopic(topic);
         }
 
         if (entity instanceof FileContent fileContent) {
             content.setId(fileContent.getId());
-            content.setFileUrl(fileService.updateContentFile(fileContent, fileContentDTO.getFile()));
+            content.setFileUrl(fileService.updateContentFile(fileContentDTO.getFile()));
             content.setTopic(fileContent.getTopic());
         }
 

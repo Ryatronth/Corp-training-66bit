@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import rnn.core.event.event.DeleteCourseEvent;
 import rnn.core.util.CourseFilter;
 import rnn.core.event.event.CreateCourseEvent;
 import rnn.core.model.admin.Course;
@@ -43,9 +44,8 @@ public class CourseService {
                 .pictureUrl(fileService.createCourseImage(UUID.randomUUID(), courseDTO.image()))
                 .build();
 
-        course = courseRepository.save(course);
         eventPublisher.publishEvent(new CreateCourseEvent(this, course));
-        return course;
+        return courseRepository.save(course);
     }
 
     @Transactional
@@ -66,7 +66,9 @@ public class CourseService {
 
     @Transactional
     public void delete(long id) {
-        courseRepository.deleteById(id);
+        Course course = find(id);
+        eventPublisher.publishEvent(new DeleteCourseEvent(this, course.getPictureUrl()));
+        courseRepository.delete(course);
     }
 
     public Course find(long id) {

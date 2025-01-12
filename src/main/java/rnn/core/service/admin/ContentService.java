@@ -3,11 +3,10 @@ package rnn.core.service.admin;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import rnn.core.event.event.CreateContentEvent;
-import rnn.core.event.event.DeleteContentEvent;
-import rnn.core.event.event.UpdateContentEvent;
+import rnn.core.event.event.*;
 import rnn.core.model.admin.Content;
 import rnn.core.model.admin.Topic;
+import rnn.core.model.admin.content.FileContent;
 import rnn.core.model.admin.content.FreeformContent;
 import rnn.core.model.admin.dto.ContentDTO;
 import rnn.core.model.admin.repository.ContentRepository;
@@ -68,6 +67,8 @@ public class ContentService extends PositionableService<Content, Long> {
 
         if (content instanceof FreeformContent freeformContent) {
             eventPublisher.publishEvent(new CreateContentEvent(this, topicId, freeformContent.getScore()));
+        } else if (content instanceof FileContent fileContent) {
+            eventPublisher.publishEvent(new RollbackFileContentEvent(this, fileContent.getFileUrl()));
         }
 
         return content;
@@ -98,6 +99,8 @@ public class ContentService extends PositionableService<Content, Long> {
                             freeformContent.getScore() - score
                     )
             );
+        } else if (updatedContent instanceof FileContent fileContent) {
+            eventPublisher.publishEvent(new RollbackFileContentEvent(this, fileContent.getFileUrl()));
         }
 
         return updatedContent;
@@ -120,6 +123,8 @@ public class ContentService extends PositionableService<Content, Long> {
                             -contentWithScore.getScore()
                     )
             );
+        } else if (content instanceof FileContent fileContent) {
+            eventPublisher.publishEvent(new DeleteFileContentEvent(this, fileContent.getFileUrl()));
         }
 
         super.delete(content, content.getTopic().getId());

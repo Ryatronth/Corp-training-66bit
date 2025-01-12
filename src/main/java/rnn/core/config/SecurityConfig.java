@@ -31,6 +31,9 @@ public class SecurityConfig extends WebMvcConfigurationSupport {
 
     private final CustomOAuth2SuccessHandler successHandler;
 
+    @Value("${spring.security.oauth2.default_auth_error_url}")
+    public String defaultErrorUrl;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(req -> req
@@ -40,6 +43,7 @@ public class SecurityConfig extends WebMvcConfigurationSupport {
                 )
                 .oauth2Login(l -> l
                         .successHandler(successHandler)
+                        .failureUrl(defaultErrorUrl)
                 )
                 .logout(l -> l
                         .logoutSuccessHandler((request, response, authentication) -> response.setStatus(HttpServletResponse.SC_OK))

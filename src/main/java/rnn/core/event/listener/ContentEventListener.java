@@ -6,10 +6,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
-import rnn.core.event.event.CreateContentEvent;
-import rnn.core.event.event.DeleteContentEvent;
-import rnn.core.event.event.UpdateContentEvent;
+import rnn.core.event.event.*;
 import rnn.core.model.admin.Course;
 import rnn.core.model.admin.Module;
 import rnn.core.model.admin.Topic;
@@ -17,6 +16,7 @@ import rnn.core.model.user.*;
 import rnn.core.model.user.repository.projection.UserContentTopicModuleCourseProjection;
 import rnn.core.model.user.repository.projection.UserTopicModuleCourseProjection;
 import rnn.core.service.admin.TopicService;
+import rnn.core.service.filestorage.FileService;
 import rnn.core.service.user.UserContentService;
 import rnn.core.service.user.UserTopicService;
 
@@ -28,6 +28,7 @@ public class ContentEventListener {
     private final TopicService topicService;
     private final UserTopicService userTopicService;
     private final UserContentService userContentService;
+    private final FileService fileService;
 
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -143,6 +144,18 @@ public class ContentEventListener {
                 }
             }
         }
+    }
+
+    @Async
+    @TransactionalEventListener
+    public void handleDeleteFileContentEvent(DeleteFileContentEvent event) {
+        fileService.deleteContentFile(event.getFileUrl());
+    }
+
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
+    public void handleRollbackFileContentEvent(RollbackFileContentEvent event) {
+        fileService.deleteContentFile(event.getFileUrl());
     }
 
     private void changeScores(Course course, Module module, Topic topic, int score) {

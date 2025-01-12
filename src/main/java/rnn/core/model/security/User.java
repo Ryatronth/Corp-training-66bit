@@ -76,6 +76,7 @@ public class User {
                 ", gitHubId='" + gitHubId + '\'' +
                 ", gitLabId='" + gitLabId + '\'' +
                 ", avatarUrl='" + avatarUrl + '\'' +
+                ", role=" + role +
                 '}';
     }
 

@@ -2,6 +2,7 @@ package rnn.core.service.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import rnn.core.authentication.UserInfo;
 import rnn.core.authentication.mapper.Provider;
@@ -18,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public User checkUserExisted(Provider provider, UserInfo info) {
         try {
             return update(findPreAuthorizedUser(info), provider, info);
@@ -33,11 +34,12 @@ public class UserService {
         user.setAvatarUrl(info.avatarUrl());
 
         changeProviderIds(user, provider, info);
+        userRepository.save(user);
 
         return userRepository.save(user);
     }
 
-    private User createNewUser(Provider provider, UserInfo info) {
+    protected User createNewUser(Provider provider, UserInfo info) {
         Role userRole = roleService.getUserRole();
         User newUser = User
                 .builder()
@@ -48,6 +50,7 @@ public class UserService {
                 .build();
 
         changeProviderIds(newUser, provider, info);
+        userRepository.save(newUser);
 
         return userRepository.save(newUser);
     }

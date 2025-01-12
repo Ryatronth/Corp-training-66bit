@@ -11,10 +11,10 @@ public class RoleService {
     private final RoleRepository roleRepository;
 
     public Role getUserRole() {
-        return roleRepository.getReferenceById(Role.Name.USER);
+        return roleRepository.findById(Role.Name.USER).orElseThrow(() -> new IllegalStateException("Роль 'Пользователя' не проинициализирована"));
     }
 
     public Role getAdminRole() {
-        return roleRepository.getReferenceById(Role.Name.ADMIN);
+        return roleRepository.findById(Role.Name.ADMIN).orElseThrow(() -> new IllegalStateException("Роль 'Админа' не проинициализирована"));
     }
 }
