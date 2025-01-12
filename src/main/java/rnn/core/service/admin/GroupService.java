@@ -53,7 +53,7 @@ public class GroupService {
         Set<User> moveToTarget = new HashSet<>();
         Set<User> newUsers = new HashSet<>();
 
-        Set<User> processUsers = userService.findAllByIds(dto.ids());
+        Set<User> processUsers = userService.findAllByIds(dto.userIds());
         for (User user : processUsers) {
             if (defaultUsers.contains(user)) {
                 moveToTarget.add(user);

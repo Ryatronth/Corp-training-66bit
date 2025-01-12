@@ -55,7 +55,7 @@ public class User {
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "user_group_t",
-            joinColumns = @JoinColumn(name = "username"),
+            joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id"),
             indexes = @Index(name = "idx_user_group_username", columnList = "username"),
             uniqueConstraints = @UniqueConstraint(name = "unique_user_group_t", columnNames = {"username", "group_id"})
