@@ -110,7 +110,7 @@ public class ContentEventListener {
             UserCourse userCourse = projection.getUserCourse();
 
             if (userContent != null) {
-                if (userContent.isSuccess()) {
+                if (userContent.isCompleted()) {
                     userTopic.setCountAnsweredContents(userTopic.getCountAnsweredContents() - 1);
                     userTopic.setCurrentScore(userTopic.getCurrentScore() + event.getScore());
                     userModule.setCurrentScore(userModule.getCurrentScore() + event.getScore());
