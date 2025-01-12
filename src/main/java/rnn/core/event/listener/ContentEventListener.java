@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
 import rnn.core.event.event.CreateContentEvent;
 import rnn.core.event.event.DeleteContentEvent;
 import rnn.core.event.event.UpdateContentEvent;
@@ -28,8 +30,8 @@ public class ContentEventListener {
     private final UserContentService userContentService;
 
     @Async
-    @Transactional
-    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener
     public void handleCreateEvent(CreateContentEvent event) {
         Topic topic = topicService.findWithModuleAndCourse(event.getTopicId());
         Module module = topic.getModule();
@@ -63,8 +65,8 @@ public class ContentEventListener {
     }
 
     @Async
-    @Transactional
-    @EventListener
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener
     public void handleUpdateEvent(UpdateContentEvent event) {
         Topic topic = topicService.findWithModuleAndCourse(event.getTopicId());
         Module module = topic.getModule();
