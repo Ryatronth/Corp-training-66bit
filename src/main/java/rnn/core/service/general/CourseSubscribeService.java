@@ -23,8 +23,8 @@ public class CourseSubscribeService {
     private final UserCourseService userCourseService;
 
     @Transactional
-    public SubscribeCourseDTO subscribeCourse(long courseId, List<String> usernames) {
-        Set<User> users = userService.findAllByUsernames(usernames);
+    public SubscribeCourseDTO subscribeCourse(long courseId, List<Long> userIds) {
+        Set<User> users = userService.findAllByIds(userIds);
         Group defaultGroup = groupService.addUsersInDefaultGroup(courseId, users);
         List<UserCourse> userCourses = userCourseService.createAll(defaultGroup.getCourse(), users);
 

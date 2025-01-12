@@ -18,15 +18,15 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
         JOIN uc.course c
         JOIN c.groups g
         JOIN g.users u
-        WHERE uc.id = :id AND u.username = :username
+        WHERE uc.id = :id AND u.id = :userId
     """)
-    Optional<UserCourseWithCourseAndGroupDTO> findByIdFetchCourseAndGroup(long id, String username);
+    Optional<UserCourseWithCourseAndGroupDTO> findByIdFetchCourseAndGroup(long id, long userId);
 
     @Query("""
         FROM UserCourse uc
-        WHERE uc.course.id = :courseId AND uc.user.username = :username
+        WHERE uc.course.id = :courseId AND uc.user.id = :userId
     """)
-    Optional<UserCourse> findByCourseIdAndUsername(long courseId, String username);
+    Optional<UserCourse> findByCourseIdAndUserId(long courseId, long userId);
 
     @Modifying
     @Query("""
@@ -43,7 +43,7 @@ public interface UserCourseRepository extends JpaRepository<UserCourse, Long> {
     @Modifying
     @Query("""
         DELETE FROM UserCourse uc
-        WHERE uc.course.id = :courseId AND uc.user.username IN :usernames
+        WHERE uc.course.id = :courseId AND uc.user.id IN :userIds
     """)
-    void deleteAllByCourseIdAndUsernames(long courseId, List<String> usernames);
+    void deleteAllByCourseIdAndUserIds(long courseId, List<Long> userIds);
 }

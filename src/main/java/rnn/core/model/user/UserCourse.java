@@ -16,10 +16,10 @@ import java.util.List;
 @Table(
         name = "user_course_t",
         uniqueConstraints = {
-                @UniqueConstraint(name = "unique_username_course_id", columnNames = {"username", "course_id"})
+                @UniqueConstraint(name = "unique_user_id_course_id", columnNames = {"user_id", "course_id"})
         },
         indexes = {
-                @Index(name = "idx_username", columnList = "username"),
+                @Index(name = "idx_user_id", columnList = "user_id"),
                 @Index(name = "idx_course_id", columnList = "course_id")
         }
 )
@@ -39,7 +39,7 @@ public class UserCourse {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "user_id")
     private User user;
 
     @JsonIgnore

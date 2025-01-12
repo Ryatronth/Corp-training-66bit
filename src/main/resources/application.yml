@@ -1,16 +1,16 @@
 frontend:
-  url: ${FRONTEND_URL}
+  url: http://localhost:5173
 
 file_server:
-  url: ${FILESTORAGE_URL}
+  url: http://localhost:8090
   api_header: FILE-API-KEY
-  api_key: ${API_KEY}
+  api_key: test
 
 spring:
   datasource:
-    url: ${DATABASE_URL}
-    username: ${DATABASE_USERNAME}
-    password: ${DATABASE_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/learn_pr
+    username: ryatronth
+    password: ryatronth
 
   servlet:
     multipart:
@@ -39,18 +39,18 @@ spring:
       client:
         registration:
           github:
-            clientId: ${GITHUB_CLIENT_ID}
-            clientSecret: ${GITHUB_CLIENT_SECRET}
-            redirect-uri: ${HOST}/login/oauth2/code/github
+            clientId: ${github_client_id}
+            clientSecret: ${github_client_secret}
+            redirect-uri: http://localhost:8080/login/oauth2/code/github
             authorization-grant-type: authorization_code
             scope:
               - read:user
               - user:email
             client-name: GitHub
           gitlab:
-            clientId: ${GITLAB_CLIENT_ID}
-            clientSecret: ${GITLAB_CLIENT_SECRET}
-            redirect-uri: ${HOST}/login/oauth2/code/gitlab
+            clientId: ${gitlab_client_id}
+            clientSecret: ${gitlab_client_secret}
+            redirect-uri: http://localhost:8080/login/oauth2/code/gitlab
             authorization-grant-type: authorization_code
             scope:
               - read_user
@@ -72,3 +72,4 @@ spring:
             user-name-attribute: nickname
 
       default_success_url: "${frontend.url}/redirect"
+      default_auth_error_url: "${frontend.url}/auth?error="

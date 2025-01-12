@@ -38,7 +38,7 @@ public class MemberService {
                 .selectOne()
                 .from(userCourse)
                 .where(
-                        userCourse.course.id.eq(courseId).and(userCourse.user.username.eq(user.username))
+                        userCourse.course.id.eq(courseId).and(userCourse.user.email.eq(user.email))
                 );
 
         BooleanBuilder builder = new BooleanBuilder();
@@ -71,7 +71,7 @@ public class MemberService {
                 .join(group.users, user)
                 .where(
                         group.course.id.eq(courseId)
-                                .and(user.username.eq(userCourse.user.username))
+                                .and(user.id.eq(userCourse.user.id))
                                 .and(group.isDefault.eq(false))
                 );
 
@@ -109,7 +109,7 @@ public class MemberService {
                 .from(userCourse)
                 .where(
                         userCourse.course.id.eq(courseId)
-                                .and(userCourse.user.username.eq(user.username))
+                                .and(userCourse.user.id.eq(user.id))
                 );
 
         BooleanBuilder builder = new BooleanBuilder();

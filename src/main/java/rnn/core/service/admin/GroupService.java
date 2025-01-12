@@ -53,7 +53,7 @@ public class GroupService {
         Set<User> moveToTarget = new HashSet<>();
         Set<User> newUsers = new HashSet<>();
 
-        Set<User> processUsers = userService.findAllByUsernames(dto.usernames());
+        Set<User> processUsers = userService.findAllByIds(dto.userIds());
         for (User user : processUsers) {
             if (defaultUsers.contains(user)) {
                 moveToTarget.add(user);
@@ -73,7 +73,7 @@ public class GroupService {
     }
 
     @Transactional
-    public Group updateUsers(long courseId, long groupId, List<String> usernames) {
+    public Group updateUsers(long courseId, long groupId, List<Long> userIds) {
         Group group = groupRepository.findByIdWithUsersAndCourse(groupId).orElseThrow(
                 () -> new RuntimeException("Группа с указанным id не найдена")
         );
@@ -82,16 +82,18 @@ public class GroupService {
         Set<User> defaultGroupUsers = defaultGroup.getUsers();
         Set<User> users = group.getUsers();
 
-        Set<User> moveToTarget = new HashSet<>();
-        Set<User> newUsers = new HashSet<>();
-        Set<User> toDelete = new HashSet<>();
+        Set<User> moveToTarget = new HashSet<>(users.size());
+        Set<User> newUsers = new HashSet<>(users.size());
+        Set<User> toDelete = new HashSet<>(users.size());
+        List<Long> userToDeleteIds = new ArrayList<>(users.size());
 
-        Set<User> processUsers = userService.findAllByUsernames(usernames);
+        Set<User> processUsers = userService.findAllByIds(userIds);
         for (User user: users) {
             if (processUsers.contains(user)) {
                 processUsers.remove(user);
             } else {
                 toDelete.add(user);
+                userToDeleteIds.add(user.getId());
             }
         }
 
@@ -109,19 +111,19 @@ public class GroupService {
         group.setCountMembers(users.size());
 
         eventPublisher.publishEvent(new AddUserEvent(this, group.getCourse(), newUsers));
-        eventPublisher.publishEvent(new DeleteUserEvent(this, group.getCourse().getId(), toDelete.stream().map(User::getUsername).toList()));
+        eventPublisher.publishEvent(new DeleteUserEvent(this, group.getCourse().getId(), userToDeleteIds));
         return moveUsersBetweenGroups(defaultGroup, group, moveToTarget);
     }
 
     @Transactional
     public Group moveUsers(long targetId, List<ProcessGroupsUsersDTO> dtos) {
-        Map<Long, List<String>> groupToUsers = buildGroupToUsersMap(dtos);
+        Map<Long, List<Long>> groupToUsers = buildGroupToUsersMap(dtos);
 
         Group target = findGroupWithUsers(targetId);
 
-        for (Map.Entry<Long, List<String>> entry : groupToUsers.entrySet()) {
+        for (Map.Entry<Long, List<Long>> entry : groupToUsers.entrySet()) {
             Group destination = findGroupWithUsers(entry.getKey());
-            Set<User> users = userService.findAllByUsernames(entry.getValue());
+            Set<User> users = userService.findAllByIds(entry.getValue());
 
             moveUsersBetweenGroups(destination, target, users);
         }
@@ -222,23 +224,23 @@ public class GroupService {
 
     @Transactional
     public void deleteUsersFromGroup(long courseId, List<ProcessGroupsUsersDTO> dtos) {
-        Map<Long, List<String>> groupToUsers = buildGroupToUsersMap(dtos);
+        Map<Long, List<Long>> groupToUsers = buildGroupToUsersMap(dtos);
 
-        for (Map.Entry<Long, List<String>> entry : groupToUsers.entrySet()) {
-            groupRepository.deleteUsersByUsernames(entry.getKey(), entry.getValue());
+        for (Map.Entry<Long, List<Long>> entry : groupToUsers.entrySet()) {
+            groupRepository.deleteUsersByUserIds(entry.getKey(), entry.getValue());
             groupRepository.updateDecreaseMemberCount(entry.getKey(), entry.getValue().size());
 
             eventPublisher.publishEvent(new DeleteUserEvent(this, courseId, entry.getValue()));
         }
     }
 
-    private Map<Long, List<String>> buildGroupToUsersMap(List<ProcessGroupsUsersDTO> dtos) {
-        Map<Long, List<String>> groupToUsers = new HashMap<>();
+    private Map<Long, List<Long>> buildGroupToUsersMap(List<ProcessGroupsUsersDTO> dtos) {
+        Map<Long, List<Long>> groupToUsers = new HashMap<>();
 
         for (ProcessGroupsUsersDTO dto : dtos) {
-            List<String> usernames = groupToUsers.getOrDefault(dto.groupId(), new ArrayList<>());
-            usernames.add(dto.username());
-            groupToUsers.put(dto.groupId(), usernames);
+            List<Long> ids = groupToUsers.getOrDefault(dto.groupId(), new ArrayList<>());
+            ids.add(dto.userId());
+            groupToUsers.put(dto.groupId(), ids);
         }
 
         return groupToUsers;

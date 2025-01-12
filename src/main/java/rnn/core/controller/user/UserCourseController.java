@@ -25,7 +25,7 @@ public class UserCourseController {
 
     @GetMapping("/courses")
     public ResponseEntity<Page<UserCourseDTO>> getUserCourses(
-            @RequestParam(name = "username") String username,
+            @RequestParam(name = "userId") long userId,
             @RequestParam(name = "enrolled", required = false, defaultValue = "true") boolean enrolled,
             @RequestParam(name = "title", required = false) String title,
             @RequestParam(name = "tags", required = false) List<String> tags,
@@ -37,44 +37,44 @@ public class UserCourseController {
             return ResponseEntity
                     .status(200)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(userCourseService.findAllByUsernameWithCourse(username, title, tags, filter, page, limit));
+                    .body(userCourseService.findAllByUserIdWithCourse(userId, title, tags, filter, page, limit));
         }
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(userCourseService.findAllNotEnrolled(username, title, tags, filter, page, limit));
+                .body(userCourseService.findAllNotEnrolled(userId, title, tags, filter, page, limit));
     }
 
     @GetMapping("/courses/current")
     public ResponseEntity<UserCourse> getUserCourses(
             @RequestParam(name = "courseId") long courseId,
-            @RequestParam(name = "username") String username
+            @RequestParam(name = "userId") long userId
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(userCourseService.findByCourseIdAndUsername(courseId, username));
+                .body(userCourseService.findByCourseIdAndUserIds(courseId, userId));
     }
 
     @GetMapping("/courses/{id}")
     public ResponseEntity<UserCourseWithCourseAndGroupDTO> getCourse(
             @PathVariable long id,
-            @RequestParam(name = "username") String username
+            @RequestParam(name = "userId") long userId
     ) {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(userCourseService.findWithCourseAndGroup(id, username));
+                .body(userCourseService.findWithCourseAndGroup(id, userId));
     }
 
     @PostMapping("/courses/subscribe")
     public ResponseEntity<SubscribeCourseDTO> subscribe(
             @RequestParam(name = "courseId") long courseId,
-            @RequestBody List<String> usernames
+            @RequestBody List<Long> userIds
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(courseSubscribeService.subscribeCourse(courseId, usernames));
+                .body(courseSubscribeService.subscribeCourse(courseId, userIds));
     }
 }
