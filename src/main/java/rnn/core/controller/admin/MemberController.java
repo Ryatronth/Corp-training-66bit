@@ -64,13 +64,13 @@ public class MemberController {
     @GetMapping("/members/groups/exclude")
     public ResponseEntity<Page<User>> findAllWithoutCourse(
             @RequestParam long courseId,
-            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String name,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "20") int limit
     ) {
         return ResponseEntity
                 .status(200)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(memberService.findAllWithoutCourse(courseId, email, page, limit));
+                .body(memberService.findAllWithoutCourse(courseId, name, page, limit));
     }
 }
